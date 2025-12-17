@@ -1,0 +1,41 @@
+{
+  // エディター設定
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+
+  // Biome設定
+  "biome.enabled": true,
+
+  // TypeScript設定
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // ファイル関連
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // ESLint/Prettier無効化（Biome使用のため）
+  "eslint.enable": false,
+  "prettier.enable": false,
+
+  // Tailwind CSS設定
+  "tailwindCSS.experimental.classRegex": [
+    ["className\\s*=\\s*['\"]([^'\"]*)['\"]", "([^'\"\\s]*)"]
+  ],
+
+  // 検索除外
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/pnpm-lock.yaml": true
+  },
+
+  // ファイル監視除外
+  "files.watcherExclude": {
+    "**/.next/**": true
+  }
+}
