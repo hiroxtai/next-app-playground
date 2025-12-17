@@ -57,6 +57,14 @@ export interface PageInfo {
  */
 export const pages: PageInfo[] = [
   {
+    id: "hello-world",
+    title: "Hello World",
+    description: "最も基本的なサンプルページ。Hello Worldを表示します。",
+    category: "ui-basics",
+    difficulty: "初級",
+    tags: ["React", "基礎"],
+  },
+  {
     id: "button-basics",
     title: "ボタンの基礎",
     description:
