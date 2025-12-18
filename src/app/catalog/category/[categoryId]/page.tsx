@@ -24,7 +24,8 @@ export default function CategoryPage({
   }
 
   // カテゴリに属するページを取得
-  const pagesByCategory = getPagesByCategory(categoryId);
+  // category.id は CategoryId 型として安全に使用可能
+  const pagesByCategory = getPagesByCategory(category.id);
 
   return (
     <div className="p-8">
