@@ -59,7 +59,8 @@ export const pages: PageInfo[] = [
   {
     id: "button-basics",
     title: "ボタンの基礎",
-    description: "異なるスタイルのボタンを実装し、Tailwind CSSでの表現方法を学びます。",
+    description:
+      "異なるスタイルのボタンを実装し、Tailwind CSSでの表現方法を学びます。",
     category: "ui-basics",
     difficulty: "初級",
     tags: ["Button", "Tailwind CSS"],
@@ -67,7 +68,8 @@ export const pages: PageInfo[] = [
   {
     id: "form-input",
     title: "フォーム入力",
-    description: "テキスト入力、チェックボックス、セレクトボックスなどフォーム要素の実装。",
+    description:
+      "テキスト入力、チェックボックス、セレクトボックスなどフォーム要素の実装。",
     category: "ui-basics",
     difficulty: "初級",
     tags: ["Form", "Input", "Tailwind CSS"],
@@ -107,7 +109,8 @@ export const pages: PageInfo[] = [
   {
     id: "use-effect-lifecycle",
     title: "useEffect ライフサイクル",
-    description: "useEffectフックを使用したコンポーネントのライフサイクル管理。",
+    description:
+      "useEffectフックを使用したコンポーネントのライフサイクル管理。",
     category: "react-hooks",
     difficulty: "中級",
     tags: ["useEffect", "React"],
