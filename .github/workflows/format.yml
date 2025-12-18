@@ -33,7 +33,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check formatting with Biome
-        run: pnpm biome format --check .
+        run: pnpm biome ci
 
       - name: Comment on PR if formatting fails
         if: failure()
