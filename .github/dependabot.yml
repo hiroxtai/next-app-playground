@@ -1,0 +1,44 @@
+version: 2
+updates:
+  # GitHub Actions の依存関係を自動更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # npm/pnpm の依存関係を自動更新
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    # グループ化してPRを減らす
+    groups:
+      # 開発依存関係をまとめる
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "@biomejs/*"
+          - "typescript"
+        update-types:
+          - "minor"
+          - "patch"
+      # プロダクション依存関係をまとめる
+      production-dependencies:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+        update-types:
+          - "minor"
+          - "patch"
