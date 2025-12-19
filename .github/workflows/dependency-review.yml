@@ -1,14 +1,18 @@
 name: Dependency Review
 
+# PR 作成時に依存関係のセキュリティをチェック
+# 脆弱性のある依存関係が追加されるのを防ぐ
 on:
   pull_request:
     branches:
       - main
 
+# 必要な権限を明示的に設定
 permissions:
   contents: read
   pull-requests: write
 
+# 同じ PR で複数回プッシュされた場合、古いチェックをキャンセル
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -23,6 +27,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 依存関係の変更をレビューし、セキュリティ脆弱性を検出
+      # fail-on-severity: moderate - 中程度以上の脆弱性で失敗
+      # comment-summary-in-pr: always - 結果を常に PR にコメント
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:

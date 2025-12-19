@@ -1,44 +1,51 @@
+# Dependabot 設定ファイル
+# 依存関係を自動的に最新に保ち、セキュリティと機能改善を維持
 version: 2
 updates:
   # GitHub Actions の依存関係を自動更新
+  # ワークフローで使用しているアクション（actions/checkout など）を最新に保つ
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "weekly"  # 毎週チェック
     labels:
       - "dependencies"
       - "github-actions"
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: "chore"  # コミットメッセージのプレフィックス
+      include: "scope"  # スコープを含める
 
   # npm/pnpm の依存関係を自動更新
+  # Next.js、React、TypeScript などのパッケージを最新に保つ
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "weekly"  # 毎週チェック
     labels:
       - "dependencies"
     commit-message:
       prefix: "chore"
       include: "scope"
-    # グループ化してPRを減らす
+    # グループ化により、関連する依存関係を1つのPRにまとめる
+    # これにより PR 数を削減し、レビューの負担を軽減
     groups:
       # 開発依存関係をまとめる
+      # 型定義、リンター、フォーマッターなど
       dev-dependencies:
         patterns:
-          - "@types/*"
-          - "@biomejs/*"
-          - "typescript"
+          - "@types/*"      # TypeScript 型定義
+          - "@biomejs/*"    # Biome（リンター/フォーマッター）
+          - "typescript"    # TypeScript 本体
         update-types:
-          - "minor"
-          - "patch"
+          - "minor"  # マイナーバージョン更新
+          - "patch"  # パッチバージョン更新
       # プロダクション依存関係をまとめる
+      # アプリケーション実行に必要なパッケージ
       production-dependencies:
         patterns:
-          - "next"
-          - "react"
-          - "react-dom"
+          - "next"       # Next.js フレームワーク
+          - "react"      # React ライブラリ
+          - "react-dom"  # React DOM
         update-types:
-          - "minor"
-          - "patch"
+          - "minor"  # マイナーバージョン更新
+          - "patch"  # パッチバージョン更新
