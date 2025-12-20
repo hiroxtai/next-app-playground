@@ -1,5 +1,9 @@
 # Next.js Playground
 
+[![CI](https://github.com/hiroxtai/next-app-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/ci.yml)
+[![Format Check](https://github.com/hiroxtai/next-app-playground/actions/workflows/format.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/format.yml)
+[![Dependency Review](https://github.com/hiroxtai/next-app-playground/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/dependency-review.yml)
+
 このプロジェクトは学習用の Next.js Playground です。最新の Next.js の機能を試したり、実装パターンを学ぶために使用します。
 
 🌐 **デプロイ先**: https://next-app-playground-eight.vercel.app/
