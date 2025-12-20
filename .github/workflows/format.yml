@@ -52,7 +52,7 @@ jobs:
       # 開発者に修正方法を案内
       - name: Comment on PR if formatting fails
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.createComment({
