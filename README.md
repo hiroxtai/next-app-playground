@@ -1,5 +1,9 @@
 # Next.js Playground
 
+[![CI](https://github.com/hiroxtai/next-app-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/ci.yml)
+[![Format Check](https://github.com/hiroxtai/next-app-playground/actions/workflows/format.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/format.yml)
+[![Dependency Review](https://github.com/hiroxtai/next-app-playground/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/dependency-review.yml)
+
 このプロジェクトは学習用の Next.js Playground です。最新の Next.js の機能を試したり、実装パターンを学ぶために使用します。
 
 🌐 **デプロイ先**: https://next-app-playground-eight.vercel.app/
@@ -90,6 +94,17 @@ pnpm lint
 
 - 保存時に自動フォーマットされるよう、エディタの設定を推奨
 - Biome の設定は [biome.json](biome.json) で管理
+
+## GitHub Actions / CI
+
+このプロジェクトでは、コード品質とセキュリティを保つために GitHub Actions を使用しています。
+
+- ✅ **自動テスト**: リント・型チェック・ビルドを自動実行
+- 🎨 **フォーマットチェック**: コードスタイルの一貫性を保証
+- 🔒 **セキュリティレビュー**: 依存関係の脆弱性を自動検出
+- 🤖 **自動更新**: Dependabot による依存関係の週次更新
+
+各ワークフローには学習用のコメントが記載されています。詳細は [GitHub Actions ドキュメント](.github/workflows/README.md) を参照してください。
 
 ## Vercel へのデプロイ
 

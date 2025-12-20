@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { use } from "react";
 import { categories, getPagesByCategory } from "@/app/_lib/catalog-data";
 import { PageCard } from "../../_components";
 
@@ -12,7 +13,7 @@ export default function CategoryPage({
   params: Promise<{ categoryId: string }>;
 }) {
   // 非同期のpramsを処理（Next.js 15+）
-  const { categoryId } = React.use(params);
+  const { categoryId } = use(params);
 
   // カテゴリ情報を取得
   const category = categories.find((cat) => cat.id === categoryId);
@@ -23,7 +24,8 @@ export default function CategoryPage({
   }
 
   // カテゴリに属するページを取得
-  const pagesByCategory = getPagesByCategory(categoryId as any);
+  // category.id は CategoryId 型として安全に使用可能
+  const pagesByCategory = getPagesByCategory(category.id);
 
   return (
     <div className="p-8">
@@ -59,5 +61,3 @@ export default function CategoryPage({
     </div>
   );
 }
-
-import React from "react";
