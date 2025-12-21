@@ -7,17 +7,21 @@
 # Biome によるフォーマットとリントチェックを行います。
 #
 # 【実行内容】
-# 1. biome check --staged --write: ステージされたファイルのみをチェックし、自動修正
-# 2. git update-index --again: 修正されたファイルを再度ステージに追加
+# 1. ステージされたファイルから Biome が処理できるファイルを抽出
+# 2. 対象ファイルがある場合のみ biome check --staged --write を実行
+# 3. git update-index --again で修正されたファイルを再ステージ
 #
 # 【メリット】
 # - CI に到達する前にフォーマット・リントエラーを検出
 # - --staged オプションにより、変更したファイルのみをチェック（高速）
 # - --write オプションにより、自動修正で開発者の負担を軽減
+# - マークダウン等の Biome 非対象ファイルのみの変更でもコミット可能
 
-# Biome でステージされたファイルをチェック・自動修正
-pnpm biome check --staged --write
+# ステージされたファイルから Biome が処理できる拡張子のファイルを抽出
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx|json|jsonc|css)$' || true)
 
-# 修正されたファイルを再度ステージに追加
-# これにより、自動修正された内容がコミットに含まれる
-git update-index --again
+# Biome が処理できるファイルがある場合のみ実行
+if [ -n "$STAGED_FILES" ]; then
+  pnpm biome check --staged --write
+  git update-index --again
+fi
