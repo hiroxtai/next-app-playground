@@ -1,0 +1,63 @@
+name: Format Check
+
+# PR 作成時のみ実行されるフォーマットチェック
+# コードスタイルの一貫性を保つために重要
+on:
+  pull_request:
+    branches:
+      - main
+
+# 必要な権限を明示的に設定
+# contents: read - リポジトリの読み取り
+# pull-requests: write - PR へのコメント投稿に必要
+permissions:
+  contents: read
+  pull-requests: write
+
+# 同じ PR で複数回プッシュされた場合、古いチェックをキャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  format:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Biome CI モードでフォーマットとリントをチェック
+      # CI モードは修正せずにチェックのみを実行
+      - name: Check formatting with Biome
+        run: pnpm biome ci
+
+      # フォーマットチェックが失敗した場合、PR に自動でコメントを追加
+      # 開発者に修正方法を案内
+      - name: Comment on PR if formatting fails
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ コードのフォーマットが正しくありません。`pnpm format` を実行してフォーマットを修正してください。'
+            })

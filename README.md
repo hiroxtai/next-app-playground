@@ -1,5 +1,9 @@
 # Next.js Playground
 
+[![CI](https://github.com/hiroxtai/next-app-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/ci.yml)
+[![Format Check](https://github.com/hiroxtai/next-app-playground/actions/workflows/format.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/format.yml)
+[![Dependency Review](https://github.com/hiroxtai/next-app-playground/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/hiroxtai/next-app-playground/actions/workflows/dependency-review.yml)
+
 このプロジェクトは学習用の Next.js Playground です。最新の Next.js の機能を試したり、実装パターンを学ぶために使用します。
 
 🌐 **デプロイ先**: https://next-app-playground-eight.vercel.app/
@@ -90,6 +94,76 @@ pnpm lint
 
 - 保存時に自動フォーマットされるよう、エディタの設定を推奨
 - Biome の設定は [biome.json](biome.json) で管理
+
+## Git Hooks（husky）
+
+このプロジェクトでは **husky** を使用して Git Hooks を管理し、コミット前に自動的にコード品質をチェックしています。
+
+### フックの構成
+
+| フック | タイミング | 実行内容 |
+|--------|-----------|---------|
+| `pre-commit` | コミット前 | Biome によるフォーマット・リント（ステージファイルのみ） |
+| `pre-push` | プッシュ前 | TypeScript 型チェック |
+
+### 仕組み
+
+```
+git commit
+    ↓
+┌─────────────────────────────────────┐
+│ pre-commit フック                    │
+│ - biome check --staged --write      │
+│ - git update-index --again          │
+└─────────────────────────────────────┘
+    ↓
+コミット完了
+
+git push
+    ↓
+┌─────────────────────────────────────┐
+│ pre-push フック                      │
+│ - pnpm type-check                   │
+└─────────────────────────────────────┘
+    ↓
+プッシュ完了
+```
+
+### メリット
+
+- 🚀 **高速**: `--staged` オプションにより、変更したファイルのみをチェック
+- ✨ **自動修正**: `--write` オプションで、フォーマットエラーを自動的に修正
+- 🛡️ **品質保証**: CI に到達する前に問題を検出し、フィードバックループを短縮
+- 🔄 **CI との連携**: ローカルでの高速チェック + CI での完全なチェックを両立
+
+### セットアップ
+
+新しく clone した場合、依存関係のインストール時に自動的に husky がセットアップされます：
+
+```bash
+pnpm install
+```
+
+### フックをスキップする場合
+
+緊急時など、フックをスキップしてコミットしたい場合：
+
+```bash
+git commit --no-verify -m "緊急修正"
+```
+
+> ⚠️ 通常はフックをスキップせず、CI で失敗しないようにすることを推奨します。
+
+## GitHub Actions / CI
+
+このプロジェクトでは、コード品質とセキュリティを保つために GitHub Actions を使用しています。
+
+- ✅ **自動テスト**: リント・型チェック・ビルドを自動実行
+- 🎨 **フォーマットチェック**: コードスタイルの一貫性を保証
+- 🔒 **セキュリティレビュー**: 依存関係の脆弱性を自動検出
+- 🤖 **自動更新**: Dependabot による依存関係の週次更新
+
+各ワークフローには学習用のコメントが記載されています。詳細は [GitHub Actions ドキュメント](.github/workflows/README.md) を参照してください。
 
 ## Vercel へのデプロイ
 
