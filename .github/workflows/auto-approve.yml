@@ -1,0 +1,55 @@
+name: Auto-Approve PR
+
+# 一人での開発環境向け: CI が成功したら PR を自動承認
+# Dependabot PR 以外の通常の PR を対象とする
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# PR を承認するために必要な権限
+# GitHub リポジトリ設定で "Allow GitHub Actions to create and approve pull requests" を
+# 有効にする必要があります
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto-approve:
+    name: Auto-Approve PR after CI Success
+    runs-on: ubuntu-latest
+    # Dependabot PR は別のワークフローで処理するため除外
+    # bot 以外のユーザー（開発者本人）が作成した PR のみを対象
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
+    # タイムアウト設定: 5分以上かかる場合は強制終了
+    timeout-minutes: 5
+
+    steps:
+      # CI ジョブの完了を待機
+      # CI が成功した場合のみ次のステップに進む
+      - name: Wait for CI to complete
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          # 待機対象のチェック名（ci.yml のジョブ名）
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: 'Lint and Type Check'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # 最大待機時間: 10分（CI の実行時間に応じて調整）
+          wait-interval: 10
+
+      - name: Wait for Build to complete
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: 'Build'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
+      # すべての CI チェックが成功したら PR を自動承認
+      # GitHub CLI (gh) を使用して承認を実行
+      - name: Approve PR
+        run: |
+          gh pr review --approve "$PR_URL" --body "✅ すべての CI チェックが成功しました。自動承認します。"
+          echo "✅ PR を自動承認しました"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

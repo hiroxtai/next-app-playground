@@ -19,6 +19,7 @@
 | [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェックとビルド | 3-5分 |
 | [Format Check](#format-check-ワークフロー) | PR のみ | コードフォーマットの検証 | 1-2分 |
 | [Dependency Review](#dependency-review-ワークフロー) | PR のみ | 依存関係のセキュリティチェック | 1分以内 |
+| [Auto-Approve PR](#auto-approve-pr-ワークフロー) | PR のみ（Dependabot 以外） | CI 成功後の自動承認 | 5-10分 |
 | [Dependabot Auto-Merge](#dependabot-auto-merge-ワークフロー) | Dependabot PR | 依存関係更新の自動承認・マージ | 1分以内 |
 
 ---
@@ -157,6 +158,155 @@ permissions:
 ```
 
 **参考**: [GitHub Actions のセキュリティ強化](https://docs.github.com/ja/actions/security-guides/security-hardening-for-github-actions#permissions)
+
+---
+
+### Auto-Approve PR ワークフロー
+
+**ファイル**: [`auto-approve.yml`](./auto-approve.yml)
+
+#### 目的
+一人での開発環境向けに、CI が成功したら PR を自動的に承認します。
+
+#### 実行内容
+
+1. **CI ジョブの完了を待機**
+   - `Lint and Type Check` ジョブの成功を待つ
+   - `Build` ジョブの成功を待つ
+
+2. **PR の自動承認**
+   - すべての CI チェックが成功したら自動承認
+   - 承認コメントに成功メッセージを追加
+
+#### 主要な設定
+
+```yaml
+# PR を承認するために必要な権限
+permissions:
+  pull-requests: write
+  contents: read
+
+# Dependabot PR は除外（別のワークフローで処理）
+if: github.event.pull_request.user.login != 'dependabot[bot]'
+```
+
+#### なぜこの構成？
+
+**一人での開発環境に最適化**
+
+- 承認者がいない環境でも PR ベースの開発が可能
+- CI による品質保証を維持しながら、手動承認の手間を削減
+- Dependabot PR は専用ワークフローで処理し、重複を避ける
+
+**安全性の考慮**
+
+```
+1. PR を作成
+   ↓
+2. CI ワークフロー実行
+   ├─ Lint and Type Check 🔄
+   └─ Build 🔄
+   ↓
+3. Auto-Approve ワークフローが CI の完了を待機
+   ↓
+4. すべての CI が成功
+   ├─ ✅ → 自動承認 🎉
+   └─ ❌ → 承認されない ⚠️
+   ↓
+5. 承認後、手動でマージ
+```
+
+**CI が失敗した場合は自動承認されないため、品質が保証されます。**
+
+#### 必須: GitHub リポジトリ設定
+
+このワークフローを動作させるには、以下の設定が必要です：
+
+**Settings → Actions → General → Workflow permissions**
+
+```
+⚪ Read and write permissions
+✅ Allow GitHub Actions to create and approve pull requests  ← これを有効化
+```
+
+**重要**: この設定を有効にしないと、`GITHUB_TOKEN` で PR を承認できません。
+
+#### Auto-Approve と Auto-Merge の違い
+
+| ワークフロー | 対象 PR | 動作 |
+|------------|---------|------|
+| **Auto-Approve** | 開発者が作成した通常の PR | CI 成功後に自動承認のみ（マージは手動） |
+| **Dependabot Auto-Merge** | Dependabot が作成した PR | 自動承認 + 自動マージ（条件付き） |
+
+**なぜ通常の PR は自動マージしないのか？**
+
+- 開発者が意図的に変更内容を最終確認できる
+- マージのタイミングを開発者が制御できる
+- 複数の PR を同時に作業している場合の制御が容易
+
+#### 手動マージの方法
+
+Auto-Approve により承認された後は、以下の方法でマージできます：
+
+**方法1: GitHub の Web UI**
+1. PR 画面で "Merge pull request" ボタンをクリック
+2. マージコミットメッセージを確認
+3. "Confirm merge" をクリック
+
+**方法2: GitHub CLI**
+```bash
+gh pr merge <PR番号> --squash --delete-branch
+```
+
+**方法3: Git コマンド**
+```bash
+# main ブランチに切り替え
+git checkout main
+
+# PR ブランチをマージ
+git merge --squash feature-branch
+
+# マージコミット
+git commit
+
+# リモートにプッシュ
+git push origin main
+
+# 不要なブランチを削除
+git branch -d feature-branch
+git push origin --delete feature-branch
+```
+
+#### トラブルシューティング
+
+**Q: PR が自動承認されない**
+
+A: 以下を確認してください：
+1. **Settings → Actions → General** で "Allow GitHub Actions to create and approve pull requests" が有効になっているか
+2. CI ワークフローがすべて成功しているか
+3. Dependabot PR ではないか（Dependabot は別のワークフローで処理）
+
+**Q: "wait-on-check-action" がタイムアウトする**
+
+A: CI の実行時間が長い場合、`wait-interval` を調整してください：
+```yaml
+- name: Wait for CI to complete
+  uses: lewagon/wait-on-check-action@v1.3.4
+  with:
+    wait-interval: 20  # 20分に延長
+```
+
+**Q: 特定の CI のみ待機したい**
+
+A: 不要な wait ステップを削除できます。例えば、Lint のみ待機する場合：
+```yaml
+steps:
+  - name: Wait for Lint to complete
+    uses: lewagon/wait-on-check-action@v1.3.4
+    with:
+      check-name: 'Lint and Type Check'
+      # Build の待機ステップは削除
+```
 
 ---
 
