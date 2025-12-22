@@ -170,33 +170,41 @@ permissions:
 
 #### 実行内容
 
-1. **CI ジョブの完了を待機**
-   - `Lint and Type Check` ジョブの成功を待つ
-   - `Build` ジョブの成功を待つ
+1. **CI ワークフローの完了を検知**
+   - `workflow_run` イベントで CI の完了を監視
+   - CI が成功した場合のみ次のステップに進む
 
-2. **PR の自動承認**
-   - すべての CI チェックが成功したら自動承認
+2. **PR 情報の取得**
+   - ブランチ名から対応する PR を検索
+   - Dependabot PR は自動的にスキップ
+
+3. **PR の自動承認**
+   - CI が成功した PR を自動承認
    - 承認コメントに成功メッセージを追加
 
 #### 主要な設定
 
 ```yaml
-# PR を承認するために必要な権限
-permissions:
-  pull-requests: write
-  contents: read
+# CI ワークフローの完了を監視
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
-# Dependabot PR は除外（別のワークフローで処理）
-if: github.event.pull_request.user.login != 'dependabot[bot]'
+# CI が成功した場合のみ実行
+if: |
+  github.event.workflow_run.conclusion == 'success' &&
+  github.event.workflow_run.event == 'pull_request'
 ```
 
 #### なぜこの構成？
 
-**一人での開発環境に最適化**
+**workflow_run イベントを使用する理由**
 
-- 承認者がいない環境でも PR ベースの開発が可能
-- CI による品質保証を維持しながら、手動承認の手間を削減
-- Dependabot PR は専用ワークフローで処理し、重複を避ける
+- CI ワークフローの完了を確実に検知できる
+- CI が成功した場合のみトリガーされるため、無駄な実行がない
+- サードパーティのアクションに依存せず、GitHub 公式の仕組みのみを使用
 
 **安全性の考慮**
 
@@ -207,16 +215,19 @@ if: github.event.pull_request.user.login != 'dependabot[bot]'
    ├─ Lint and Type Check 🔄
    └─ Build 🔄
    ↓
-3. Auto-Approve ワークフローが CI の完了を待機
+3. CI ワークフローが完了
+   ├─ ✅ 成功 → Auto-Approve ワークフローをトリガー
+   └─ ❌ 失敗 → Auto-Approve はトリガーされない
    ↓
-4. すべての CI が成功
-   ├─ ✅ → 自動承認 🎉
-   └─ ❌ → 承認されない ⚠️
+4. Auto-Approve ワークフロー実行
+   ├─ PR 情報を取得
+   ├─ Dependabot PR でないことを確認
+   └─ PR を自動承認 🎉
    ↓
 5. 承認後、手動でマージ
 ```
 
-**CI が失敗した場合は自動承認されないため、品質が保証されます。**
+**CI が失敗した場合は Auto-Approve ワークフロー自体がトリガーされないため、確実に品質が保証されます。**
 
 #### 必須: GitHub リポジトリ設定
 
@@ -283,30 +294,23 @@ git push origin --delete feature-branch
 
 A: 以下を確認してください：
 1. **Settings → Actions → General** で "Allow GitHub Actions to create and approve pull requests" が有効になっているか
-2. CI ワークフローがすべて成功しているか
+2. CI ワークフローがすべて成功しているか（Actions タブで確認）
 3. Dependabot PR ではないか（Dependabot は別のワークフローで処理）
+4. PR がオープン状態か（クローズされた PR は対象外）
 
-**Q: "wait-on-check-action" がタイムアウトする**
+**Q: "No open PR found for this branch" と表示される**
 
-A: CI の実行時間が長い場合、`wait-interval` を調整してください：
-```yaml
-- name: Wait for CI to complete
-  uses: lewagon/wait-on-check-action@v1.3.4
-  with:
-    wait-interval: 20  # 20分に延長
-```
+A: 以下の可能性があります：
+1. PR がまだ作成されていない、またはすでにマージされている
+2. ブランチ名が一致していない（fork からの PR の場合、head の指定方法が異なる）
 
-**Q: 特定の CI のみ待機したい**
+**Q: workflow_run が CI 完了後にトリガーされない**
 
-A: 不要な wait ステップを削除できます。例えば、Lint のみ待機する場合：
-```yaml
-steps:
-  - name: Wait for Lint to complete
-    uses: lewagon/wait-on-check-action@v1.3.4
-    with:
-      check-name: 'Lint and Type Check'
-      # Build の待機ステップは削除
-```
+A: 以下を確認してください：
+1. `workflows:` に指定したワークフロー名が正確か（ci.yml の `name: CI` と一致）
+2. CI ワークフローが正常に完了しているか
+3. デフォルトブランチ（main）にワークフローファイルがマージされているか
+   - `workflow_run` はデフォルトブランチのワークフロー定義を使用します
 
 ---
 
