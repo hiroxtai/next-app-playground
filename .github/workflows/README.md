@@ -177,10 +177,10 @@ permissions:
 #### 主要な設定
 
 ```yaml
-# pull_request_target イベントを使用
-# fork からの PR でも安全に実行できる
+# pull_request イベントを使用
+# PR ブランチのワークフロー定義が実行される
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
 
 # Dependabot PR は除外
@@ -189,11 +189,12 @@ if: github.event.pull_request.user.login != 'dependabot[bot]'
 
 #### なぜこの構成？
 
-**pull_request_target イベントを使用する理由**
+**pull_request イベントを使用する理由**
 
-- `GITHUB_TOKEN` に PR を承認する権限がある
+- PR ブランチのワークフロー定義が実行される
+- この PR 自体でも動作する
 - シンプルで確実な実装
-- GitHub 公式の推奨パターン
+- 一人での開発環境では fork を使わないため、セキュリティ上の問題はない
 
 **重要な注意点**
 
@@ -301,9 +302,17 @@ A: ブランチ保護ルールが正しく設定されていません：
 
 **Q: fork からの PR が自動承認されない**
 
-A: `pull_request_target` は fork からの PR でも動作しますが、セキュリティ上の理由で制限がある場合があります。
-   - fork からの PR を許可する場合、ワークフローのコードレビューを慎重に行ってください
-   - 一人での開発では通常 fork は使用しないため、問題にはなりません
+A: 一人での開発環境では通常 fork は使用しないため、問題にはなりません。
+   もし fork からの PR を自動承認したい場合は、`pull_request_target` イベントを使用する必要がありますが、
+   セキュリティリスクがあるため推奨されません。
+
+**Q: pull_request と pull_request_target の違いは？**
+
+A: 
+- `pull_request`: PR ブランチのワークフロー定義を使用。この PR 自体でも動作する。
+- `pull_request_target`: ベースブランチ（main）のワークフロー定義を使用。main にマージ後から動作。
+  
+一人での開発環境では `pull_request` で十分です。
 
 ---
 

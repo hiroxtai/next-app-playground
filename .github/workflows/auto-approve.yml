@@ -5,7 +5,7 @@ name: Auto-Approve PR
 # 注意: CI が成功したかどうかに関わらず承認されるため、
 # ブランチ保護ルールで必須ステータスチェックを設定することが重要
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
 
 # PR を承認するために必要な権限
