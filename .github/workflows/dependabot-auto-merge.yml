@@ -1,0 +1,85 @@
+name: Dependabot Auto-Merge
+
+# Dependabot が作成した PR を自動的に承認・マージするワークフロー
+# CI/Lint チェックがすべて成功した場合のみマージされるため安全
+on:
+  pull_request:
+    # Dependabot PR が作成・更新されたときに実行
+    types: [opened, synchronize, reopened]
+
+# セキュリティのベストプラクティス: 必要最小限の権限のみ付与
+# contents: write - PR をマージするために必要
+# pull-requests: write - PR を承認し、auto-merge を有効化するために必要
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto-Merge Dependabot PRs
+    runs-on: ubuntu-latest
+    # Dependabot が作成した PR のみを対象とする安全機構
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    # タイムアウト設定: 5分以上かかる場合は強制終了
+    # このワークフローは軽量な処理のみのため、短めに設定
+    timeout-minutes: 5
+
+    steps:
+      # Dependabot PR のメタデータを取得
+      # 更新タイプ（patch/minor/major）や依存関係の種類を判定するために使用
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      # PR を自動承認
+      # GitHub CLI (gh) を使用して承認を実行
+      # 注意: ブランチ保護ルールで承認が必須の場合、この処理が重要
+      - name: Approve Dependabot PR
+        run: |
+          gh pr review --approve "$PR_URL"
+          echo "✅ PR を承認しました"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # パッチバージョン更新の自動マージ
+      # パッチバージョンは後方互換性があり、バグ修正のみのため安全性が高い
+      # 例: 1.2.3 → 1.2.4
+      - name: Enable auto-merge for patch updates
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        run: |
+          gh pr merge --auto --squash "$PR_URL"
+          echo "✅ パッチバージョン更新のため auto-merge を有効化しました"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 開発依存関係のマイナーバージョン更新の自動マージ
+      # 開発依存関係（リンター、フォーマッター、型定義など）は
+      # 本番環境に直接影響しないため、マイナーバージョンも自動マージ可能
+      # 例: @types/node 18.0.0 → 18.1.0
+      - name: Enable auto-merge for dev dependency minor updates
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+          steps.metadata.outputs.dependency-type == 'direct:development'
+        run: |
+          gh pr merge --auto --squash "$PR_URL"
+          echo "✅ 開発依存関係のマイナーバージョン更新のため auto-merge を有効化しました"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # auto-merge が有効化されなかった場合の通知
+      # メジャーバージョン更新や本番依存関係のマイナーバージョン更新は
+      # 破壊的変更の可能性があるため、手動レビューが必要
+      - name: Notify manual review required
+        if: |
+          steps.metadata.outputs.update-type != 'version-update:semver-patch' &&
+          !(steps.metadata.outputs.update-type == 'version-update:semver-minor' && 
+            steps.metadata.outputs.dependency-type == 'direct:development')
+        run: |
+          echo "⚠️ この PR は手動レビューが必要です"
+          echo "更新タイプ: ${{ steps.metadata.outputs.update-type }}"
+          echo "依存関係タイプ: ${{ steps.metadata.outputs.dependency-type }}"

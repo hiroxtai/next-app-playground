@@ -19,6 +19,7 @@
 | [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェックとビルド | 3-5分 |
 | [Format Check](#format-check-ワークフロー) | PR のみ | コードフォーマットの検証 | 1-2分 |
 | [Dependency Review](#dependency-review-ワークフロー) | PR のみ | 依存関係のセキュリティチェック | 1分以内 |
+| [Dependabot Auto-Merge](#dependabot-auto-merge-ワークフロー) | Dependabot PR | 依存関係更新の自動承認・マージ | 1分以内 |
 
 ---
 
@@ -156,6 +157,171 @@ permissions:
 ```
 
 **参考**: [GitHub Actions のセキュリティ強化](https://docs.github.com/ja/actions/security-guides/security-hardening-for-github-actions#permissions)
+
+---
+
+### Dependabot Auto-Merge ワークフロー
+
+**ファイル**: [`dependabot-auto-merge.yml`](./dependabot-auto-merge.yml)
+
+#### 目的
+Dependabot が作成した依存関係更新 PR を、安全性を担保しながら自動的に承認・マージします。
+
+#### 実行内容
+
+1. **Dependabot メタデータの取得**
+   - 更新タイプ（patch/minor/major）の判定
+   - 依存関係の種類（production/development）の判定
+
+2. **PR の自動承認**
+   - すべての Dependabot PR を自動承認
+   - ブランチ保護ルールで承認が必須の場合に対応
+
+3. **条件付き自動マージの有効化**
+   - **パッチバージョン更新**: すべて自動マージ（例: 1.2.3 → 1.2.4）
+   - **マイナーバージョン更新**: 開発依存関係のみ自動マージ（例: 18.0.0 → 18.1.0）
+   - **メジャーバージョン更新**: 手動レビューが必要（例: 1.x.x → 2.0.0）
+
+#### 主要な設定
+
+```yaml
+# 自動マージに必要な権限
+permissions:
+  contents: write        # PR をマージするために必要
+  pull-requests: write   # PR を承認・auto-merge するために必要
+
+# Dependabot PR のみを対象
+if: github.event.pull_request.user.login == 'dependabot[bot]'
+```
+
+#### 自動マージの判定ロジック
+
+```yaml
+# ✅ パッチバージョン: 常に自動マージ
+if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+
+# ✅ マイナーバージョン + 開発依存関係: 自動マージ
+if: |
+  steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+  steps.metadata.outputs.dependency-type == 'direct:development'
+
+# ❌ それ以外: 手動レビューが必要
+```
+
+#### なぜこの構成？
+
+**安全性の考慮**
+
+| 更新タイプ | 本番依存関係 | 開発依存関係 | 理由 |
+|-----------|------------|------------|------|
+| Patch (1.2.3 → 1.2.4) | ✅ 自動 | ✅ 自動 | バグ修正のみ、破壊的変更なし |
+| Minor (1.2.0 → 1.3.0) | ❌ 手動 | ✅ 自動 | 新機能追加、開発ツールは影響小 |
+| Major (1.x.x → 2.0.0) | ❌ 手動 | ❌ 手動 | 破壊的変更の可能性が高い |
+
+**CI との連携**
+
+`gh pr merge --auto` コマンドは、以下の条件がすべて満たされるまで待機します：
+
+1. ✅ 必要な承認が得られている
+2. ✅ すべての必須ステータスチェック（CI/Lint）がパス
+3. ✅ ブランチが最新である（ブランチ保護ルールで設定している場合）
+4. ✅ マージの競合がない
+
+**つまり、CI/Lint でエラーが発生した場合、自動マージは実行されません。**
+
+#### 実際の動作フロー
+
+```
+1. Dependabot が PR を作成
+   ↓
+2. Dependabot Auto-Merge ワークフロー実行
+   ├─ PR を自動承認 ✅
+   └─ 条件に応じて auto-merge を有効化 ✅
+   ↓
+3. CI ワークフロー実行
+   ├─ Lint and Type Check ジョブ 🔄
+   └─ Build ジョブ 🔄
+   ↓
+4. すべての CI が成功
+   ├─ ✅ → 自動的にマージされる 🎉
+   └─ ❌ → マージされず、手動対応が必要 ⚠️
+```
+
+#### 必須: ブランチ保護ルールの設定
+
+このワークフローを安全に運用するには、リポジトリの設定で以下のブランチ保護ルールを有効化してください：
+
+**Settings → Branches → main ブランチ**
+
+```
+✅ Require a pull request before merging
+  □ Require approvals: 0
+    (Dependabot PR は自動承認されるため、承認数は不要)
+
+✅ Require status checks to pass before merging
+  ✅ Require branches to be up to date before merging
+  Required status checks:
+    ✅ lint-and-typecheck
+    ✅ build
+
+✅ Do not allow bypassing the above settings
+```
+
+**重要**: この設定により、CI が失敗した PR は絶対にマージされません。
+
+#### 手動対応が必要なケース
+
+以下の場合、自動マージは実行されず、手動レビューが必要です：
+
+1. **メジャーバージョン更新**
+   - 破壊的変更の可能性があるため、コードの修正が必要な場合がある
+   - 変更内容を確認し、手動でマージ
+
+2. **本番依存関係のマイナーバージョン更新**
+   - 新機能追加により、予期しない動作変更の可能性
+   - テストを十分に行い、問題なければ手動でマージ
+
+3. **CI/Lint エラーが発生した場合**
+   ```bash
+   # ローカルで Dependabot ブランチをチェックアウト
+   git fetch origin
+   git checkout dependabot/npm_and_yarn/...
+   
+   # 問題を修正
+   pnpm biome check --write .
+   
+   # コミット & プッシュ
+   git add .
+   git commit -m "fix: resolve lint errors"
+   git push
+   
+   # CI が再実行され、成功すれば自動マージされる
+   ```
+
+#### トラブルシューティング
+
+**Q: auto-merge が有効化されているのにマージされない**
+
+A: 以下を確認してください：
+1. CI ワークフローがすべて成功しているか
+2. ブランチ保護ルールが正しく設定されているか
+3. マージの競合が発生していないか
+
+**Q: Dependabot PR が自動承認されない**
+
+A: 以下を確認してください：
+1. ワークフローの `permissions` に `pull-requests: write` があるか
+2. ワークフローがトリガーされているか（Actions タブで確認）
+
+**Q: 特定のパッケージだけ手動レビューにしたい**
+
+A: ワークフローに条件を追加できます：
+```yaml
+# 例: Next.js のマイナーバージョン更新は手動レビュー
+if: |
+  steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+  !contains(steps.metadata.outputs.dependency-names, 'next')
+```
 
 ---
 
