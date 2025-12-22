@@ -166,68 +166,62 @@ permissions:
 **ファイル**: [`auto-approve.yml`](./auto-approve.yml)
 
 #### 目的
-一人での開発環境向けに、CI が成功したら PR を自動的に承認します。
+一人での開発環境向けに、PR を自動的に承認します。
 
 #### 実行内容
 
-1. **CI ワークフローの完了を検知**
-   - `workflow_run` イベントで CI の完了を監視
-   - CI が成功した場合のみ次のステップに進む
-
-2. **PR 情報の取得**
-   - ブランチ名から対応する PR を検索
-   - Dependabot PR は自動的にスキップ
-
-3. **PR の自動承認**
-   - CI が成功した PR を自動承認
-   - 承認コメントに成功メッセージを追加
+1. **PR の自動承認**
+   - 開発者が作成した PR を自動承認
+   - Dependabot PR は除外（専用ワークフローで処理）
 
 #### 主要な設定
 
 ```yaml
-# CI ワークフローの完了を監視
+# pull_request_target イベントを使用
+# fork からの PR でも安全に実行できる
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 
-# CI が成功した場合のみ実行
-if: |
-  github.event.workflow_run.conclusion == 'success' &&
-  github.event.workflow_run.event == 'pull_request'
+# Dependabot PR は除外
+if: github.event.pull_request.user.login != 'dependabot[bot]'
 ```
 
 #### なぜこの構成？
 
-**workflow_run イベントを使用する理由**
+**pull_request_target イベントを使用する理由**
 
-- CI ワークフローの完了を確実に検知できる
-- CI が成功した場合のみトリガーされるため、無駄な実行がない
-- サードパーティのアクションに依存せず、GitHub 公式の仕組みのみを使用
+- `GITHUB_TOKEN` に PR を承認する権限がある
+- シンプルで確実な実装
+- GitHub 公式の推奨パターン
 
-**安全性の考慮**
+**重要な注意点**
+
+このワークフローは **CI の完了を待たずに即座に承認します**。
 
 ```
 1. PR を作成
    ↓
-2. CI ワークフロー実行
+2. Auto-Approve ワークフロー実行
+   └─ 即座に PR を承認 ✅
+   ↓
+3. CI ワークフロー実行
    ├─ Lint and Type Check 🔄
    └─ Build 🔄
    ↓
-3. CI ワークフローが完了
-   ├─ ✅ 成功 → Auto-Approve ワークフローをトリガー
-   └─ ❌ 失敗 → Auto-Approve はトリガーされない
-   ↓
-4. Auto-Approve ワークフロー実行
-   ├─ PR 情報を取得
-   ├─ Dependabot PR でないことを確認
-   └─ PR を自動承認 🎉
-   ↓
-5. 承認後、手動でマージ
+4. CI の結果に応じて
+   ├─ ✅ 成功 → マージ可能
+   └─ ❌ 失敗 → マージできない（ブランチ保護ルールで制御）
 ```
 
-**CI が失敗した場合は Auto-Approve ワークフロー自体がトリガーされないため、確実に品質が保証されます。**
+**安全性の保証**
+
+承認は即座に行われますが、**ブランチ保護ルールで必須ステータスチェックを設定**することで、CI が成功しない限りマージできないようになっています。
+
+これにより：
+- ✅ 承認の手間を削減
+- ✅ CI による品質保証を維持
+- ✅ マージのタイミングは開発者が制御
 
 #### 必須: GitHub リポジトリ設定
 
@@ -294,23 +288,22 @@ git push origin --delete feature-branch
 
 A: 以下を確認してください：
 1. **Settings → Actions → General** で "Allow GitHub Actions to create and approve pull requests" が有効になっているか
-2. CI ワークフローがすべて成功しているか（Actions タブで確認）
-3. Dependabot PR ではないか（Dependabot は別のワークフローで処理）
-4. PR がオープン状態か（クローズされた PR は対象外）
+2. Dependabot PR ではないか（Dependabot は別のワークフローで処理）
+3. ワークフローがトリガーされているか（Actions タブで確認）
+4. エラーログを確認（Actions タブ → 該当ワークフロー → ログ）
 
-**Q: "No open PR found for this branch" と表示される**
+**Q: CI が失敗しているのに PR がマージできてしまう**
 
-A: 以下の可能性があります：
-1. PR がまだ作成されていない、またはすでにマージされている
-2. ブランチ名が一致していない（fork からの PR の場合、head の指定方法が異なる）
+A: ブランチ保護ルールが正しく設定されていません：
+1. **Settings → Branches → main → Edit**
+2. **"Require status checks to pass before merging"** にチェック
+3. **必須ステータスチェック** に `lint-and-typecheck` と `build` を追加
 
-**Q: workflow_run が CI 完了後にトリガーされない**
+**Q: fork からの PR が自動承認されない**
 
-A: 以下を確認してください：
-1. `workflows:` に指定したワークフロー名が正確か（ci.yml の `name: CI` と一致）
-2. CI ワークフローが正常に完了しているか
-3. デフォルトブランチ（main）にワークフローファイルがマージされているか
-   - `workflow_run` はデフォルトブランチのワークフロー定義を使用します
+A: `pull_request_target` は fork からの PR でも動作しますが、セキュリティ上の理由で制限がある場合があります。
+   - fork からの PR を許可する場合、ワークフローのコードレビューを慎重に行ってください
+   - 一人での開発では通常 fork は使用しないため、問題にはなりません
 
 ---
 

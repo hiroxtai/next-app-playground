@@ -19,7 +19,8 @@ jobs:
     name: Auto-Merge Dependabot PRs
     runs-on: ubuntu-latest
     # Dependabot が作成した PR のみを対象とする安全機構
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    # リポジトリチェックも追加して、フォークでの意図しない実行を防止
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.actor == 'dependabot[bot]'
     # タイムアウト設定: 5分以上かかる場合は強制終了
     # このワークフローは軽量な処理のみのため、短めに設定
     timeout-minutes: 5
