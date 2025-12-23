@@ -19,6 +19,8 @@
 | [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェックとビルド | 3-5分 |
 | [Format Check](#format-check-ワークフロー) | PR のみ | コードフォーマットの検証 | 1-2分 |
 | [Dependency Review](#dependency-review-ワークフロー) | PR のみ | 依存関係のセキュリティチェック | 1分以内 |
+| [Auto-Approve PR](#auto-approve-pr-ワークフロー) | PR のみ（Dependabot 以外） | CI 成功後の自動承認 | 5-10分 |
+| [Dependabot Auto-Merge](#dependabot-auto-merge-ワークフロー) | Dependabot PR | 依存関係更新の自動承認・マージ | 1分以内 |
 
 ---
 
@@ -156,6 +158,357 @@ permissions:
 ```
 
 **参考**: [GitHub Actions のセキュリティ強化](https://docs.github.com/ja/actions/security-guides/security-hardening-for-github-actions#permissions)
+
+---
+
+### Auto-Approve PR ワークフロー
+
+**ファイル**: [`auto-approve.yml`](./auto-approve.yml)
+
+#### 目的
+一人での開発環境向けに、PR を自動的に承認します。
+
+#### 実行内容
+
+1. **PR の自動承認**
+   - 開発者が作成した PR を自動承認
+   - Dependabot PR は除外（専用ワークフローで処理）
+
+#### 主要な設定
+
+```yaml
+# pull_request イベントを使用
+# PR ブランチのワークフロー定義が実行される
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Dependabot PR は除外
+if: github.event.pull_request.user.login != 'dependabot[bot]'
+```
+
+#### なぜこの構成？
+
+**pull_request イベントを使用する理由**
+
+- PR ブランチのワークフロー定義が実行される
+- この PR 自体でも動作する
+- シンプルで確実な実装
+- 一人での開発環境では fork を使わないため、セキュリティ上の問題はない
+
+**重要な注意点**
+
+このワークフローは **CI の完了を待たずに即座に承認します**。
+
+```
+1. PR を作成
+   ↓
+2. Auto-Approve ワークフロー実行
+   └─ 即座に PR を承認 ✅
+   ↓
+3. CI ワークフロー実行
+   ├─ Lint and Type Check 🔄
+   └─ Build 🔄
+   ↓
+4. CI の結果に応じて
+   ├─ ✅ 成功 → マージ可能
+   └─ ❌ 失敗 → マージできない（ブランチ保護ルールで制御）
+```
+
+**安全性の保証**
+
+承認は即座に行われますが、**ブランチ保護ルールで必須ステータスチェックを設定**することで、CI が成功しない限りマージできないようになっています。
+
+これにより：
+- ✅ 承認の手間を削減
+- ✅ CI による品質保証を維持
+- ✅ マージのタイミングは開発者が制御
+
+#### 必須: GitHub リポジトリ設定
+
+このワークフローを動作させるには、以下の設定が必要です：
+
+**Settings → Actions → General → Workflow permissions**
+
+```
+⚪ Read and write permissions
+✅ Allow GitHub Actions to create and approve pull requests  ← これを有効化
+```
+
+**重要**: この設定を有効にしないと、`GITHUB_TOKEN` で PR を承認できません。
+
+#### Auto-Approve と Auto-Merge の違い
+
+| ワークフロー | 対象 PR | 動作 |
+|------------|---------|------|
+| **Auto-Approve** | 開発者が作成した通常の PR | CI 成功後に自動承認のみ（マージは手動） |
+| **Dependabot Auto-Merge** | Dependabot が作成した PR | 自動承認 + 自動マージ（条件付き） |
+
+**なぜ通常の PR は自動マージしないのか？**
+
+- 開発者が意図的に変更内容を最終確認できる
+- マージのタイミングを開発者が制御できる
+- 複数の PR を同時に作業している場合の制御が容易
+
+#### 手動マージの方法
+
+Auto-Approve により承認された後は、以下の方法でマージできます：
+
+**方法1: GitHub の Web UI**
+1. PR 画面で "Merge pull request" ボタンをクリック
+2. マージコミットメッセージを確認
+3. "Confirm merge" をクリック
+
+**方法2: GitHub CLI**
+```bash
+gh pr merge <PR番号> --squash --delete-branch
+```
+
+**方法3: Git コマンド**
+```bash
+# main ブランチに切り替え
+git checkout main
+
+# PR ブランチをマージ
+git merge --squash feature-branch
+
+# マージコミット
+git commit
+
+# リモートにプッシュ
+git push origin main
+
+# 不要なブランチを削除
+git branch -d feature-branch
+git push origin --delete feature-branch
+```
+
+#### トラブルシューティング
+
+**Q: PR が自動承認されない**
+
+A: 以下を確認してください：
+1. **Settings → Actions → General** で "Allow GitHub Actions to create and approve pull requests" が有効になっているか
+2. Dependabot PR ではないか（Dependabot は別のワークフローで処理）
+3. ワークフローがトリガーされているか（Actions タブで確認）
+4. エラーログを確認（Actions タブ → 該当ワークフロー → ログ）
+
+**Q: CI が失敗しているのに PR がマージできてしまう**
+
+A: ブランチ保護ルールが正しく設定されていません：
+1. **Settings → Branches → main → Edit**
+2. **"Require status checks to pass before merging"** にチェック
+3. **必須ステータスチェック** に以下を追加：
+   - `Lint and Type Check`（ジョブの name）
+   - `Build Application`（ジョブの name）
+   
+注意: `lint-and-typecheck` や `build`（ジョブID）ではありません。
+
+**Q: 「BuildExpected — Waiting for status to be reported」と表示される**
+
+A: ブランチ保護ルールで設定されているステータスチェック名が間違っています：
+1. **Settings → Branches → main → Edit**
+2. "Require status checks to pass before merging" で、間違った名前を削除
+3. 検索ボックスで正しい名前を検索して追加：
+   - `Lint and Type Check`
+   - `Build Application`
+4. PR ページをリロードすると、マージボタンが有効になります
+
+**Q: fork からの PR が自動承認されない**
+
+A: 一人での開発環境では通常 fork は使用しないため、問題にはなりません。
+   もし fork からの PR を自動承認したい場合は、`pull_request_target` イベントを使用する必要がありますが、
+   セキュリティリスクがあるため推奨されません。
+
+**Q: pull_request と pull_request_target の違いは？**
+
+A: 
+- `pull_request`: PR ブランチのワークフロー定義を使用。この PR 自体でも動作する。
+- `pull_request_target`: ベースブランチ（main）のワークフロー定義を使用。main にマージ後から動作。
+  
+一人での開発環境では `pull_request` で十分です。
+
+---
+
+### Dependabot Auto-Merge ワークフロー
+
+**ファイル**: [`dependabot-auto-merge.yml`](./dependabot-auto-merge.yml)
+
+#### 目的
+Dependabot が作成した依存関係更新 PR を、安全性を担保しながら自動的に承認・マージします。
+
+#### 実行内容
+
+1. **Dependabot メタデータの取得**
+   - 更新タイプ（patch/minor/major）の判定
+   - 依存関係の種類（production/development）の判定
+
+2. **PR の自動承認**
+   - すべての Dependabot PR を自動承認
+   - ブランチ保護ルールで承認が必須の場合に対応
+
+3. **条件付き自動マージの有効化**
+   - **パッチバージョン更新**: すべて自動マージ（例: 1.2.3 → 1.2.4）
+   - **マイナーバージョン更新**: 開発依存関係のみ自動マージ（例: 18.0.0 → 18.1.0）
+   - **メジャーバージョン更新**: 手動レビューが必要（例: 1.x.x → 2.0.0）
+
+#### 主要な設定
+
+```yaml
+# 自動マージに必要な権限
+permissions:
+  contents: write        # PR をマージするために必要
+  pull-requests: write   # PR を承認・auto-merge するために必要
+
+# Dependabot PR のみを対象
+if: github.event.pull_request.user.login == 'dependabot[bot]'
+```
+
+#### 自動マージの判定ロジック
+
+```yaml
+# ✅ パッチバージョン: 常に自動マージ
+if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+
+# ✅ マイナーバージョン + 開発依存関係: 自動マージ
+if: |
+  steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+  steps.metadata.outputs.dependency-type == 'direct:development'
+
+# ❌ それ以外: 手動レビューが必要
+```
+
+#### なぜこの構成？
+
+**安全性の考慮**
+
+| 更新タイプ | 本番依存関係 | 開発依存関係 | 理由 |
+|-----------|------------|------------|------|
+| Patch (1.2.3 → 1.2.4) | ✅ 自動 | ✅ 自動 | バグ修正のみ、破壊的変更なし |
+| Minor (1.2.0 → 1.3.0) | ❌ 手動 | ✅ 自動 | 新機能追加、開発ツールは影響小 |
+| Major (1.x.x → 2.0.0) | ❌ 手動 | ❌ 手動 | 破壊的変更の可能性が高い |
+
+**CI との連携**
+
+`gh pr merge --auto` コマンドは、以下の条件がすべて満たされるまで待機します：
+
+1. ✅ 必要な承認が得られている
+2. ✅ すべての必須ステータスチェック（CI/Lint）がパス
+3. ✅ ブランチが最新である（ブランチ保護ルールで設定している場合）
+4. ✅ マージの競合がない
+
+**つまり、CI/Lint でエラーが発生した場合、自動マージは実行されません。**
+
+#### 実際の動作フロー
+
+```
+1. Dependabot が PR を作成
+   ↓
+2. Dependabot Auto-Merge ワークフロー実行
+   ├─ PR を自動承認 ✅
+   └─ 条件に応じて auto-merge を有効化 ✅
+   ↓
+3. CI ワークフロー実行
+   ├─ Lint and Type Check ジョブ 🔄
+   └─ Build ジョブ 🔄
+   ↓
+4. すべての CI が成功
+   ├─ ✅ → 自動的にマージされる 🎉
+   └─ ❌ → マージされず、手動対応が必要 ⚠️
+```
+
+#### 必須: ブランチ保護ルールの設定
+
+このワークフローを安全に運用するには、リポジトリの設定で以下のブランチ保護ルールを有効化してください：
+
+**設定手順:**
+
+1. GitHub リポジトリの **Settings** → **Branches** に移動
+2. **Add branch protection rule** をクリック（または既存の `main` ルールを **Edit**）
+3. **Branch name pattern** に `main` と入力
+4. 以下の設定を有効化：
+
+```
+✅ Require a pull request before merging
+  □ Require approvals: 0
+    (自動承認されるため、承認数は不要)
+
+✅ Require status checks to pass before merging
+  ✅ Require branches to be up to date before merging
+  
+  Required status checks（検索ボックスで以下を検索して選択）:
+    ✅ Lint and Type Check    ← 重要: ジョブの name を指定
+    ✅ Build Application      ← 重要: ジョブの name を指定
+
+✅ Do not allow bypassing the above settings
+```
+
+5. **Save changes** をクリック
+
+**⚠️ 重要な注意点:**
+
+ステータスチェック名は **ジョブID ではなく、ジョブの `name`（表示名）** を指定してください：
+
+- ❌ 間違い: `lint-and-typecheck`, `build`（ジョブID）
+- ✅ 正しい: `Lint and Type Check`, `Build Application`（name の値）
+
+正しいステータスチェック名は、PR の "Checks" タブで確認できます。
+
+**この設定により、CI が失敗した PR は絶対にマージされません。**
+
+#### 手動対応が必要なケース
+
+以下の場合、自動マージは実行されず、手動レビューが必要です：
+
+1. **メジャーバージョン更新**
+   - 破壊的変更の可能性があるため、コードの修正が必要な場合がある
+   - 変更内容を確認し、手動でマージ
+
+2. **本番依存関係のマイナーバージョン更新**
+   - 新機能追加により、予期しない動作変更の可能性
+   - テストを十分に行い、問題なければ手動でマージ
+
+3. **CI/Lint エラーが発生した場合**
+   ```bash
+   # ローカルで Dependabot ブランチをチェックアウト
+   git fetch origin
+   git checkout dependabot/npm_and_yarn/...
+   
+   # 問題を修正
+   pnpm biome check --write .
+   
+   # コミット & プッシュ
+   git add .
+   git commit -m "fix: resolve lint errors"
+   git push
+   
+   # CI が再実行され、成功すれば自動マージされる
+   ```
+
+#### トラブルシューティング
+
+**Q: auto-merge が有効化されているのにマージされない**
+
+A: 以下を確認してください：
+1. CI ワークフローがすべて成功しているか
+2. ブランチ保護ルールが正しく設定されているか
+3. マージの競合が発生していないか
+
+**Q: Dependabot PR が自動承認されない**
+
+A: 以下を確認してください：
+1. ワークフローの `permissions` に `pull-requests: write` があるか
+2. ワークフローがトリガーされているか（Actions タブで確認）
+
+**Q: 特定のパッケージだけ手動レビューにしたい**
+
+A: ワークフローに条件を追加できます：
+```yaml
+# 例: Next.js のマイナーバージョン更新は手動レビュー
+if: |
+  steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+  !contains(steps.metadata.outputs.dependency-names, 'next')
+```
 
 ---
 
