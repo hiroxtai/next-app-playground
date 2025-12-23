@@ -99,7 +99,7 @@ jobs:
       # ビルド時間を短縮し、CI の実行速度を向上
       # キャッシュキーには lockfile とソースコードのハッシュを使用
       - name: Cache Next.js build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
