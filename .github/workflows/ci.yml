@@ -116,7 +116,7 @@ jobs:
       # 他のジョブや後続のステップで利用可能
       # retention-days: 7 により、7日間保持される
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: build-output
           path: .next
