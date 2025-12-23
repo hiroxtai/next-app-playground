@@ -13,6 +13,7 @@
 - **Package Manager**: pnpm
 - **React Compiler**: 有効 (`next.config.ts` で `reactCompiler: true`)
 - **Import alias**: `@/*` → `./src/*`
+- **Git Hooks**: husky（pre-commit で Biome チェック、pre-push で型チェック）
 
 ## 2. コード品質と可読性
 - **学習用コード**: 初学者が読んでも理解しやすい、明確でシンプルな実装を心がけてください。過度な抽象化は避け、直感的な命名を行ってください。
@@ -78,6 +79,20 @@ src/components/
 ## 5. GitHub Actions / CI/CD
 
 このプロジェクトは学習用であるため、CI/CD の設定も理解しやすさを最優先してください。
+
+### ローカルでの品質チェック（husky）
+
+このプロジェクトでは husky を使用して、コミット・プッシュ前に自動的にコード品質をチェックしています。
+
+| フック | タイミング | 実行内容 |
+|--------|-----------|---------|
+| `pre-commit` | コミット前 | `biome check --staged --write`（ステージファイルのみ） |
+| `pre-push` | プッシュ前 | `pnpm type-check`（全ファイルの型チェック） |
+
+**設計方針**:
+- **lint-staged は不使用**: Biome の `--staged` オプションを直接使用することで、依存関係をシンプルに保つ
+- **自動修正**: `--write` オプションでフォーマットエラーを自動修正し、開発者の負担を軽減
+- **CI 環境でのスキップ**: `.husky/install.mjs` で `CI=true` 時に husky セットアップをスキップ
 
 ### ワークフローファイルのガイドライン
 
