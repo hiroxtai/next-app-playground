@@ -298,7 +298,21 @@ A: 以下を確認してください：
 A: ブランチ保護ルールが正しく設定されていません：
 1. **Settings → Branches → main → Edit**
 2. **"Require status checks to pass before merging"** にチェック
-3. **必須ステータスチェック** に `lint-and-typecheck` と `build` を追加
+3. **必須ステータスチェック** に以下を追加：
+   - `Lint and Type Check`（ジョブの name）
+   - `Build Application`（ジョブの name）
+   
+注意: `lint-and-typecheck` や `build`（ジョブID）ではありません。
+
+**Q: 「BuildExpected — Waiting for status to be reported」と表示される**
+
+A: ブランチ保護ルールで設定されているステータスチェック名が間違っています：
+1. **Settings → Branches → main → Edit**
+2. "Require status checks to pass before merging" で、間違った名前を削除
+3. 検索ボックスで正しい名前を検索して追加：
+   - `Lint and Type Check`
+   - `Build Application`
+4. PR ページをリロードすると、マージボタンが有効になります
 
 **Q: fork からの PR が自動承認されない**
 
@@ -407,23 +421,40 @@ if: |
 
 このワークフローを安全に運用するには、リポジトリの設定で以下のブランチ保護ルールを有効化してください：
 
-**Settings → Branches → main ブランチ**
+**設定手順:**
+
+1. GitHub リポジトリの **Settings** → **Branches** に移動
+2. **Add branch protection rule** をクリック（または既存の `main` ルールを **Edit**）
+3. **Branch name pattern** に `main` と入力
+4. 以下の設定を有効化：
 
 ```
 ✅ Require a pull request before merging
   □ Require approvals: 0
-    (Dependabot PR は自動承認されるため、承認数は不要)
+    (自動承認されるため、承認数は不要)
 
 ✅ Require status checks to pass before merging
   ✅ Require branches to be up to date before merging
-  Required status checks:
-    ✅ lint-and-typecheck
-    ✅ build
+  
+  Required status checks（検索ボックスで以下を検索して選択）:
+    ✅ Lint and Type Check    ← 重要: ジョブの name を指定
+    ✅ Build Application      ← 重要: ジョブの name を指定
 
 ✅ Do not allow bypassing the above settings
 ```
 
-**重要**: この設定により、CI が失敗した PR は絶対にマージされません。
+5. **Save changes** をクリック
+
+**⚠️ 重要な注意点:**
+
+ステータスチェック名は **ジョブID ではなく、ジョブの `name`（表示名）** を指定してください：
+
+- ❌ 間違い: `lint-and-typecheck`, `build`（ジョブID）
+- ✅ 正しい: `Lint and Type Check`, `Build Application`（name の値）
+
+正しいステータスチェック名は、PR の "Checks" タブで確認できます。
+
+**この設定により、CI が失敗した PR は絶対にマージされません。**
 
 #### 手動対応が必要なケース
 
