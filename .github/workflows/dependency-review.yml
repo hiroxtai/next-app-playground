@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # 依存関係の変更をレビューし、セキュリティ脆弱性を検出
       # fail-on-severity: moderate - 中程度以上の脆弱性で失敗
