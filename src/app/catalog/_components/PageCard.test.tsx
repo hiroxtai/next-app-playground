@@ -40,9 +40,9 @@ describe("PageCard Component", () => {
    * 各難易度レベルで正しいテキストが表示されることを確認
    */
   it.each([
-    ["初級", "初級"],
-    ["中級", "中級"],
-    ["上級", "上級"],
+    ["初級"],
+    ["中級"],
+    ["上級"],
   ] as const)("should render difficulty badge for %s", (difficulty) => {
     const mockPage: PageInfo = {
       id: "test-page",
