@@ -10,6 +10,7 @@
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS v4 (`@import "tailwindcss"` 形式)
 - **Linter/Formatter**: Biome 2.x
+- **Testing**: Vitest + React Testing Library
 - **Package Manager**: pnpm
 - **React Compiler**: 有効 (`next.config.ts` で `reactCompiler: true`)
 - **Import alias**: `@/*` → `./src/*`
@@ -76,7 +77,168 @@ src/components/
 └── templates/
 ```
 
-## 5. GitHub Actions / CI/CD
+### テストファイルの配置 (Colocation Pattern)
+テストファイルは、テスト対象のコンポーネント・関数と同じディレクトリに配置してください。
+
+**命名規則:**
+- `[name].test.tsx` または `[name].test.ts`
+- 例: `PageCard.tsx` → `PageCard.test.tsx`
+
+**配置例:**
+```
+src/app/catalog/_components/
+├── PageCard.tsx
+├── PageCard.test.tsx       # PageCard のテスト
+├── Sidebar.tsx
+├── Sidebar.test.tsx        # Sidebar のテスト
+└── index.ts
+```
+
+**なぜコロケーション？**
+- テスト対象とテストコードが近くにあり、メンテナンスが容易
+- コンポーネントを削除する際、テストも一緒に削除できる
+- 関連ファイルが一目でわかる
+
+## 5. テストの書き方 (Vitest + React Testing Library)
+
+このプロジェクトでは **Vitest** を使用して単体テストを記述します。以下のガイドラインに従ってください。
+
+### 基本方針
+
+- **学習重視**: 初学者が理解しやすい、シンプルで明確なテストを記述
+- **ユーザー視点**: Testing Library の原則に従い、実装の詳細ではなくユーザーの視点でテスト
+- **包括的**: 正常系・異常系・エッジケースを適切にカバー
+- **保守性**: テストコードも本番コードと同様に、可読性と保守性を重視
+
+### テストの構造
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import MyComponent from "./MyComponent";
+
+/**
+ * MyComponent のテスト
+ * 
+ * @remarks
+ * このコンポーネントは... という役割を持つため、
+ * ...という観点でテストを記述しています。
+ */
+describe("MyComponent", () => {
+  /**
+   * 基本的なレンダリングテスト
+   * コンポーネントが正しく表示されることを確認
+   */
+  it("should render without crashing", () => {
+    render(<MyComponent />);
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+
+  /**
+   * props による表示切り替えのテスト
+   * variant に応じて適切なスタイルが適用されることを確認
+   */
+  it.each([
+    ["primary", "bg-blue-500"],
+    ["secondary", "bg-gray-500"],
+  ])("should render %s variant with correct styles", (variant, expectedClass) => {
+    // テスト実装
+  });
+});
+```
+
+### Vitest 特有のルール
+
+**✅ 推奨:**
+- `import { describe, it, expect, vi } from "vitest"` を使用
+- モックには `vi.mock()` を使用（Jest の `jest.mock()` ではない）
+- `it.each()` を使用してテーブル駆動テストを記述
+- `describe` ブロックでテストをグループ化
+
+**❌ 避ける:**
+- Jest のマッチャーや API を使用しない
+- `test` の代わりに `it` を使用（一貫性のため）
+
+### React Testing Library のルール
+
+**クエリの優先順位:**
+1. `getByRole()`: 最優先（アクセシビリティにも貢献）
+2. `getByLabelText()`: フォーム要素に適している
+3. `getByPlaceholderText()`: プレースホルダーが明確な場合
+4. `getByText()`: テキストコンテンツで検索
+5. `getByTestId()`: 最終手段（他の方法がない場合のみ）
+
+**例:**
+```typescript
+// ✅ 推奨: role を使用
+const button = screen.getByRole("button", { name: "送信" });
+
+// ❌ 避ける: test-id に頼る
+const button = screen.getByTestId("submit-button");
+```
+
+### モックとスタブ
+
+**コンポーネントのモック:**
+```typescript
+// 子コンポーネントをモック
+vi.mock("./ChildComponent", () => ({
+  default: () => <div>Mocked Child</div>,
+}));
+```
+
+**Next.js の機能をモック:**
+```typescript
+// next/navigation をモック
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    pathname: "/",
+  }),
+}));
+```
+
+### テストのスコープ
+
+**単体テスト（Vitest）で確認すること:**
+- ✅ コンポーネントのレンダリング
+- ✅ props による表示の変化
+- ✅ ユーザーインタラクション（クリック、入力など）
+- ✅ 条件分岐やエッジケース
+- ✅ クライアントサイドのロジック
+
+**単体テストで確認しないこと:**
+- ❌ Next.js の `redirect()` や `notFound()` などのサーバー機能（E2E テストで確認）
+- ❌ Async Server Components（Vitest では非対応）
+- ❌ 実際のネットワークリクエスト（モックを使用）
+
+### JSDoc/TSDoc の記述
+
+テストコードにも JSDoc を記述し、テストの意図を明確にしてください：
+
+```typescript
+/**
+ * エラー状態のテスト
+ * 
+ * @remarks
+ * API エラー時には、エラーメッセージが表示され、
+ * リトライボタンがクリック可能になることを確認します。
+ */
+it("should display error message and retry button on API failure", () => {
+  // テスト実装
+});
+```
+
+### テストカバレッジ
+
+完璧なカバレッジを目指すのではなく、**重要な機能とエッジケース**を優先的にテストしてください。
+
+**優先順位:**
+1. 🔴 高: ビジネスロジック、条件分岐、エラーハンドリング
+2. 🟡 中: UI の表示切り替え、フォームバリデーション
+3. 🟢 低: 静的なコンテンツの表示
+
+## 6. GitHub Actions / CI/CD
 
 このプロジェクトは学習用であるため、CI/CD の設定も理解しやすさを最優先してください。
 
@@ -132,6 +294,18 @@ src/components/
 - ワークフローの概要と各ステップの目的を `.github/workflows/README.md` に記載
 - トラブルシューティングガイドを含める
 
-## 6. その他
+### CI でのテスト実行
+
+GitHub Actions では、以下のように Vitest が自動実行されます：
+
+```yaml
+- name: Run Vitest tests
+  run: pnpm test -- --run --reporter=verbose
+```
+
+- `--run`: watch mode を無効化（CI 環境では必須）
+- `--reporter=verbose`: 詳細な出力で失敗時のデバッグを容易に
+
+## 7. その他
 - **Biome 対応**: インポートの順序やフォーマットは Biome のルールに従ってください。
 - **React Compiler**: React Compiler が有効になっていることを前提に、`useMemo` や `useCallback` の過剰な使用は避けてください（必要な場合のみ使用）。
