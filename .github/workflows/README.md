@@ -16,7 +16,7 @@
 
 | ワークフロー | トリガー | 目的 | 実行時間目安 |
 |------------|---------|------|------------|
-| [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェックとビルド | 3-5分 |
+| [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェック、テスト、ビルド | 3-5分 |
 | [Format Check](#format-check-ワークフロー) | PR のみ | コードフォーマットの検証 | 1-2分 |
 | [Dependency Review](#dependency-review-ワークフロー) | PR のみ | 依存関係のセキュリティチェック | 1分以内 |
 | [Auto-Approve PR](#auto-approve-pr-ワークフロー) | PR のみ（Dependabot 以外） | CI 成功後の自動承認 | 5-10分 |
@@ -31,7 +31,7 @@
 **ファイル**: [`ci.yml`](./ci.yml)
 
 #### 目的
-コードの品質を保証し、本番環境にデプロイ可能な状態であることを確認します。
+コードの品質を保証し、テストが通過し、本番環境にデプロイ可能な状態であることを確認します。
 
 #### 実行内容
 
@@ -40,12 +40,18 @@
    - TypeScript の型チェック
    - タイムアウト: 10分
 
-2. **Build ジョブ**
+2. **Unit Tests ジョブ**
+   - Vitest による単体テストの実行
+   - コンポーネントとロジックの動作検証
+   - タイムアウト: 10分
+   - 並列実行: Lint and Type Check ジョブと並列で実行（高速化）
+
+3. **Build ジョブ**
    - Next.js アプリケーションのプロダクションビルド
    - ビルドキャッシュの利用（高速化）
    - ビルド成果物のアップロード（7日間保持）
    - タイムアウト: 15分
-   - 依存関係: Lint and Type Check ジョブが成功した場合のみ実行
+   - 依存関係: Lint and Type Check、Unit Tests の両方が成功した場合のみ実行
 
 #### 主要な設定
 
@@ -62,9 +68,20 @@ concurrency:
 
 #### なぜこの構成？
 
-- **ジョブの分離**: リント/型チェックとビルドを分けることで、問題の早期発見と並列実行による高速化を実現
-- **needs による依存関係**: コード品質に問題がある場合、無駄なビルドを実行しない
+- **ジョブの分離**: リント/型チェック、テスト、ビルドを分けることで、問題の早期発見と並列実行による高速化を実現
+- **並列実行**: Lint と Test を並列で実行することで、CI 全体の実行時間を短縮
+- **needs による依存関係**: コード品質やテストに問題がある場合、無駄なビルドを実行しない
 - **キャッシュ戦略**: `.next/cache` をキャッシュすることで、ビルド時間を大幅に短縮
+
+#### テストの実行方法
+
+Vitest は `--run` モードで実行されます：
+```bash
+pnpm test -- --run --reporter=verbose
+```
+
+- `--run`: watch mode を無効化（CI 環境では必須）
+- `--reporter=verbose`: 詳細な出力を取得し、失敗時のデバッグを容易に
 
 ---
 
@@ -300,6 +317,7 @@ A: ブランチ保護ルールが正しく設定されていません：
 2. **"Require status checks to pass before merging"** にチェック
 3. **必須ステータスチェック** に以下を追加：
    - `Lint and Type Check`（ジョブの name）
+   - `Unit Tests`（ジョブの name）
    - `Build Application`（ジョブの name）
    
 注意: `lint-and-typecheck` や `build`（ジョブID）ではありません。
@@ -311,6 +329,7 @@ A: ブランチ保護ルールで設定されているステータスチェッ�
 2. "Require status checks to pass before merging" で、間違った名前を削除
 3. 検索ボックスで正しい名前を検索して追加：
    - `Lint and Type Check`
+   - `Unit Tests`
    - `Build Application`
 4. PR ページをリロードすると、マージボタンが有効になります
 
@@ -410,6 +429,7 @@ if: |
    ↓
 3. CI ワークフロー実行
    ├─ Lint and Type Check ジョブ 🔄
+   ├─ Unit Tests ジョブ 🔄
    └─ Build ジョブ 🔄
    ↓
 4. すべての CI が成功
@@ -438,6 +458,7 @@ if: |
   
   Required status checks（検索ボックスで以下を検索して選択）:
     ✅ Lint and Type Check    ← 重要: ジョブの name を指定
+    ✅ Unit Tests             ← 重要: ジョブの name を指定
     ✅ Build Application      ← 重要: ジョブの name を指定
 
 ✅ Do not allow bypassing the above settings
@@ -449,8 +470,8 @@ if: |
 
 ステータスチェック名は **ジョブID ではなく、ジョブの `name`（表示名）** を指定してください：
 
-- ❌ 間違い: `lint-and-typecheck`, `build`（ジョブID）
-- ✅ 正しい: `Lint and Type Check`, `Build Application`（name の値）
+- ❌ 間違い: `lint-and-typecheck`, `test`, `build`（ジョブID）
+- ✅ 正しい: `Lint and Type Check`, `Unit Tests`, `Build Application`（name の値）
 
 正しいステータスチェック名は、PR の "Checks" タブで確認できます。
 
@@ -805,37 +826,38 @@ pnpm update
 
 ## さらなる改善案
 
-このプロジェクトの GitHub Actions は学習用に構築されていますが、以下のような改善も検討できます：
+このプロジェクトの GitHub Actions は学習用に構築されており、以下の機能を実装済みです：
 
-### 1. テストの自動実行
+### ✅ 既に実装済み
 
-```yaml
-- name: Run tests
-  run: pnpm test
-```
+1. **単体テストの自動実行**
+   - Vitest を使用した単体テストを CI で自動実行
+   - `pnpm test -- --run --reporter=verbose`
 
-### 2. E2E テスト（Playwright）
+### 🔮 今後の改善候補
+
+### 1. E2E テスト（Playwright）
 
 ```yaml
 - name: Run E2E tests
   run: pnpm test:e2e
 ```
 
-### 3. コードカバレッジのレポート
+### 2. コードカバレッジのレポート
 
 ```yaml
 - name: Upload coverage reports
   uses: codecov/codecov-action@v4
 ```
 
-### 4. Lighthouse CI（パフォーマンス測定）
+### 3. Lighthouse CI（パフォーマンス測定）
 
 ```yaml
 - name: Run Lighthouse CI
   uses: treosh/lighthouse-ci-action@v10
 ```
 
-### 5. 自動デプロイメント
+### 4. 自動デプロイメント
 
 Vercel は自動でデプロイされますが、他のプラットフォームへのデプロイも自動化できます。
 
