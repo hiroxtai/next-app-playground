@@ -9,6 +9,9 @@
     "lint": "biome check",
     "format": "biome format --write",
     "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
