@@ -66,14 +66,47 @@ jobs:
       - name: Type check
         run: pnpm type-check
 
+  # 単体テストのジョブ
+  # Vitest を使用してコンポーネントとロジックのテストを実行
+  # lint-and-typecheck と並列で実行することで、CI 全体の実行時間を短縮
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    # テストのタイムアウト: 10分
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Vitest をシングルランモードで実行
+      # --run オプションにより watch mode を無効化（CI 環境では必須）
+      # --reporter=verbose により詳細な出力を取得
+      - name: Run Vitest tests
+        run: pnpm test -- --run --reporter=verbose
+
   # アプリケーションのビルドジョブ
-  # lint-and-typecheck ジョブが成功した後にのみ実行される
+  # lint-and-typecheck と test ジョブが成功した後にのみ実行される
   build:
     name: Build Application
     runs-on: ubuntu-latest
-    # needs により、lint-and-typecheck が成功しない限りこのジョブは実行されない
-    # これにより、コード品質に問題がある場合は早期に失敗させ、無駄なビルドを防止
-    needs: lint-and-typecheck
+    # needs により、品質チェックとテストが成功しない限りこのジョブは実行されない
+    # これにより、問題がある場合は早期に失敗させ、無駄なビルドを防止
+    needs: [lint-and-typecheck, test]
     # ビルドのタイムアウト: 15分
     timeout-minutes: 15
 
