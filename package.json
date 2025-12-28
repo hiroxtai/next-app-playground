@@ -12,6 +12,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:storybook": "vitest --project=storybook",
     "prepare": "node .husky/install.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
