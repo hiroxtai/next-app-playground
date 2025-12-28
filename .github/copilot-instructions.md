@@ -306,6 +306,117 @@ GitHub Actions では、以下のように Vitest が自動実行されます：
 - `--run`: watch mode を無効化（CI 環境では必須）
 - `--reporter=verbose`: 詳細な出力で失敗時のデバッグを容易に
 
-## 7. その他
+## 7. Storybook（コンポーネントカタログ）
+
+このプロジェクトでは **Storybook 10** を使用してコンポーネントの開発・ドキュメント化を行います。
+
+### 基本方針
+
+- **学習重視**: 初学者が Story の書き方を理解しやすいよう、JSDoc コメントを充実させる
+- **コロケーション**: Story ファイルはコンポーネントと同じディレクトリに配置
+- **autodocs**: すべての Story に `tags: ['autodocs']` を指定し、自動ドキュメント生成を有効化
+- **アクセシビリティ**: addon-a11y による自動チェックを活用
+
+### Story ファイルの配置
+
+コンポーネントと同じディレクトリに `*.stories.tsx` ファイルを配置します：
+
+```
+src/components/atoms/Button/
+├── Button.tsx          # コンポーネント
+├── Button.stories.tsx  # Story ファイル
+├── Button.test.tsx     # テストファイル（任意）
+└── index.ts            # バレルエクスポート
+```
+
+### Story の書き方（CSF 3 形式）
+
+```typescript
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Button } from "./Button";
+
+/**
+ * メタデータ定義
+ */
+const meta = {
+  title: "Atoms/Button",      // サイドバーの階層構造
+  component: Button,          // 対象コンポーネント
+  parameters: {
+    layout: "centered",       // レイアウト（centered / fullscreen / padded）
+  },
+  tags: ["autodocs"],         // 自動ドキュメント生成
+  argTypes: {
+    variant: {
+      control: { type: "select" },
+      options: ["primary", "secondary", "ghost"],
+      description: "ボタンのスタイル",
+    },
+  },
+} satisfies Meta<typeof Button>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/**
+ * Primary バリアント
+ */
+export const Primary: Story = {
+  args: {
+    variant: "primary",
+    children: "ボタン",
+  },
+};
+```
+
+### インタラクションテスト（play function）
+
+ユーザー操作をシミュレートしてテストを行う場合は `play` 関数を使用します：
+
+```typescript
+import { expect, fn, userEvent, within } from "storybook/test";
+
+export const WithClickTest: Story = {
+  args: {
+    onClick: fn(),
+    children: "クリック",
+  },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button");
+    
+    await userEvent.click(button);
+    await expect(args.onClick).toHaveBeenCalled();
+  },
+};
+```
+
+### デコレーターの使用
+
+Story を包むラッパーが必要な場合はデコレーターを使用します：
+
+```typescript
+const meta = {
+  // ...
+  decorators: [
+    (Story) => (
+      <div style={{ padding: "1rem" }}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof Component>;
+```
+
+### Storybook の起動
+
+```bash
+# 開発サーバーを起動（ポート 6006）
+pnpm storybook
+
+# 静的ビルド
+pnpm build-storybook
+```
+
+## 8. その他
 - **Biome 対応**: インポートの順序やフォーマットは Biome のルールに従ってください。
 - **React Compiler**: React Compiler が有効になっていることを前提に、`useMemo` や `useCallback` の過剰な使用は避けてください（必要な場合のみ使用）。
