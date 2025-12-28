@@ -5,7 +5,8 @@
     "dbaeumer.vscode-eslint",
     "formulahendry.auto-rename-tag",
     "christian-kohler.path-intellisense",
-    "streetsidesoftware.code-spell-checker"
+    "streetsidesoftware.code-spell-checker",
+    "joshbolduc.story-explorer"
   ],
   "unwantedRecommendations": ["esbenp.prettier-vscode"]
 }

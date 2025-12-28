@@ -733,31 +733,52 @@ export default function RootLayout({
 **優先度**: 🟡 中  
 **難易度**: ⭐⭐⭐  
 **所要時間**: 2-3時間  
-**ステータス**: ❌ 未実装
+**ステータス**: ✅ 完了
+
+**導入日**: 2025年12月29日  
+**ブランチ**: feature/storybook
 
 #### 目的
 UI コンポーネントの開発・テスト・ドキュメント化を効率化する。
 
-#### 導入内容
+#### ✅ 導入済み内容
 
-##### 7-1. Storybook のインストール
+##### 7-1. Storybook 10 の導入
 
-**インストール**
-```bash
-npx storybook@latest init
+**フレームワーク**: `@storybook/nextjs-vite`（Vite ベースで高速）
+
+**導入済みアドオン**:
+- `@storybook/addon-a11y`: アクセシビリティチェック
+- `@storybook/addon-vitest`: Vitest との統合
+- `@storybook/addon-docs`: 自動ドキュメント生成
+- `@storybook/addon-onboarding`: チュートリアル
+- `@chromatic-com/storybook`: Chromatic 統合
+
+##### 7-2. 設定ファイル
+
+**`.storybook/main.ts`**: Storybook のメイン設定
+```typescript
+import type { StorybookConfig } from "@storybook/nextjs-vite";
+
+const config: StorybookConfig = {
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: [
+    "@chromatic-com/storybook",
+    "@storybook/addon-vitest",
+    "@storybook/addon-a11y",
+    "@storybook/addon-docs",
+    "@storybook/addon-onboarding",
+  ],
+  framework: "@storybook/nextjs-vite",
+  staticDirs: ["../public"],
+};
+export default config;
 ```
 
-自動的に以下が設定されます：
-- `.storybook/` ディレクトリ
-- サンプルストーリー
-- 必要な依存関係
-
-##### 7-2. Tailwind CSS の設定
-
-**ファイル: `.storybook/preview.ts`**
+**`.storybook/preview.ts`**: Tailwind CSS の統合
 ```typescript
-import type { Preview } from '@storybook/react'
-import '../src/app/globals.css' // Tailwind CSS をインポート
+import type { Preview } from "@storybook/nextjs-vite";
+import "../src/app/globals.css"; // Tailwind CSS をインポート
 
 const preview: Preview = {
   parameters: {
@@ -767,47 +788,28 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    a11y: {
+      test: "todo", // 学習段階では 'todo'、慣れたら 'error' に変更
+    },
   },
-}
-
-export default preview
+};
+export default preview;
 ```
 
-##### 7-3. ストーリー例
+##### 7-3. 作成済みの Story
 
-**ファイル: `src/components/atoms/Button.stories.tsx`**
-```typescript
-import type { Meta, StoryObj } from '@storybook/react'
-import { Button } from './Button'
+**既存コンポーネント**:
+- `src/app/catalog/_components/PageCard.stories.tsx`
+- `src/app/catalog/_components/Sidebar.stories.tsx`
 
-const meta = {
-  title: 'Atoms/Button',
-  component: Button,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-} satisfies Meta<typeof Button>
+**Atomic Design コンポーネント**:
+- `src/components/atoms/Button/Button.stories.tsx`
+  - バリアント別（Primary / Secondary / Ghost）
+  - サイズ別（Small / Medium / Large）
+  - インタラクションテスト（play function）
 
-export default meta
-type Story = StoryObj<typeof meta>
+##### 7-4. package.json スクリプト
 
-export const Primary: Story = {
-  args: {
-    variant: 'primary',
-    children: 'Button',
-  },
-}
-
-export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Button',
-  },
-}
-```
-
-**package.json スクリプト追加**
 ```json
 {
   "scripts": {
@@ -817,9 +819,23 @@ export const Secondary: Story = {
 }
 ```
 
+##### 7-5. CI への統合
+
+GitHub Actions に `storybook-build` ジョブを追加:
+- Playwright ブラウザのインストール
+- Storybook の静的ビルド
+- アーティファクトのアップロード
+
 #### 導入後の効果
-- コンポーネントの可視化
-- デザインシステムの構築
+- ✅ コンポーネントの可視化とドキュメント自動生成
+- ✅ アクセシビリティチェックによる品質向上
+- ✅ Vitest 統合によるインタラクションテスト
+- ✅ デザインシステムの基盤構築
+- ✅ コンポーネント開発の効率化
+
+---
+
+### 8. SEO 強化
 - コンポーネントの動作確認が容易
 - ドキュメント自動生成
 
@@ -1061,7 +1077,8 @@ export default function robots(): MetadataRoute.Robots {
 ### フェーズ 4 完了条件
 - [ ] Metadata API が各ページに設定されている
 - [ ] sitemap.xml と robots.txt が生成される
-- [ ] Storybook が起動し、コンポーネントが表示される（導入する場合）
+- [x] Storybook が起動し、コンポーネントが表示される（✅ 完了）
+- [x] GitHub Actions で Storybook ビルドが自動実行される（✅ 完了）
 
 ---
 
