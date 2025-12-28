@@ -36,6 +36,8 @@ npx create-next-app@latest --use-pnpm
 - **Biome** - 高速な linter / formatter
 - **React Compiler** - 最適化されたレンダリング
 - **Tailwind CSS** - ユーティリティファーストの CSS フレームワーク
+- **Vitest** - 高速な単体テストフレームワーク
+- **React Testing Library** - ユーザー視点のコンポーネントテスト
 - **pnpm** - 高速で効率的なパッケージマネージャー
 
 ## ディレクトリ構造
@@ -86,6 +88,22 @@ pnpm start
 
 # コードチェック（Biome）
 pnpm lint
+```
+
+### テストコマンド
+
+```bash
+# テストを実行（watch mode）
+pnpm test
+
+# テストを1回だけ実行（CI用）
+pnpm test -- --run
+
+# UIモードでテストを実行
+pnpm test:ui
+
+# カバレッジを計測
+pnpm test:coverage
 ```
 
 ## コーディング規約
@@ -165,6 +183,66 @@ git commit --no-verify -m "緊急修正"
 
 各ワークフローには学習用のコメントが記載されています。詳細は [GitHub Actions ドキュメント](.github/workflows/README.md) を参照してください。
 
+## テスト
+
+このプロジェクトでは **Vitest** と **React Testing Library** を使用して、コンポーネントとロジックの単体テストを実装しています。
+
+### テストの方針
+
+- ✅ **ユーザー視点**: 実装の詳細ではなく、ユーザーの視点でテスト
+- 📝 **学習重視**: 初学者が理解しやすい、シンプルで明確なテスト
+- 🎯 **重要な部分を優先**: 完璧なカバレッジより、ビジネスロジックとエッジケースを重点的にテスト
+- 📦 **コロケーション**: テストファイルは対象コンポーネントと同じディレクトリに配置
+
+### テストファイルの配置ルール
+
+テストファイルは **コロケーションパターン** に従い、テスト対象と同じディレクトリに配置します。
+
+**命名規則**: `[name].test.tsx` または `[name].test.ts`
+
+```
+src/app/catalog/_components/
+├── PageCard.tsx
+├── PageCard.test.tsx       # PageCard のテスト
+├── Sidebar.tsx
+└── index.ts
+```
+
+**メリット**:
+- テスト対象とテストコードが近くにあり、メンテナンスが容易
+- コンポーネントを削除する際、テストも一緒に削除できる
+- 関連ファイルが一目でわかる
+
+### テストの書き方
+
+```typescript
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import MyComponent from "./MyComponent";
+
+/**
+ * MyComponent のテスト
+ */
+describe("MyComponent", () => {
+  it("should render without crashing", () => {
+    render(<MyComponent />);
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+});
+```
+
+**推奨クエリの優先順位**:
+1. `getByRole()` - 最優先（アクセシビリティにも貢献）
+2. `getByLabelText()` - フォーム要素に適している
+3. `getByText()` - テキストコンテンツで検索
+4. `getByTestId()` - 最終手段
+
+### CI での自動実行
+
+すべてのテストは GitHub Actions で自動実行されます。プルリクエストやプッシュ時に、リント・型チェックと並行して実行されるため、品質を保ちながら開発を進められます。
+
+詳細なガイドラインは [GitHub Copilot Instructions](.github/copilot-instructions.md) を参照してください。
+
 ## Vercel へのデプロイ
 
 このプロジェクトは Vercel にデプロイされています。
@@ -204,6 +282,7 @@ git commit --no-verify -m "緊急修正"
 - Biome による効率的なコード管理
 - React Compiler の活用
 - Tailwind CSS を使ったスタイリング
+- Vitest と React Testing Library によるテスト駆動開発
 - Vercel へのデプロイメント
 
 ## ライセンス
