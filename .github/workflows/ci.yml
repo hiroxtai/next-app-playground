@@ -96,8 +96,9 @@ jobs:
       # Vitest をシングルランモードで実行
       # --run オプションにより watch mode を無効化（CI 環境では必須）
       # --reporter=verbose により詳細な出力を取得
+      # Storybook プロジェクトは除外（ブラウザ環境が不要なため）
       - name: Run Vitest tests
-        run: pnpm test -- --run --reporter=verbose
+        run: pnpm test -- --run --reporter=verbose --exclude=**/*.stories.tsx
 
   # アプリケーションのビルドジョブ
   # lint-and-typecheck と test ジョブが成功した後にのみ実行される
