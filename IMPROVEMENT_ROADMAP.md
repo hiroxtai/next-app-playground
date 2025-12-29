@@ -24,7 +24,10 @@
 - [x] CI での自動テスト実行
 - [x] **Storybook 10**（コンポーネントカタログ・ドキュメント生成）
 - [x] CI での Storybook ビルド・テスト実行
-- [x] **Atomic Design 構造**（Button コンポーネント）
+- [x] **shadcn/ui**（Radix UI ベースのコンポーネント）
+- [x] **next-themes**（ダークモード対応）
+- [x] **Sonner**（Toast 通知）
+- [x] **lucide-react**（アイコン）
 
 ### 🎯 改善が必要な領域
 1. ~~テスト環境~~（✅ 完了: Vitest 導入済み）
@@ -34,7 +37,8 @@
 5. パフォーマンス監視
 6. バンドル分析
 7. ~~コンポーネント開発環境（Storybook）~~（✅ 完了）
-8. E2E テスト（Playwright）
+8. ~~UI コンポーネントライブラリ~~（✅ 完了: shadcn/ui 導入済み）
+9. E2E テスト（Playwright）
 
 ---
 
@@ -806,11 +810,13 @@ export default preview;
 - `src/app/catalog/_components/PageCard.stories.tsx`
 - `src/app/catalog/_components/Sidebar.stories.tsx`
 
-**Atomic Design コンポーネント**:
-- `src/components/atoms/Button/Button.stories.tsx`
-  - バリアント別（Primary / Secondary / Ghost）
-  - サイズ別（Small / Medium / Large）
+**shadcn/ui コンポーネント**:
+- `src/components/ui/button.stories.tsx`
+  - 全バリアント（default / destructive / outline / secondary / ghost / link）
+  - サイズ別（sm / default / lg / icon）
   - インタラクションテスト（play function）
+- `src/components/ui/card.stories.tsx`
+- `src/components/ui/input.stories.tsx`
 
 ##### 7-4. package.json スクリプト
 
@@ -1085,7 +1091,8 @@ export default function robots(): MetadataRoute.Robots {
 - [ ] sitemap.xml と robots.txt が生成される
 - [x] Storybook が起動し、コンポーネントが表示される（✅ 完了）
 - [x] GitHub Actions で Storybook ビルド・テストが自動実行される（✅ 完了）
-- [x] Atomic Design 構造でコンポーネントが整理されている（✅ 完了）
+- [x] shadcn/ui コンポーネントが導入されている（✅ 完了）
+- [x] ダークモード対応が実装されている（✅ 完了）
 - [x] Button コンポーネントの Story が作成されている（✅ 完了）
 
 ---
@@ -1146,7 +1153,7 @@ export default function robots(): MetadataRoute.Robots {
 - **フェーズ 2-A**: ✅ 完了 (Vitest 導入済み)
 - **フェーズ 2-B**: ❌ 未着手 (Playwright)
 - **フェーズ 3**: ❌ 未着手
-- **フェーズ 4**: ✅ 一部完了 (Storybook 導入済み、SEO 未着手)
-- **全体進捗率**: 約45% (Vitest + Storybook + VS Code 設定完了)
+- **フェーズ 4**: ✅ 完了 (Storybook + shadcn/ui + ダークモード導入済み)
+- **全体進捗率**: 約55% (Vitest + Storybook + shadcn/ui + VS Code 設定完了)
 
 導入する項目が決まったら、このドキュメントの該当セクションを参照して実装を進めてください。

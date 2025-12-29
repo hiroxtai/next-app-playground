@@ -9,8 +9,13 @@
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS v4 (`@import "tailwindcss"` 形式)
+- **UI Components**: shadcn/ui (Radix UI ベース)
+- **Theme**: next-themes (ダークモード対応)
+- **Icons**: lucide-react
+- **Toasts**: Sonner
 - **Linter/Formatter**: Biome 2.x
 - **Testing**: Vitest + React Testing Library
+- **Component Catalog**: Storybook 10
 - **Package Manager**: pnpm
 - **React Compiler**: 有効 (`next.config.ts` で `reactCompiler: true`)
 - **Import alias**: `@/*` → `./src/*`
@@ -60,24 +65,53 @@ src/app/dashboard/
 └── _lib/            # この機能専用のロジック
 ```
 
-### コンポーネント設計 (Atomic Design)
-再利用可能な共通コンポーネントは `src/components` 配下に配置し、Atomic Design の考え方に基づいて構成してください。
+### コンポーネント設計 (shadcn/ui)
+このプロジェクトでは **shadcn/ui** を使用してUIコンポーネントを構築しています。
 
-- **atoms**: ボタン、入力フォーム、アイコンなどの最小単位。
-- **molecules**: atom を組み合わせた検索フォーム、カードなどの小規模な UI。
-- **organisms**: ヘッダー、フッター、商品一覧などの独立して機能するセクション。
-- **templates**: ページのレイアウト構造を定義するコンポーネント。
-
-**構成例:**
+**ディレクトリ構成:**
 ```
 src/components/
-├── atoms/
-├── molecules/
-├── organisms/
-└── templates/
+├── ui/                 # shadcn/ui コンポーネント（Button, Card, Input など）
+├── theme-provider.tsx  # next-themes ラッパー
+└── theme-toggle.tsx    # テーマ切替ドロップダウン
 ```
 
-### テストファイルの配置 (Colocation Pattern)
+**shadcn/ui の特徴:**
+- コンポーネントのソースコードがプロジェクト内にあり、自由にカスタマイズ可能
+- Radix UI ベースでアクセシビリティに優れる
+- Tailwind CSS でスタイリング
+
+**新しいコンポーネントの追加:**
+```bash
+pnpm dlx shadcn@latest add [component-name]
+```
+
+**コンポーネントの使い方:**
+```tsx
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+// バリエーション
+<Button variant="default">デフォルト</Button>
+<Button variant="destructive">削除</Button>
+<Button variant="outline">アウトライン</Button>
+
+// asChild パターン（別の要素としてレンダリング）
+import Link from "next/link";
+<Button asChild>
+  <Link href="/about">詳細へ</Link>
+</Button>
+```
+
+**ダークモード:**
+- `next-themes` の `ThemeProvider` でダークモードを管理
+- `ThemeToggle` コンポーネントでテーマ切替
+- CSS 変数（oklch カラーモデル）で色を切り替え
+
+詳細は [docs/SHADCN_GUIDE.md](../docs/SHADCN_GUIDE.md) を参照してください。
+
+### 機能専用コンポーネント (Colocation Pattern)
 テストファイルは、テスト対象のコンポーネント・関数と同じディレクトリに配置してください。
 
 **命名規則:**
@@ -322,24 +356,23 @@ GitHub Actions では、以下のように Vitest が自動実行されます：
 コンポーネントと同じディレクトリに `*.stories.tsx` ファイルを配置します：
 
 ```
-src/components/atoms/Button/
-├── Button.tsx          # コンポーネント
-├── Button.stories.tsx  # Story ファイル
-├── Button.test.tsx     # テストファイル（任意）
-└── index.ts            # バレルエクスポート
+src/components/ui/
+├── button.tsx          # コンポーネント
+├── button.stories.tsx  # Story ファイル
+└── card.tsx
 ```
 
 ### Story の書き方（CSF 3 形式）
 
 ```typescript
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Button } from "./Button";
+import { Button } from "./button";
 
 /**
  * メタデータ定義
  */
 const meta = {
-  title: "Atoms/Button",      // サイドバーの階層構造
+  title: "UI/Button",         // サイドバーの階層構造
   component: Button,          // 対象コンポーネント
   parameters: {
     layout: "centered",       // レイアウト（centered / fullscreen / padded）
@@ -348,7 +381,7 @@ const meta = {
   argTypes: {
     variant: {
       control: { type: "select" },
-      options: ["primary", "secondary", "ghost"],
+      options: ["default", "destructive", "outline", "secondary", "ghost", "link"],
       description: "ボタンのスタイル",
     },
   },
@@ -358,11 +391,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Primary バリアント
+ * デフォルトバリアント
  */
-export const Primary: Story = {
+export const Default: Story = {
   args: {
-    variant: "primary",
+    variant: "default",
     children: "ボタン",
   },
 };
