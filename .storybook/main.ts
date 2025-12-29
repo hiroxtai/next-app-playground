@@ -35,6 +35,7 @@ const config: StorybookConfig = {
    * - @storybook/addon-vitest: Vitest でのテスト実行をサポート
    * - @storybook/addon-a11y: アクセシビリティ（a11y）チェック機能
    * - @storybook/addon-docs: 自動ドキュメント生成（autodocs）
+   * - @storybook/addon-themes: ダークモード切替（Light/Dark）
    * - @storybook/addon-onboarding: 初回起動時のチュートリアル
    */
   addons: [
@@ -42,6 +43,7 @@ const config: StorybookConfig = {
     "@storybook/addon-vitest",
     "@storybook/addon-a11y",
     "@storybook/addon-docs",
+    "@storybook/addon-themes",
     "@storybook/addon-onboarding",
   ],
 
