@@ -3,7 +3,7 @@
 このドキュメントは、next-app-playground プロジェクトの品質向上とモダン化のための改善計画をまとめたものです。
 学習用プロジェクトとして、各改善項目を段階的に導入することで、モダンな開発環境のベストプラクティスを習得できます。
 
-**最終更新日**: 2025年12月28日
+**最終更新日**: 2025年12月29日
 
 ---
 
@@ -17,20 +17,23 @@
 - [x] GitHub Actions CI/CD（リント・型チェック・テスト・ビルド）
 - [x] Husky (Git hooks: pre-commit, pre-push)
 - [x] GitHub Copilot Instructions
-- [x] VS Code 設定（Biome、Tailwind CSS）
+- [x] VS Code 設定（Biome、Tailwind CSS、デバッグ設定）
 - [x] Dependabot 自動マージ
 - [x] Git Worktree 管理スクリプト
 - [x] **Vitest + React Testing Library**（単体テスト）
 - [x] CI での自動テスト実行
+- [x] **Storybook 10**（コンポーネントカタログ・ドキュメント生成）
+- [x] CI での Storybook ビルド・テスト実行
+- [x] **Atomic Design 構造**（Button コンポーネント）
 
 ### 🎯 改善が必要な領域
 1. ~~テスト環境~~（✅ 完了: Vitest 導入済み）
 2. 環境変数管理
-3. エディタ設定の標準化
+3. エディタ設定の標準化（.editorconfig）
 4. コミットメッセージ規約
 5. パフォーマンス監視
 6. バンドル分析
-7. コンポーネント開発環境（Storybook）
+7. ~~コンポーネント開発環境（Storybook）~~（✅ 完了）
 8. E2E テスト（Playwright）
 
 ---
@@ -81,7 +84,8 @@
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/dom": "^10.4.1",
     "jsdom": "^27.3.0",
-    "vite-tsconfig-paths": "^6.0.3"
+    "vite-tsconfig-paths": "^6.0.3",
+    "@vitest/coverage-v8": "^4.0.16"
   }
 }
 ```
@@ -1019,9 +1023,9 @@ export default function robots(): MetadataRoute.Robots {
 
 以下の順序で段階的に導入することを推奨します：
 
-### フェーズ 1: 基盤整備（1日）❌ **未着手**
-1. ❌ 環境変数管理（15分） → **最初に実施推奨**
-2. ❌ エディタ設定（10分）
+### フェーズ 1: 基盤整備（1日）🚧 **一部完了**
+1. ❌ 環境変数管理（15分）
+2. 🚧 エディタ設定（10分） → VS Code 設定は完了、.editorconfig 未作成
 3. ❌ コミットメッセージ規約（30分）
 
 ### フェーズ 2: テスト環境（2-3日）✅ **一部完了**
@@ -1036,13 +1040,13 @@ export default function robots(): MetadataRoute.Robots {
 8. ❌ E2E テスト作成（2-3時間）
 9. ❌ GitHub Actions への統合（30分）
 
-### フェーズ 3: 監視・分析（半日）
-9. ✅ バンドル分析ツール（15分）
-10. ✅ パフォーマンス監視（20分）
+### フェーズ 3: 監視・分析（半日）❌ **未着手**
+9. ❌ バンドル分析ツール（15分）
+10. ❌ パフォーマンス監視（20分）
 
-### フェーズ 4: 開発体験向上（1-2日）
-11. ✅ SEO 強化（1時間）
-12. ✅ Storybook 導入（2-3時間） → **必要に応じて**
+### フェーズ 4: 開発体験向上（1-2日）✅ **一部完了**
+11. ❌ SEO 強化（1時間）
+12. ✅ Storybook 導入（2-3時間） → **完了**
 
 ### フェーズ 5: 機能拡張（必要に応じて）
 13. ⏸️ 国際化
@@ -1055,7 +1059,9 @@ export default function robots(): MetadataRoute.Robots {
 
 ### フェーズ 1 完了条件
 - [ ] `.env.example` が作成され、README に手順が記載されている
-- [ ] `.editorconfig` が作成され、VS Code 拡張機能が推奨されている
+- [ ] `.editorconfig` が作成されている
+- [x] VS Code 拡張機能の推奨設定（`.vscode/extensions.json` 作成済み）
+- [x] VS Code デバッグ設定（`.vscode/launch.json` 作成済み）
 - [ ] `commitlint` が動作し、不正なコミットメッセージが拒否される
 
 ### フェーズ 2 完了条件
@@ -1078,7 +1084,9 @@ export default function robots(): MetadataRoute.Robots {
 - [ ] Metadata API が各ページに設定されている
 - [ ] sitemap.xml と robots.txt が生成される
 - [x] Storybook が起動し、コンポーネントが表示される（✅ 完了）
-- [x] GitHub Actions で Storybook ビルドが自動実行される（✅ 完了）
+- [x] GitHub Actions で Storybook ビルド・テストが自動実行される（✅ 完了）
+- [x] Atomic Design 構造でコンポーネントが整理されている（✅ 完了）
+- [x] Button コンポーネントの Story が作成されている（✅ 完了）
 
 ---
 
@@ -1107,7 +1115,7 @@ export default function robots(): MetadataRoute.Robots {
 - ✅ 完了
 - ⏸️ 保留
 
-**最終更新**: 2025年12月28日
+**最終更新**: 2025年12月29日
 
 ---
 
@@ -1115,28 +1123,30 @@ export default function robots(): MetadataRoute.Robots {
 
 ### 推奨する実装順序
 
-1. **フェーズ 2-B を完了させる** (最優先)
-   - Playwright を導入し、E2E テストを追加
-   - ナビゲーションフローのテストを実装
-   - CI に E2E テストジョブを追加
-
-2. **フェーズ 1 を開始する** (並行可能)
+1. **フェーズ 1 を完了させる** (高優先)
    - `.env.example` を作成し、環境変数の管理を標準化
    - `.editorconfig` を追加し、エディタ設定を統一
    - commitlint を導入し、コミットメッセージを構造化
 
+2. **フェーズ 2-B を完了させる** (並行可能)
+   - Playwright を導入し、E2E テストを追加
+   - ナビゲーションフローのテストを実装
+   - CI に E2E テストジョブを追加
+
 3. **フェーズ 3 に進む**
    - バンドル分析ツールを導入
-   - パフォーマンス監視を追加
+   - パフォーマンス監視を追加（Vercel Speed Insights / Analytics）
 
-4. **フェーズ 4 を検討** (必要に応じて)
-   - Storybook を導入し、コンポーネントカタログを構築
-   - SEO 強化を実施
+4. **SEO 強化を検討** (必要に応じて)
+   - Metadata API の活用
+   - sitemap.xml / robots.txt の生成
 
 ### 現在の進捗
-- **完了したフェーズ**: 0/5
+- **フェーズ 1**: 🚧 一部完了 (VS Code 設定のみ完了、.env.example / .editorconfig / commitlint 未着手)
 - **フェーズ 2-A**: ✅ 完了 (Vitest 導入済み)
 - **フェーズ 2-B**: ❌ 未着手 (Playwright)
-- **全体進捗率**: 約30% (基盤設備と単体テスト完了)
+- **フェーズ 3**: ❌ 未着手
+- **フェーズ 4**: ✅ 一部完了 (Storybook 導入済み、SEO 未着手)
+- **全体進捗率**: 約45% (Vitest + Storybook + VS Code 設定完了)
 
 導入する項目が決まったら、このドキュメントの該当セクションを参照して実装を進めてください。
