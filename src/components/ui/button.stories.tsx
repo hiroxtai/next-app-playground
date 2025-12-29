@@ -263,10 +263,11 @@ export const WithRightIcon: Story = {
  * ボタンのスタイルでレンダリングします。
  */
 export const AsLink: Story = {
-  args: {
-    asChild: true,
-    children: <Link href="/">Go to Home</Link>,
-  },
+  render: () => (
+    <Button asChild>
+      <Link href="/">Go to Home</Link>
+    </Button>
+  ),
 };
 
 // ============================================================================
