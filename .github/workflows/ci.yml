@@ -96,8 +96,10 @@ jobs:
       # Vitest をシングルランモードで実行
       # --run オプションにより watch mode を無効化（CI 環境では必須）
       # --reporter=verbose により詳細な出力を取得
+      # --project=unit により、単体テストプロジェクトのみを実行
+      # （Storybook プロジェクトは storybook-build ジョブで Playwright と共に実行）
       - name: Run Vitest tests
-        run: pnpm test -- --run --reporter=verbose
+        run: pnpm test -- --run --reporter=verbose --project=unit
 
   # アプリケーションのビルドジョブ
   # lint-and-typecheck と test ジョブが成功した後にのみ実行される
@@ -153,4 +155,55 @@ jobs:
         with:
           name: build-output
           path: .next
+          retention-days: 7
+
+  # Storybook のビルドジョブ
+  # コンポーネントカタログが正常にビルドできることを確認
+  # lint-and-typecheck と並列で実行されるため、CI 全体の実行時間に影響しない
+  storybook-build:
+    name: Storybook Build
+    runs-on: ubuntu-latest
+    # Storybook ビルドのタイムアウト: 10分
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Playwright ブラウザをインストール
+      # Storybook の addon-vitest で使用するため
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      # Storybook テストを実行
+      # Playwright ブラウザを使用して Story のインタラクションテストを実行
+      - name: Run Storybook tests
+        run: pnpm test:storybook -- --run --reporter=verbose
+
+      # Storybook を静的サイトとしてビルド
+      # 成功すれば、コンポーネントカタログが正常に生成される
+      - name: Build Storybook
+        run: pnpm build-storybook
+
+      # Storybook の成果物をアーティファクトとしてアップロード
+      # デプロイや確認に利用可能
+      - name: Upload Storybook artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: storybook-static
+          path: storybook-static
           retention-days: 7

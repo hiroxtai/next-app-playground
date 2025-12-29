@@ -16,7 +16,7 @@
 
 | ワークフロー | トリガー | 目的 | 実行時間目安 |
 |------------|---------|------|------------|
-| [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェック、テスト、ビルド | 3-5分 |
+| [CI](#ci-ワークフロー) | Push to `main`, PR | コード品質チェック、テスト、ビルド、Storybook | 5-8分 |
 | [Format Check](#format-check-ワークフロー) | PR のみ | コードフォーマットの検証 | 1-2分 |
 | [Dependency Review](#dependency-review-ワークフロー) | PR のみ | 依存関係のセキュリティチェック | 1分以内 |
 | [Auto-Approve PR](#auto-approve-pr-ワークフロー) | PR のみ（Dependabot 以外） | CI 成功後の自動承認 | 5-10分 |
@@ -46,12 +46,19 @@
    - タイムアウト: 10分
    - 並列実行: Lint and Type Check ジョブと並列で実行（高速化）
 
-3. **Build ジョブ**
+3. **Storybook Build ジョブ**
+   - Storybook テスト（Vitest + Playwright）の実行
+   - Storybook を静的サイトとしてビルド
+   - ビルド成果物のアップロード（7日間保持）
+   - タイムアウト: 10分
+   - 並列実行: Lint and Type Check、Unit Tests ジョブと並列で実行
+
+4. **Build ジョブ**
    - Next.js アプリケーションのプロダクションビルド
    - ビルドキャッシュの利用（高速化）
    - ビルド成果物のアップロード（7日間保持）
    - タイムアウト: 15分
-   - 依存関係: Lint and Type Check、Unit Tests の両方が成功した場合のみ実行
+   - 依存関係: Lint and Type Check、Unit Tests、Storybook Build の全てが成功した場合のみ実行
 
 #### 主要な設定
 
@@ -69,18 +76,27 @@ concurrency:
 #### なぜこの構成？
 
 - **ジョブの分離**: リント/型チェック、テスト、ビルドを分けることで、問題の早期発見と並列実行による高速化を実現
-- **並列実行**: Lint と Test を並列で実行することで、CI 全体の実行時間を短縮
+- **並列実行**: Lint、Test、Storybook を並列で実行することで、CI 全体の実行時間を短縮
 - **needs による依存関係**: コード品質やテストに問題がある場合、無駄なビルドを実行しない
 - **キャッシュ戦略**: `.next/cache` をキャッシュすることで、ビルド時間を大幅に短縮
+- **Storybook テストの分離**: Playwright を必要とする Storybook テストを独立したジョブに分離し、単体テストジョブを軽量に維持
 
 #### テストの実行方法
 
 Vitest は `--run` モードで実行されます：
+
+**単体テスト（Unit Tests ジョブ）:**
 ```bash
-pnpm test -- --run --reporter=verbose
+pnpm test -- --run --project=unit --reporter=verbose
+```
+
+**Storybook テスト（Storybook Build ジョブ）:**
+```bash
+pnpm test:storybook -- --run --reporter=verbose
 ```
 
 - `--run`: watch mode を無効化（CI 環境では必須）
+- `--project=unit`: 単体テストプロジェクトのみを実行（Playwright 不要）
 - `--reporter=verbose`: 詳細な出力を取得し、失敗時のデバッグを容易に
 
 ---

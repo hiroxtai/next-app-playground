@@ -38,22 +38,31 @@ npx create-next-app@latest --use-pnpm
 - **Tailwind CSS** - ユーティリティファーストの CSS フレームワーク
 - **Vitest** - 高速な単体テストフレームワーク
 - **React Testing Library** - ユーザー視点のコンポーネントテスト
+- **Storybook 10** - コンポーネントカタログ / ドキュメント生成
 - **pnpm** - 高速で効率的なパッケージマネージャー
 
 ## ディレクトリ構造
 
 ```
 next-app-playground/
+├── .storybook/       # Storybook の設定
+│   ├── main.ts
+│   └── preview.ts
 ├── src/
-│   └── app/          # App Router のページとレイアウト
-│       ├── layout.tsx
-│       ├── page.tsx
-│       └── globals.css
+│   ├── app/          # App Router のページとレイアウト
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── globals.css
+│   └── components/   # 共通コンポーネント（Atomic Design）
+│       ├── atoms/    # Button, Input など
+│       ├── molecules/
+│       ├── organisms/
+│       └── templates/
 ├── public/           # 静的ファイル
 ├── biome.json        # Biome の設定ファイル
 ├── next.config.ts    # Next.js の設定ファイル
 ├── tsconfig.json     # TypeScript の設定ファイル
-└── tailwind.config.ts
+└── vitest.config.mts # Vitest の設定ファイル
 ```
 
 ## 開発環境のセットアップ
@@ -105,6 +114,50 @@ pnpm test:ui
 # カバレッジを計測
 pnpm test:coverage
 ```
+
+### Storybook コマンド
+
+```bash
+# Storybook 開発サーバーを起動（ポート 6006）
+pnpm storybook
+
+# Storybook を静的サイトとしてビルド
+pnpm build-storybook
+```
+
+## Storybook（コンポーネントカタログ）
+
+このプロジェクトでは **Storybook 10** を使用してコンポーネントカタログを管理しています。
+
+### 特徴
+
+- **@storybook/nextjs-vite**: Vite ベースの高速な開発体験
+- **addon-a11y**: アクセシビリティチェック
+- **addon-vitest**: Vitest との統合によるインタラクションテスト
+- **autodocs**: Props から自動生成されるドキュメント
+
+### Story ファイルの配置
+
+コンポーネントと同じディレクトリに `.stories.tsx` ファイルを配置します：
+
+```
+src/components/atoms/Button/
+├── Button.tsx          # コンポーネント
+├── Button.stories.tsx  # Story ファイル
+└── index.ts            # バレルエクスポート
+```
+
+### コンポーネント構造（Atomic Design）
+
+```
+src/components/
+├── atoms/       # ボタン、入力など最小単位
+├── molecules/   # Atom の組み合わせ
+├── organisms/   # 独立したセクション
+└── templates/   # ページレイアウト
+```
+
+詳細は [.github/copilot-instructions.md](.github/copilot-instructions.md) を参照してください。
 
 ## コーディング規約
 
