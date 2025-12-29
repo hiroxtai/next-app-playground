@@ -5,28 +5,35 @@
  * このファイルは src/components 配下のすべてのコンポーネントを
  * 一箇所からエクスポートするバレルファイルです。
  *
- * ## Atomic Design 構造
+ * ## ディレクトリ構造
  *
  * ```
  * src/components/
- * ├── atoms/       # 最小単位（ボタン、入力など）
- * ├── molecules/   # Atom の組み合わせ（検索フォームなど）
- * ├── organisms/   # 独立したセクション（ヘッダーなど）
- * └── templates/   # ページレイアウト
+ * ├── ui/           # shadcn/ui コンポーネント（自動生成）
+ * ├── theme-*.tsx   # テーマ関連コンポーネント
+ * ├── molecules/    # 複合コンポーネント（今後追加予定）
+ * ├── organisms/    # 独立したセクション（今後追加予定）
+ * └── templates/    # ページレイアウト（今後追加予定）
  * ```
  *
  * @example
  * ```tsx
- * // 単一のインポートで複数のコンポーネントを使用
- * import { Button } from '@/components';
+ * // shadcn/ui コンポーネントのインポート
+ * import { Button, Card, Input } from '@/components/ui/button';
  *
- * // または階層を指定してインポート
- * import { Button } from '@/components/atoms';
+ * // または個別にインポート
+ * import { Button } from '@/components/ui/button';
+ * import { Card } from '@/components/ui/card';
  * ```
  */
 
-// Atoms（原子）
-export * from "./atoms";
+// Theme（テーマ関連）
+export { ThemeProvider } from "./theme-provider";
+export { ThemeToggle } from "./theme-toggle";
+
+// UI コンポーネント（shadcn/ui）
+// 注: shadcn/ui コンポーネントは @/components/ui/[component] から
+// 個別にインポートすることを推奨します。
 
 // Molecules（分子）- 今後追加予定
 // export * from './molecules';
