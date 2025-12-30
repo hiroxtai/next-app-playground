@@ -1,0 +1,75 @@
+# ========================================
+# EditorConfig
+# ========================================
+#
+# 【目的】
+# エディタ間で一貫したコーディングスタイルを維持します。
+# VS Code、IntelliJ、Vim など、多くのエディタが対応しています。
+#
+# 【設定内容】
+# - 文字コード: UTF-8
+# - 改行コード: LF (Unix スタイル)
+# - インデント: スペース 2 つ
+# - 行末の空白を削除
+# - ファイル末尾に改行を挿入
+#
+# 【Biome との関係】
+# このプロジェクトでは Biome がメインのフォーマッターですが、
+# EditorConfig はエディタレベルで設定を統一し、Biome 非対応の
+# エディタでも一貫性を保つために使用します。
+#
+# ========================================
+
+# このファイルがプロジェクトのルート設定であることを示す
+root = true
+
+# すべてのファイルに適用される設定
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# TypeScript/JavaScript ファイル
+[*.{ts,tsx,js,jsx,mts,mjs,cts,cjs}]
+indent_style = space
+indent_size = 2
+
+# JSON ファイル
+[*.{json,jsonc}]
+indent_style = space
+indent_size = 2
+
+# CSS/PostCSS ファイル
+[*.{css,scss,sass,less,postcss}]
+indent_style = space
+indent_size = 2
+
+# Markdown ファイルは行末のスペースを許可
+# （Markdown では行末の 2 つのスペースが改行を意味するため）
+[*.md]
+trim_trailing_whitespace = false
+
+# YAML ファイル
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# package.json と pnpm-lock.yaml
+[{package.json,pnpm-lock.yaml}]
+indent_style = space
+indent_size = 2
+
+# Makefile はタブインデント
+[Makefile]
+indent_style = tab
+
+# Git 設定ファイル
+[.gitattributes]
+end_of_line = lf
+
+# Shell スクリプト
+[*.sh]
+end_of_line = lf

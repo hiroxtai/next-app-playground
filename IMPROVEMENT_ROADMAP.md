@@ -3,7 +3,7 @@
 このドキュメントは、next-app-playground プロジェクトの品質向上とモダン化のための改善計画をまとめたものです。
 学習用プロジェクトとして、各改善項目を段階的に導入することで、モダンな開発環境のベストプラクティスを習得できます。
 
-**最終更新日**: 2025年12月28日
+**最終更新日**: 2025年12月31日
 
 ---
 
@@ -362,7 +362,10 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
 **優先度**: 🔴 高  
 **難易度**: ⭐  
 **所要時間**: 10分  
-**ステータス**: ❌ 未実装
+**ステータス**: ✅ 完了
+
+**導入日**: 2025年12月31日  
+**ブランチ**: feature/editorconfig
 
 #### 目的
 複数人開発時に、エディタ間の差異（改行コード、インデントなど）を吸収し、一貫性を保つ。
@@ -418,22 +421,55 @@ indent_style = tab
 
 ##### 3-2. VS Code 拡張機能の追加
 
-**`.vscode/extensions.json` に追加**
+**`.vscode/extensions.json` に追加済み**
 ```json
 {
   "recommendations": [
     "biomejs.biome",
     "bradlc.vscode-tailwindcss",
+    "editorconfig.editorconfig",  // ← 追加済み
     "dbaeumer.vscode-eslint",
     "formulahendry.auto-rename-tag",
     "christian-kohler.path-intellisense",
     "streetsidesoftware.code-spell-checker",
-    "editorconfig.editorconfig"  // 追加
-  ]
+    "joshbolduc.story-explorer"
+  ],
+  "unwantedRecommendations": ["esbenp.prettier-vscode"]
 }
 ```
 
-#### 導入後の効果
+##### 3-3. `.gitattributes` の作成
+
+**ファイル: `.gitattributes`**
+```gitattributes
+# ========================================
+# Git Attributes
+# ========================================
+#
+# 【目的】
+# Git リポジトリ内のファイルの改行コードを統一します。
+# チェックアウト時・コミット時の自動変換を防ぎ、
+# 常に LF (Unix 形式) を維持します。
+#
+# ========================================
+
+# すべてのテキストファイルは LF で統一
+* text=auto eol=lf
+
+# 明示的にバイナリとして扱うファイル
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.svg binary
+```
+
+#### ✅ 導入後の効果
 - エディタ間の差異を自動的に吸収
 - Git の差分が見やすくなる（改行コードの統一）
 - チーム開発時のコンフリクトが減少
@@ -1019,10 +1055,10 @@ export default function robots(): MetadataRoute.Robots {
 
 以下の順序で段階的に導入することを推奨します：
 
-### フェーズ 1: 基盤整備（1日）❌ **未着手**
-1. ❌ 環境変数管理（15分） → **最初に実施推奨**
-2. ❌ エディタ設定（10分）
-3. ❌ コミットメッセージ規約（30分）
+### フェーズ 1: 基盤整備（1日）🚧 **一部完了**
+1. ❌ 環境変数管理（15分） → **未着手**
+2. ✅ エディタ設定（10分） → **完了（2025年12月31日）**
+3. ❌ コミットメッセージ規約（30分） → **未着手**
 
 ### フェーズ 2: テスト環境（2-3日）✅ **一部完了**
 
@@ -1055,7 +1091,7 @@ export default function robots(): MetadataRoute.Robots {
 
 ### フェーズ 1 完了条件
 - [ ] `.env.example` が作成され、README に手順が記載されている
-- [ ] `.editorconfig` が作成され、VS Code 拡張機能が推奨されている
+- [x] `.editorconfig` が作成され、VS Code 拡張機能が推奨されている
 - [ ] `commitlint` が動作し、不正なコミットメッセージが拒否される
 
 ### フェーズ 2 完了条件
