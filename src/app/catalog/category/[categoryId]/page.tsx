@@ -1,11 +1,24 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { use } from "react";
 import { categories, getPagesByCategory } from "@/app/_lib/catalog-data";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { PageCard } from "../../_components";
 
 /**
  * カテゴリフィルタページ
+ *
+ * @remarks
  * 指定したカテゴリのページのみをフィルタして表示します。
+ * パンくずリストでカタログ → カテゴリの階層を明示し、
+ * ユーザーが現在どのカテゴリを閲覧しているか分かりやすくします。
  */
 export default function CategoryPage({
   params,
@@ -28,13 +41,34 @@ export default function CategoryPage({
   const pagesByCategory = getPagesByCategory(category.id);
 
   return (
-    <div className="p-8">
+    <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      {/* パンくずリスト */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">ホーム</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/catalog">カタログ</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{category.label}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* ページヘッダー */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
           {category.label}
         </h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        <p className="text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
           {category.description}
         </p>
       </div>
