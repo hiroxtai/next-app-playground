@@ -117,8 +117,8 @@ describe("PageCard Component", () => {
     const examplePath = "/examples/ui-basics/test-page";
     render(<PageCard page={mockPage} examplePath={examplePath} />);
 
-    // 「開く」リンクが存在することを確認
-    const link = screen.getByRole("link", { name: "開く" });
+    // 「ページを開く」リンクが存在することを確認
+    const link = screen.getByRole("link", { name: "ページを開く" });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", examplePath);
   });
