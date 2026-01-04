@@ -5,12 +5,15 @@
  * このファイルでは、Story の表示に関するグローバル設定を定義します。
  *
  * - Tailwind CSS の読み込み（globals.css）
+ * - ダークモード切替（toolbar から選択可能）
  * - Controls アドオンの設定
  * - アクセシビリティテストの設定
  *
  * @see https://storybook.js.org/docs/configure#configure-story-rendering
  */
-import type { Preview } from "@storybook/nextjs-vite";
+
+import { withThemeByClassName } from "@storybook/addon-themes";
+import type { Preview, ReactRenderer } from "@storybook/nextjs-vite";
 
 /**
  * Tailwind CSS のグローバルスタイルを読み込み
@@ -55,6 +58,23 @@ const preview: Preview = {
       test: "todo",
     },
   },
+
+  /**
+   * グローバルデコレーター
+   *
+   * @remarks
+   * すべての Story に適用されるラッパーコンポーネントを定義します。
+   * withThemeByClassName を使用して、ダークモード切替を実装しています。
+   */
+  decorators: [
+    withThemeByClassName<ReactRenderer>({
+      themes: {
+        light: "",
+        dark: "dark",
+      },
+      defaultTheme: "light",
+    }),
+  ],
 };
 
 export default preview;

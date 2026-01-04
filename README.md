@@ -35,7 +35,9 @@ npx create-next-app@latest --use-pnpm
 - **TypeScript** - 型安全な開発
 - **Biome** - 高速な linter / formatter
 - **React Compiler** - 最適化されたレンダリング
-- **Tailwind CSS** - ユーティリティファーストの CSS フレームワーク
+- **Tailwind CSS v4** - ユーティリティファーストの CSS フレームワーク
+- **shadcn/ui** - Radix UI ベースのコンポーネントライブラリ
+- **next-themes** - ダークモード対応
 - **Vitest** - 高速な単体テストフレームワーク
 - **React Testing Library** - ユーザー視点のコンポーネントテスト
 - **Storybook 10** - コンポーネントカタログ / ドキュメント生成
@@ -48,18 +50,22 @@ next-app-playground/
 ├── .storybook/       # Storybook の設定
 │   ├── main.ts
 │   └── preview.ts
+├── docs/             # ドキュメント
+│   └── SHADCN_GUIDE.md  # shadcn/ui 使用ガイド
 ├── src/
 │   ├── app/          # App Router のページとレイアウト
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
 │   │   └── globals.css
-│   └── components/   # 共通コンポーネント（Atomic Design）
-│       ├── atoms/    # Button, Input など
-│       ├── molecules/
-│       ├── organisms/
-│       └── templates/
+│   ├── components/   # 共通コンポーネント
+│   │   ├── ui/       # shadcn/ui コンポーネント
+│   │   ├── theme-provider.tsx
+│   │   └── theme-toggle.tsx
+│   └── lib/
+│       └── utils.ts  # cn() ユーティリティ
 ├── public/           # 静的ファイル
 ├── biome.json        # Biome の設定ファイル
+├── components.json   # shadcn/ui の設定ファイル
 ├── next.config.ts    # Next.js の設定ファイル
 ├── tsconfig.json     # TypeScript の設定ファイル
 └── vitest.config.mts # Vitest の設定ファイル
@@ -147,17 +153,16 @@ src/components/atoms/Button/
 └── index.ts            # バレルエクスポート
 ```
 
-### コンポーネント構造（Atomic Design）
+### コンポーネント構造（shadcn/ui）
 
 ```
 src/components/
-├── atoms/       # ボタン、入力など最小単位
-├── molecules/   # Atom の組み合わせ
-├── organisms/   # 独立したセクション
-└── templates/   # ページレイアウト
+├── ui/          # shadcn/ui コンポーネント（Button, Card, Input など）
+├── theme-provider.tsx  # next-themes ラッパー
+└── theme-toggle.tsx    # テーマ切替ドロップダウン
 ```
 
-詳細は [.github/copilot-instructions.md](.github/copilot-instructions.md) を参照してください。
+shadcn/ui の詳細な使い方は [docs/SHADCN_GUIDE.md](docs/SHADCN_GUIDE.md) を参照してください。
 
 ## コーディング規約
 
@@ -325,6 +330,8 @@ describe("MyComponent", () => {
 - [Next.js GitHub](https://github.com/vercel/next.js) - フィードバックや貢献を歓迎
 - [Biome Documentation](https://biomejs.dev/) - Biome の使い方
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Tailwind CSS のドキュメント
+- [shadcn/ui Documentation](https://ui.shadcn.com/) - shadcn/ui のドキュメント
+- [Radix UI Primitives](https://www.radix-ui.com/primitives) - Radix UI のドキュメント
 
 ## 学習目的
 
@@ -335,7 +342,10 @@ describe("MyComponent", () => {
 - Biome による効率的なコード管理
 - React Compiler の活用
 - Tailwind CSS を使ったスタイリング
+- shadcn/ui を使ったコンポーネント開発
+- next-themes を使ったダークモード対応
 - Vitest と React Testing Library によるテスト駆動開発
+- Storybook によるコンポーネントカタログ管理
 - Vercel へのデプロイメント
 
 ## ライセンス
