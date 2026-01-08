@@ -1,19 +1,46 @@
+import Link from "next/link";
 import { pages } from "@/app/_lib/catalog-data";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { PageCard } from "./_components";
 
 /**
  * カタログトップページ
+ *
+ * @remarks
  * すべてのサンプルページをカードグリッド形式で表示します。
+ * パンくずリストで現在の位置を示し、ユーザーのナビゲーションを支援します。
  */
 export default function CatalogPage() {
   return (
-    <div className="p-8">
+    <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      {/* パンくずリスト */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">ホーム</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>カタログ</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* ページヘッダー */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
           ページカタログ
         </h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        <p className="text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
           学習用サンプルページ一覧です。カテゴリから探すか、下記一覧からページを選択してください。
         </p>
       </div>
