@@ -817,6 +817,15 @@ export default preview;
   - インタラクションテスト（play function）
 - `src/components/ui/card.stories.tsx`
 - `src/components/ui/input.stories.tsx`
+- `src/components/ui/breadcrumb.stories.tsx` ✨ **NEW**
+  - 基本的なパンくずリスト
+  - Next.js Link との統合（asChild パターン）
+  - カスタムセパレーター（スラッシュ、テキスト）
+  - アイコン付き
+  - 省略記号（Ellipsis）
+  - 深い階層
+  - 実際のアプリケーション例（カタログページ）
+  - カスタムスタイル
 
 ##### 7-4. package.json スクリプト
 
