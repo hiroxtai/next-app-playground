@@ -4,4 +4,3 @@
  */
 
 export { default as PageCard } from "./PageCard";
-export { default as Sidebar } from "./Sidebar";

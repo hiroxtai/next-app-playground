@@ -1,14 +1,6 @@
 import { BookOpen, Layers, Sparkles } from "lucide-react";
-import Link from "next/link";
 import { categories, pages } from "@/app/_lib/catalog-data";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { AppBreadcrumb } from "@/components/app-breadcrumb";
 import { PageCard } from "./_components";
 
 /**
@@ -47,26 +39,10 @@ export default function CatalogPage() {
 
         <div className="relative px-6 py-12 sm:px-8 sm:py-16 lg:py-20">
           {/* パンくずリスト */}
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    href="/"
-                    className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-                  >
-                    ホーム
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="text-zinc-900 dark:text-zinc-50">
-                  カタログ
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <AppBreadcrumb
+            items={[{ label: "ホーム", href: "/" }, { label: "カタログ" }]}
+            className="mb-6"
+          />
 
           {/* タイトル */}
           <div className="max-w-2xl space-y-4">

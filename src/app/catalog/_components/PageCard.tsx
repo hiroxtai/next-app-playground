@@ -1,45 +1,7 @@
-import {
-  ArrowUpRight,
-  Atom,
-  Layout,
-  Palette,
-  Rocket,
-  Sparkles,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import type { CategoryId, PageInfo } from "@/app/_lib/catalog-data";
-
-/** カテゴリごとのアイコンとグラデーション */
-const categoryStyles: Record<
-  CategoryId,
-  { icon: typeof Palette; gradient: string; iconBg: string }
-> = {
-  "ui-basics": {
-    icon: Palette,
-    gradient: "from-pink-500 via-rose-500 to-red-500",
-    iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-  },
-  layout: {
-    icon: Layout,
-    gradient: "from-blue-500 via-cyan-500 to-teal-500",
-    iconBg: "bg-gradient-to-br from-blue-500 to-cyan-600",
-  },
-  animation: {
-    icon: Sparkles,
-    gradient: "from-amber-500 via-orange-500 to-yellow-500",
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-  },
-  "react-hooks": {
-    icon: Atom,
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-    iconBg: "bg-gradient-to-br from-violet-500 to-purple-600",
-  },
-  "next-features": {
-    icon: Rocket,
-    gradient: "from-emerald-500 via-green-500 to-lime-500",
-    iconBg: "bg-gradient-to-br from-emerald-500 to-green-600",
-  },
-};
+import type { PageInfo } from "@/app/_lib/catalog-data";
+import { categoryStyles } from "@/app/_lib/category-styles";
 
 /** 難易度のスタイル */
 const difficultyStyles: Record<
@@ -87,10 +49,12 @@ export default function PageCard({
   return (
     <Link
       href={examplePath}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl hover:shadow-zinc-200/50 dark:border-zinc-800/80 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:shadow-zinc-950/50"
-      style={{
-        animationDelay: `${index * 50}ms`,
-      }}
+      className="animate-fade-in-up group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl hover:shadow-zinc-200/50 dark:border-zinc-800/80 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:shadow-zinc-950/50"
+      style={
+        {
+          "--animation-delay": `${index * 50}ms`,
+        } as React.CSSProperties
+      }
     >
       {/* 上部のグラデーションアクセント */}
       <div

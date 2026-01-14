@@ -1,52 +1,10 @@
-import {
-  Atom,
-  BookOpen,
-  Layout,
-  Palette,
-  Rocket,
-  Sparkles,
-} from "lucide-react";
-import Link from "next/link";
+import { BookOpen } from "lucide-react";
 import { notFound } from "next/navigation";
 import { use } from "react";
-import type { CategoryId } from "@/app/_lib/catalog-data";
 import { categories, getPagesByCategory } from "@/app/_lib/catalog-data";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { categoryStyles } from "@/app/_lib/category-styles";
+import { AppBreadcrumb } from "@/components/app-breadcrumb";
 import { PageCard } from "../../_components";
-
-/** カテゴリごとのアイコンとグラデーション */
-const categoryStyles: Record<
-  CategoryId,
-  { icon: typeof Palette; gradient: string }
-> = {
-  "ui-basics": {
-    icon: Palette,
-    gradient: "from-pink-500 via-rose-500 to-red-500",
-  },
-  layout: {
-    icon: Layout,
-    gradient: "from-blue-500 via-cyan-500 to-teal-500",
-  },
-  animation: {
-    icon: Sparkles,
-    gradient: "from-amber-500 via-orange-500 to-yellow-500",
-  },
-  "react-hooks": {
-    icon: Atom,
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-  },
-  "next-features": {
-    icon: Rocket,
-    gradient: "from-emerald-500 via-green-500 to-lime-500",
-  },
-};
 
 /**
  * カテゴリフィルタページ
@@ -87,37 +45,14 @@ export default function CategoryPage({
 
         <div className="relative px-6 py-12 sm:px-8 sm:py-16">
           {/* パンくずリスト */}
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    href="/"
-                    className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-                  >
-                    ホーム
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    href="/catalog"
-                    className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-                  >
-                    カタログ
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="text-zinc-900 dark:text-zinc-50">
-                  {category.label}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <AppBreadcrumb
+            items={[
+              { label: "ホーム", href: "/" },
+              { label: "カタログ", href: "/catalog" },
+              { label: category.label },
+            ]}
+            className="mb-6"
+          />
 
           {/* タイトル */}
           <div className="flex items-center gap-4">

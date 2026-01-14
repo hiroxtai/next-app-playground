@@ -123,3 +123,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/**
+ * カードのフェードインアニメーション
+ *
+ * @remarks
+ * PageCard などのコンポーネントで使用。
+ * CSS 変数 --animation-delay でスタガード効果を実現します。
+ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+  animation-delay: var(--animation-delay, 0ms);
+  opacity: 0;
+}
