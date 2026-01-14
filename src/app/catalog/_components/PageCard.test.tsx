@@ -103,7 +103,11 @@ describe("PageCard Component", () => {
 
   /**
    * リンクのテスト
-   * 「開く」ボタンが正しいパスを指していることを確認
+   * カード全体がリンクとして正しいパスを指していることを確認
+   *
+   * @remarks
+   * 新デザインでは、カード全体がリンクになっているため、
+   * テキスト「詳細を見る」を含むリンクを確認します。
    */
   it("should render link with correct path", () => {
     const mockPage: PageInfo = {
@@ -117,23 +121,30 @@ describe("PageCard Component", () => {
     const examplePath = "/examples/ui-basics/test-page";
     render(<PageCard page={mockPage} examplePath={examplePath} />);
 
-    // 「ページを開く」リンクが存在することを確認
-    const link = screen.getByRole("link", { name: "ページを開く" });
+    // カード全体がリンクになっていることを確認
+    const link = screen.getByRole("link");
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", examplePath);
+    // 「詳細を見る」テキストが含まれていることを確認
+    expect(screen.getByText("詳細を見る")).toBeInTheDocument();
   });
 
   /**
    * カテゴリアイコンのテスト
-   * 各カテゴリに対応する絵文字が表示されることを確認
+   * 各カテゴリに対応する lucide-react アイコンが SVG として表示されることを確認
+   *
+   * @remarks
+   * 新デザインでは、絵文字ではなく lucide-react の SVG アイコンを使用しています。
+   * 各 SVG は aria-hidden="true" で、視覚的なデザイン要素として機能します。
+   * lucide-react のアイコンは class="lucide lucide-{icon-name}" の形式を使用します。
    */
   it.each([
-    ["ui-basics", "🎨"],
-    ["layout", "📐"],
-    ["animation", "✨"],
-    ["react-hooks", "⚛️"],
-    ["next-features", "🚀"],
-  ] as const)("should render category icon for %s category", (category, expectedIcon) => {
+    ["ui-basics", "lucide-palette"],
+    ["layout", "lucide-panels-top-left"], // Layout アイコンは lucide-panels-top-left として出力される
+    ["animation", "lucide-sparkles"],
+    ["react-hooks", "lucide-atom"],
+    ["next-features", "lucide-rocket"],
+  ] as const)("should render category icon for %s category", (category, expectedIconClass) => {
     const mockPage: PageInfo = {
       id: "test-page",
       title: "テストページ",
@@ -146,7 +157,9 @@ describe("PageCard Component", () => {
       <PageCard page={mockPage} examplePath="/examples/test/test-page" />,
     );
 
-    // 絵文字が含まれていることを確認
-    expect(container.textContent).toContain(expectedIcon);
+    // lucide-react アイコンの SVG が含まれていることを確認
+    // lucide-react は class="lucide lucide-{icon}" 形式を使用
+    const svgIcon = container.querySelector(`svg.lucide.${expectedIconClass}`);
+    expect(svgIcon).toBeInTheDocument();
   });
 });

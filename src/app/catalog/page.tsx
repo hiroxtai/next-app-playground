@@ -1,5 +1,6 @@
+import { BookOpen, Layers, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { pages } from "@/app/_lib/catalog-data";
+import { categories, pages } from "@/app/_lib/catalog-data";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,52 +19,123 @@ import { PageCard } from "./_components";
  * パンくずリストで現在の位置を示し、ユーザーのナビゲーションを支援します。
  */
 export default function CatalogPage() {
+  // 統計情報
+  const stats = [
+    {
+      label: "ページ数",
+      value: pages.length,
+      icon: BookOpen,
+    },
+    {
+      label: "カテゴリ",
+      value: categories.length,
+      icon: Layers,
+    },
+    {
+      label: "初級",
+      value: pages.filter((p) => p.difficulty === "初級").length,
+      icon: Sparkles,
+    },
+  ];
+
   return (
-    <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      {/* パンくずリスト */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/">ホーム</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>カタログ</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="flex flex-col">
+      {/* ヒーローセクション */}
+      <div className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:border-zinc-800 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+        {/* 装飾的な背景パターン */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
 
-      {/* ページヘッダー */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
-          ページカタログ
-        </h1>
-        <p className="text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
-          学習用サンプルページ一覧です。カテゴリから探すか、下記一覧からページを選択してください。
-        </p>
-      </div>
+        <div className="relative px-6 py-12 sm:px-8 sm:py-16 lg:py-20">
+          {/* パンくずリスト */}
+          <Breadcrumb className="mb-6">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link
+                    href="/"
+                    className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  >
+                    ホーム
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-zinc-900 dark:text-zinc-50">
+                  カタログ
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-      {/* カードグリッド */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {pages.map((page) => (
-          <PageCard
-            key={page.id}
-            page={page}
-            examplePath={`/examples/${page.category}/${page.id}`}
-          />
-        ))}
-      </div>
+          {/* タイトル */}
+          <div className="max-w-2xl space-y-4">
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl lg:text-6xl">
+              ページ
+              <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent dark:from-violet-400 dark:to-indigo-400">
+                カタログ
+              </span>
+            </h1>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 sm:text-xl">
+              Next.js と React の学習用サンプルページ一覧。
+              <br className="hidden sm:inline" />
+              カテゴリから探すか、下記一覧からページを選択してください。
+            </p>
+          </div>
 
-      {/* ページが存在しない場合の表示 */}
-      {pages.length === 0 && (
-        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center dark:border-zinc-700 dark:bg-zinc-900">
-          <p className="text-zinc-600 dark:text-zinc-400">
-            サンプルページはまだありません。
-          </p>
+          {/* 統計カード */}
+          <div className="mt-10 flex flex-wrap gap-4">
+            {stats.map((stat) => (
+              <div
+                key={stat.label}
+                className="flex items-center gap-3 rounded-2xl border border-zinc-200/50 bg-white/60 px-5 py-3 backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-800/60"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white">
+                  <stat.icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+                    {stat.value}
+                  </p>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {stat.label}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* メインコンテンツ */}
+      <div className="flex-1 px-6 py-10 sm:px-8 sm:py-12">
+        {/* カードグリッド */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:gap-6">
+          {pages.map((page, index) => (
+            <PageCard
+              key={page.id}
+              page={page}
+              examplePath={`/examples/${page.category}/${page.id}`}
+              index={index}
+            />
+          ))}
+        </div>
+
+        {/* ページが存在しない場合の表示 */}
+        {pages.length === 0 && (
+          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+            <div className="mb-4 rounded-full bg-zinc-100 p-4 dark:bg-zinc-800">
+              <BookOpen className="h-8 w-8 text-zinc-400" />
+            </div>
+            <p className="text-lg font-medium text-zinc-600 dark:text-zinc-400">
+              サンプルページはまだありません
+            </p>
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-500">
+              新しいページを追加してみましょう
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
