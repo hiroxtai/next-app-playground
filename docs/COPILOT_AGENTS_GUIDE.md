@@ -242,7 +242,119 @@ CI/CD、デプロイメント、インフラ管理を支援するエージェン
 
 ---
 
-### 🔐 セキュリティ系エージェントの使い分け
+### � task-planner → 実装 の詳細ワークフロー
+
+task-planner と task-researcher を使った本格的な計画・実装フローの詳細です。
+
+#### task-planner が生成するファイル
+
+task-planner は**3つのファイル**を自動生成します：
+
+| ファイル | 配置場所 | 内容 |
+|---------|---------|------|
+| **Plan** | `.copilot-tracking/plans/YYYYMMDD-task-description-plan.instructions.md` | フェーズとタスクのチェックリスト |
+| **Details** | `.copilot-tracking/details/YYYYMMDD-task-description-details.md` | 各タスクの詳細な実装仕様 |
+| **Implementation Prompt** | `.copilot-tracking/prompts/implement-task-description.prompt.md` | 実装を実行するためのプロンプト |
+
+#### 計画から実装までのフロー
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│           task-planner → 実装 の完全ワークフロー                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1️⃣ 調査フェーズ（必要な場合）                                    │
+│     @task-researcher 〇〇機能について調査して                     │
+│     └── .copilot-tracking/research/ に調査レポートが生成          │
+│                                                                 │
+│  2️⃣ 計画フェーズ                                                 │
+│     @task-planner 〇〇機能を実装したい                           │
+│     └── plans/, details/, prompts/ に3ファイルが生成            │
+│                                                                 │
+│  3️⃣ 計画のレビュー                                               │
+│     └── .copilot-tracking/plans/*-plan.instructions.md を確認    │
+│         └── 問題があれば @task-planner で修正                    │
+│                                                                 │
+│  4️⃣ ⚠️ 新しいチャットを開始                                      │
+│     └── Agent モードに切り替え                                   │
+│                                                                 │
+│  5️⃣ 実装プロンプトを実行                                         │
+│     #file:.copilot-tracking/prompts/implement-*.prompt.md       │
+│                                                                 │
+│  6️⃣ 各フェーズで停止（phaseStop=true の場合）                     │
+│     ├── 変更内容をレビュー                                       │
+│     ├── テスト実行                                               │
+│     └── 「続けてください」で次のフェーズへ                         │
+│                                                                 │
+│  7️⃣ 完了後                                                       │
+│     ├── .copilot-tracking/changes/ で変更履歴を確認              │
+│     └── 不要なファイルを削除またはアーカイブ                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### 実装時の制御オプション
+
+| オプション | 値 | 説明 |
+|-----------|------|------|
+| `phaseStop` | `true`（デフォルト） | 各フェーズ完了後に停止してレビュー可能 |
+| `phaseStop` | `false` | 全フェーズを一気に実装 |
+| `taskStop` | `true` | 各タスク完了後に停止（より細かい制御） |
+| `taskStop` | `false`（デフォルト） | タスクごとに停止しない |
+
+#### 実践例
+
+```bash
+# Step 1: 調査（オプション）
+@task-researcher Next.js 16 の Server Actions について調査して
+
+# Step 2: 計画作成
+@task-planner カタログページに検索フィルター機能を追加したい
+
+# Step 3: 生成されたファイルを確認
+# .copilot-tracking/
+# ├── research/20260115-search-filter-research.md
+# ├── plans/20260115-search-filter-plan.instructions.md
+# ├── details/20260115-search-filter-details.md
+# └── prompts/implement-search-filter.prompt.md
+
+# Step 4: 新しいチャットで Agent モードに切り替え
+# Step 5: 実装プロンプトを実行
+#file:.copilot-tracking/prompts/implement-search-filter.prompt.md
+
+# Step 6: フェーズ完了後の対応
+# → 問題なければ「続けてください」
+# → 変更が必要なら「Phase 2 の Task 2.1 を〇〇に変更して続けてください」
+```
+
+#### ⚠️ 重要なポイント
+
+1. **必ず新しいチャットを開始**
+   - 計画作成時と実装時のコンテキストを分離することで、より正確な実装が可能
+
+2. **Changes ファイルの自動追跡**
+   - 実装中は `.copilot-tracking/changes/` に変更履歴が自動記録される
+   - リリースノートやドキュメント更新に活用可能
+
+3. **計画の修正が必要な場合**
+   - 実装前に `@task-planner` で計画を修正
+   - 実装中に問題が発生した場合は、Changes ファイルに「計画外の変更」として記録
+
+4. **VS Code 設定の追加（推奨）**
+   ```json
+   // .vscode/settings.json
+   {
+     "chat.instructionsFilesLocations": {
+       ".copilot-tracking/plans": true,
+       ".copilot-tracking/details": true,
+       ".github/instructions": true
+     }
+   }
+   ```
+
+---
+
+### �🔐 セキュリティ系エージェントの使い分け
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -521,6 +633,79 @@ TDD の 3 フェーズに対応したエージェント群です。**順番に�
 @specification 検索フィルター機能の仕様書を作成して
 @specification 既存の認証フローの仕様をドキュメント化して
 ```
+
+---
+
+#### task-researcher
+
+**概要**: 実装前の深い調査を行う専門家。コードベースと外部ドキュメントを徹底的に調査し、調査レポートを生成。**コード編集は行わない**。
+
+**特徴**:
+- **調査のみに特化**: ソースコードや設定ファイルの変更は一切行わない
+- **複数ソースの調査**: コードベース、GitHub リポジトリ、公式ドキュメントを横断的に調査
+- **代替案の評価**: 複数の実装アプローチを調査し、比較・評価
+
+**出力ファイル**: `.copilot-tracking/research/YYYYMMDD-task-description-research.md`
+
+**調査内容**:
+- プロジェクト構造と既存パターンの分析
+- 実装パターンとコード例
+- API・スキーマドキュメント
+- 外部ライブラリの調査
+- 推奨アプローチの提案
+
+**使用例**:
+```
+@task-researcher Next.js 16 の Server Actions について調査して
+@task-researcher shadcn/ui の DataTable コンポーネントの実装パターンを調査して
+```
+
+**task-planner との連携**:
+```
+# Step 1: まず調査
+@task-researcher 検索フィルター機能の実装方法を調査して
+
+# Step 2: 調査結果を基に計画
+@task-planner #file:.copilot-tracking/research/20260115-search-filter-research.md
+この調査結果を基に実装計画を作成して
+```
+
+---
+
+#### task-planner
+
+**概要**: 調査に基づいた実行可能なタスク計画を作成するエージェント。microsoft/edge-ai が開発。
+
+**特徴**:
+- **3ファイル生成**: Plan（チェックリスト）、Details（詳細）、Prompt（実行用）
+- **調査必須**: 計画作成前に必ず調査ファイルの存在を確認
+- **行番号参照**: ファイル間の正確な行番号参照を維持
+
+**出力ファイル**:
+| ファイル | 配置場所 | 内容 |
+|---------|---------|------|
+| Plan | `.copilot-tracking/plans/*-plan.instructions.md` | フェーズとタスクのチェックリスト |
+| Details | `.copilot-tracking/details/*-details.md` | 各タスクの詳細な実装仕様 |
+| Prompt | `.copilot-tracking/prompts/implement-*.prompt.md` | 実装を実行するためのプロンプト |
+
+**使用例**:
+```
+@task-planner カタログページに検索フィルター機能を追加したい
+@task-planner Server Actions でフォーム送信機能を実装したい
+```
+
+**実装の実行**（計画作成後）:
+```bash
+# 1. 新しいチャットを開く
+# 2. Agent モードに切り替え
+# 3. 生成されたプロンプトを実行
+#file:.copilot-tracking/prompts/implement-search-filter.prompt.md
+```
+
+**制御オプション**:
+- `phaseStop=true` - 各フェーズ完了後に停止（デフォルト）
+- `phaseStop=false` - 全フェーズを一気に実装
+- `taskStop=true` - 各タスク完了後に停止
 
 ---
 
