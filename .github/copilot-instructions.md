@@ -57,6 +57,37 @@
 | AI 安全性・プロンプト設計 | `ai-prompt-engineering-safety-best-practices.instructions.md` |
 | Agent Skill 作成 | `agent-skills.instructions.md` |
 
+## Copilot カスタマイズリソース
+
+このプロジェクトには、GitHub Copilot をカスタマイズするための豊富なリソースが含まれています。
+
+| リソース | ファイル数 | 概要 |
+|---------|----------|------|
+| **Instructions** | 34 | 自動適用されるコーディングガイドライン |
+| **Prompts** | 52 | 再利用可能なタスクテンプレート |
+| **Agents** | 42 | 専門特化した AI アシスタント |
+| **Skills** | 3 | ドメイン特化のツールキット |
+
+### 主要なエージェント
+
+| エージェント | 用途 |
+|------------|------|
+| `@expert-nextjs-developer` | Next.js 16 の実装 |
+| `@blueprint-mode` | 複雑なタスクの構造化実装 |
+| `@plan` | 戦略的計画の策定 |
+| `@wg-code-sentinel` | セキュリティレビュー |
+| `@accessibility` | アクセシビリティ監査 |
+| `@context7` | ライブラリドキュメント取得 |
+
+### 主要なプロンプト
+
+| プロンプト | 用途 |
+|----------|------|
+| `/create-specification` | 仕様書の作成 |
+| `/create-implementation-plan` | 実装計画の作成 |
+| `/review-and-refactor` | コードレビューとリファクタリング |
+| `/create-readme` | README の作成 |
+
 ## コード品質
 
 ### 学習用コードの原則
