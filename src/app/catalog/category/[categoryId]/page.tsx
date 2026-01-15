@@ -39,9 +39,18 @@ export default function CategoryPage({
   return (
     <div className="flex flex-col">
       {/* ヒーローセクション */}
-      <div className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:border-zinc-800 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+      <div className="relative overflow-hidden border-b border-brand-200/50 bg-gradient-to-br from-brand-50 via-white to-brand-100/50 dark:border-brand-800/30 dark:from-brand-950 dark:via-zinc-900 dark:to-brand-900/20">
+        {/* ノイズテクスチャオーバーレイ */}
+        <div
+          className="pointer-events-none absolute inset-0 noise-texture opacity-[0.03] mix-blend-overlay"
+          aria-hidden="true"
+        />
+
         {/* 装飾的な背景パターン */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.7_0.14_182/0.08)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.7_0.14_182/0.08)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+
+        {/* 装飾的なグラデーションオーブ */}
+        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-brand-400/20 to-brand-600/10 blur-3xl" />
 
         <div className="relative px-6 py-12 sm:px-8 sm:py-16">
           {/* パンくずリスト */}
@@ -57,12 +66,12 @@ export default function CategoryPage({
           {/* タイトル */}
           <div className="flex items-center gap-4">
             <div
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${style.gradient} text-white shadow-lg`}
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${style.gradient} text-white shadow-lg shadow-brand-500/20`}
             >
               <Icon className="h-7 w-7" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+              <h1 className="font-display text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
                 {category.label}
               </h1>
               <p className="mt-1 text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
@@ -72,8 +81,8 @@ export default function CategoryPage({
           </div>
 
           {/* ページ数バッジ */}
-          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-zinc-200/50 bg-white/60 px-4 py-2 backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-800/60">
-            <BookOpen className="h-4 w-4 text-zinc-500" />
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-200/30 glass px-4 py-2">
+            <BookOpen className="h-4 w-4 text-brand-600 dark:text-brand-400" />
             <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {pagesByCategory.length} ページ
             </span>
@@ -97,9 +106,9 @@ export default function CategoryPage({
 
         {/* ページが存在しない場合の表示 */}
         {pagesByCategory.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-            <div className="mb-4 rounded-full bg-zinc-100 p-4 dark:bg-zinc-800">
-              <BookOpen className="h-8 w-8 text-zinc-400" />
+          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/50 p-16 text-center dark:border-brand-800 dark:bg-brand-900/50">
+            <div className="mb-4 rounded-full bg-brand-100 p-4 dark:bg-brand-800">
+              <BookOpen className="h-8 w-8 text-brand-500" />
             </div>
             <p className="text-lg font-medium text-zinc-600 dark:text-zinc-400">
               このカテゴリにはまだページがありません

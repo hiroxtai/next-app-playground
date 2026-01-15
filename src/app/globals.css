@@ -6,8 +6,20 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  /* ブランドカラー（Teal 系） */
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,6 +62,18 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
+  /* ブランドカラーパレット（Teal 系 - モダンでクリーンな印象） */
+  --brand-50: oklch(0.984 0.014 180.72);
+  --brand-100: oklch(0.953 0.051 180.801);
+  --brand-200: oklch(0.91 0.096 180.426);
+  --brand-300: oklch(0.855 0.138 181.071);
+  --brand-400: oklch(0.777 0.152 181.912);
+  --brand-500: oklch(0.704 0.14 182.503);
+  --brand-600: oklch(0.6 0.118 184.704);
+  --brand-700: oklch(0.511 0.096 186.391);
+  --brand-800: oklch(0.437 0.078 188.216);
+  --brand-900: oklch(0.386 0.063 188.416);
+  --brand-950: oklch(0.277 0.046 192.524);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
@@ -84,6 +108,18 @@
 .dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
+  /* ブランドカラーパレット（ダークモード - 明るさを反転） */
+  --brand-50: oklch(0.277 0.046 192.524);
+  --brand-100: oklch(0.386 0.063 188.416);
+  --brand-200: oklch(0.437 0.078 188.216);
+  --brand-300: oklch(0.511 0.096 186.391);
+  --brand-400: oklch(0.6 0.118 184.704);
+  --brand-500: oklch(0.704 0.14 182.503);
+  --brand-600: oklch(0.777 0.152 181.912);
+  --brand-700: oklch(0.855 0.138 181.071);
+  --brand-800: oklch(0.91 0.096 180.426);
+  --brand-900: oklch(0.953 0.051 180.801);
+  --brand-950: oklch(0.984 0.014 180.72);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
@@ -146,4 +182,101 @@
   animation: fadeInUp 0.5s ease-out forwards;
   animation-delay: var(--animation-delay, 0ms);
   opacity: 0;
+}
+
+/**
+ * スケールイン・フェードアニメーション
+ *
+ * @remarks
+ * より洗練された出現エフェクト。スケールとフェードを組み合わせます。
+ */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--animation-delay, 0ms);
+  opacity: 0;
+}
+
+/**
+ * グラデーション回転アニメーション
+ *
+ * @remarks
+ * 背景グラデーションに動きを加えます。
+ */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/**
+ * ノイズテクスチャ
+ *
+ * @remarks
+ * SVG ベースのノイズパターン。背景にテクスチャ感を加えます。
+ * mix-blend-mode と opacity で調整してください。
+ */
+.noise-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/**
+ * 3D カードホバー効果
+ *
+ * @remarks
+ * パースペクティブを使った奥行きのあるホバー効果。
+ */
+.perspective-card {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.perspective-card-inner {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.perspective-card:hover .perspective-card-inner {
+  transform: rotateX(-2deg) rotateY(2deg) translateZ(10px);
+}
+
+/**
+ * グラスモーフィズム効果
+ *
+ * @remarks
+ * 背景ぼかしと透過を組み合わせたモダンな効果。
+ */
+.glass {
+  background: oklch(1 0 0 / 60%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass {
+  background: oklch(0.21 0.006 285.885 / 60%);
+}
+
+/**
+ * ディスプレイフォント用クラス
+ */
+.font-display {
+  font-family: var(--font-display);
 }

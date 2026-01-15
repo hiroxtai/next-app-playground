@@ -33,9 +33,19 @@ export default function CatalogPage() {
   return (
     <div className="flex flex-col">
       {/* ヒーローセクション */}
-      <div className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:border-zinc-800 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
-        {/* 装飾的な背景パターン */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+      <div className="relative overflow-hidden border-b border-brand-200/50 bg-gradient-to-br from-brand-50 via-white to-brand-100/50 dark:border-brand-800/30 dark:from-brand-950 dark:via-zinc-900 dark:to-brand-900/20">
+        {/* ノイズテクスチャオーバーレイ */}
+        <div
+          className="pointer-events-none absolute inset-0 noise-texture opacity-[0.03] mix-blend-overlay"
+          aria-hidden="true"
+        />
+
+        {/* 装飾的な背景パターン（グリッド） */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.7_0.14_182/0.08)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.7_0.14_182/0.08)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+
+        {/* 装飾的なグラデーションオーブ */}
+        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-brand-400/20 to-brand-600/10 blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-gradient-to-tr from-brand-300/15 to-brand-500/10 blur-3xl" />
 
         <div className="relative px-6 py-12 sm:px-8 sm:py-16 lg:py-20">
           {/* パンくずリスト */}
@@ -46,9 +56,9 @@ export default function CatalogPage() {
 
           {/* タイトル */}
           <div className="max-w-2xl space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl lg:text-6xl">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl lg:text-6xl">
               ページ
-              <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent dark:from-violet-400 dark:to-indigo-400">
+              <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent dark:from-brand-400 dark:to-brand-200">
                 カタログ
               </span>
             </h1>
@@ -64,13 +74,13 @@ export default function CatalogPage() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex items-center gap-3 rounded-2xl border border-zinc-200/50 bg-white/60 px-5 py-3 backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-800/60"
+                className="glass flex items-center gap-3 rounded-2xl border border-brand-200/30 px-5 py-3 dark:border-brand-700/30"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/25">
                   <stat.icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+                  <p className="font-display text-2xl font-bold text-zinc-900 dark:text-zinc-50">
                     {stat.value}
                   </p>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">
@@ -99,9 +109,9 @@ export default function CatalogPage() {
 
         {/* ページが存在しない場合の表示 */}
         {pages.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-            <div className="mb-4 rounded-full bg-zinc-100 p-4 dark:bg-zinc-800">
-              <BookOpen className="h-8 w-8 text-zinc-400" />
+          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/50 p-16 text-center dark:border-brand-800 dark:bg-brand-900/50">
+            <div className="mb-4 rounded-full bg-brand-100 p-4 dark:bg-brand-800">
+              <BookOpen className="h-8 w-8 text-brand-500" />
             </div>
             <p className="text-lg font-medium text-zinc-600 dark:text-zinc-400">
               サンプルページはまだありません
