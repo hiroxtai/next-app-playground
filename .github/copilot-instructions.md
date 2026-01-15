@@ -137,6 +137,7 @@ import { cn } from "@/lib/utils";
 
 ## 関連ドキュメント
 
+- [Copilot エージェントガイド](../docs/COPILOT_AGENTS_GUIDE.md) - カスタムエージェントの使い方
 - [shadcn/ui ガイド](../docs/SHADCN_GUIDE.md) - コンポーネントライブラリの詳細
 - [パンくずリスト実装](../docs/BREADCRUMB_IMPLEMENTATION.md) - 実装例
 - [改善ロードマップ](../docs/IMPROVEMENT_ROADMAP.md) - 今後の計画
