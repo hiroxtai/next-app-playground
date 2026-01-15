@@ -1300,6 +1300,8 @@ awesome-copilot には目的別にまとめられた**コレクション**があ
 ## 参考リンク
 
 - [awesome-copilot リポジトリ](https://github.com/github/awesome-copilot) - エージェント定義の元ソース
+- [Instructions ガイド](./INSTRUCTIONS_GUIDE.md) - Instructions の詳細な使い方
+- [Prompts ガイド](./PROMPTS_GUIDE.md) - 再利用可能な Prompt の使い方
 - [GitHub Copilot カスタマイズガイド](./COPILOT_CUSTOMIZATION_GUIDE.md) - このプロジェクトでのカスタマイズ
 - [shadcn/ui ガイド](./SHADCN_GUIDE.md) - UI コンポーネントの使い方
 - [改善ロードマップ](./IMPROVEMENT_ROADMAP.md) - プロジェクトの今後の計画

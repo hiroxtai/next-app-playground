@@ -50,6 +50,13 @@
 | セキュリティ | `security-and-owasp.instructions.md` |
 | パフォーマンス | `performance-optimization.instructions.md` |
 
+### AI ・ Copilot 拡張
+
+| 技術 | Instruction ファイル |
+|------|---------------------|
+| AI 安全性・プロンプト設計 | `ai-prompt-engineering-safety-best-practices.instructions.md` |
+| Agent Skill 作成 | `agent-skills.instructions.md` |
+
 ## コード品質
 
 ### 学習用コードの原則
@@ -137,6 +144,8 @@ import { cn } from "@/lib/utils";
 
 ## 関連ドキュメント
 
+- [Instructions ガイド](../docs/INSTRUCTIONS_GUIDE.md) - Instructions の詳細な使い方
+- [Prompts ガイド](../docs/PROMPTS_GUIDE.md) - 再利用可能な Prompt の使い方
 - [Copilot エージェントガイド](../docs/COPILOT_AGENTS_GUIDE.md) - カスタムエージェントの使い方
 - [shadcn/ui ガイド](../docs/SHADCN_GUIDE.md) - コンポーネントライブラリの詳細
 - [パンくずリスト実装](../docs/BREADCRUMB_IMPLEMENTATION.md) - 実装例
