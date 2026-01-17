@@ -103,7 +103,7 @@ export default function PageCard({
               {page.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 dark:bg-brand-500/20 dark:text-brand-300"
+                  className="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 dark:bg-zinc-700/80 dark:text-zinc-200"
                 >
                   {tag}
                 </span>

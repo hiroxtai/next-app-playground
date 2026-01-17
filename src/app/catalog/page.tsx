@@ -33,7 +33,7 @@ export default function CatalogPage() {
   return (
     <div className="flex flex-col">
       {/* ヒーローセクション */}
-      <div className="relative overflow-hidden border-b border-brand-200/50 bg-brand-50 dark:border-brand-800/30 dark:bg-brand-950">
+      <div className="relative overflow-hidden border-b border-brand-200/50 bg-brand-50 dark:border-zinc-700/50 dark:bg-zinc-900">
         {/* ノイズテクスチャオーバーレイ */}
         <div
           className="pointer-events-none absolute inset-0 noise-texture opacity-[0.03] mix-blend-overlay"
@@ -54,7 +54,7 @@ export default function CatalogPage() {
           <div className="max-w-2xl space-y-4">
             <h1 className="font-display text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl lg:text-6xl">
               ページ
-              <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent dark:from-brand-400 dark:to-brand-200">
+              <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent dark:from-brand-400 dark:to-brand-500">
                 カタログ
               </span>
             </h1>
@@ -70,7 +70,7 @@ export default function CatalogPage() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex items-center gap-3 rounded-2xl border border-brand-200/30 bg-white/90 px-5 py-3 dark:border-brand-700/30 dark:bg-zinc-900/90"
+                className="flex items-center gap-3 rounded-2xl border border-brand-200/30 bg-white/90 px-5 py-3 dark:border-zinc-600/50 dark:bg-zinc-800/90"
               >
                 <div className="flex size-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-500/25">
                   <stat.icon className="size-5" />
