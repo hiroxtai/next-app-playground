@@ -1,4 +1,5 @@
 ---
+name: Refine Requirement or Issue Chat Mode
 description: '要件や Issue を受入れ基準、技術的考慮事項、エッジケース、NFR（非機能要件）で詳細化'
 tools: [ 'list_issues','githubRepo', 'search', 'add_issue_comment','create_issue','create_issue_comment','update_issue','delete_issue','get_issue', 'search_issues']
 ---

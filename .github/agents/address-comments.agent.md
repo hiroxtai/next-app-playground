@@ -1,4 +1,5 @@
 ---
+name: "Universal PR Comment Addresser"
 description: "PR コメントへの対応を支援"
 tools:
   [

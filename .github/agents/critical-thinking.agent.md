@@ -1,4 +1,5 @@
 ---
+name: Critical thinking mode instructions
 description: '仮定に挑戦し批判的思考を促進。最適な解決策と結果を確保するために「なぜ？」を問い続ける'
 tools: ['codebase', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'problems', 'search', 'searchResults', 'usages']
 ---

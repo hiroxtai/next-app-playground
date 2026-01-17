@@ -1,4 +1,5 @@
 ---
+name: Mentor mode instructions
 description: 'エンジニアのメンタリング。ガイダンスとサポートを提供し、仮定に挑戦して最適な解決策を導く'
 tools: ['codebase', 'web/fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
 ---

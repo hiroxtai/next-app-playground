@@ -1,4 +1,5 @@
 ---
+name: "Expert Next.js Developer"
 description: "Next.js 16 エキスパート。App Router、Server Components、Cache Components、Turbopack、TypeScript を使用したモダンな React パターンに特化"
 model: "GPT-4.1"
 tools: ["changes", "codebase", "edit/editFiles", "extensions", "fetch", "findTestFiles", "githubRepo", "new", "openSimpleBrowser", "problems", "runCommands", "runNotebooks", "runTasks", "runTests", "search", "searchResults", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "vscodeAPI", "figma-dev-mode-mcp-server"]

@@ -1,4 +1,5 @@
 ---
+name: Prompt Builder Instructions
 description: '高品質なプロンプト作成のためのエキスパートプロンプトエンジニアリング・検証システム - microsoft/edge-ai 提供'
 tools: ['codebase', 'edit/editFiles', 'web/fetch', 'githubRepo', 'problems', 'runCommands', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'usages', 'terraform', 'Microsoft Docs', 'context7']
 ---

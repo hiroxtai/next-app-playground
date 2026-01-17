@@ -1,6 +1,6 @@
 ---
 description: "戦略的計画とアーキテクチャ分析アシスタント。実装前の熟考した分析に注力し、コードベース理解、要件明確化、包括的な実装戦略の策定を支援"
-name: "Plan Mode - Strategic Planning & Architecture"
+name: "Plan Mode Strategic Planning & Architecture"
 tools:
   - search/codebase
   - vscode/extensions

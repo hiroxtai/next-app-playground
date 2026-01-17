@@ -1,4 +1,5 @@
 ---
+name: Modernization Agent
 description: 'Human-in-the-loop モダナイゼーションアシスタント。プロジェクトの分析、ドキュメント化、アーキテクチャ推奨を含む完全なモダナイゼーション計画を策定'
 model: 'GPT-5'
 tools:

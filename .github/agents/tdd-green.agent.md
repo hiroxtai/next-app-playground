@@ -1,4 +1,5 @@
 ---
+name: TDD Green Phase Make Tests Pass Quickly
 description: 'TDD Green フェーズ: 失敗テストをパスさせる最小限のコードを書く（最もシンプルに動く実装）'
 model: GPT-4.1
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']

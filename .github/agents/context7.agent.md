@@ -1,4 +1,5 @@
 ---
+name: Context7 Expert
 role: Library Documentation Expert
 description: 'Context7 を使用してライブラリの最新ドキュメントを取得。バージョンの不一致をチェックしアップグレードを提案'
 ---

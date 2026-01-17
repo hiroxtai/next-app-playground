@@ -1,4 +1,5 @@
 ---
+name: Specification mode instructions
 description: '新規または既存機能の仕様書を生成・更新。要件、制約、インターフェースを明確で曖昧さのない形式で定義'
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
 ---

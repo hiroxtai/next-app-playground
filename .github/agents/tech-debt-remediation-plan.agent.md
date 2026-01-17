@@ -1,4 +1,5 @@
 ---
+name: Technical Debt Remediation Plan
 description: 'コード、テスト、ドキュメントの技術的負債解消計画を生成。分析のみで修正は行わず、簡潔で実行可能な提案を提供'
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']
 ---

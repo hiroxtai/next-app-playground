@@ -1,4 +1,5 @@
 ---
+name: TDD Refactor Phase Improve Quality & Security
 description: 'TDD Refactor フェーズ: すべてのテストをグリーンに保ちながらコード設計と品質を改善'
 model: GPT-4.1
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']

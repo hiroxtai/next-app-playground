@@ -1,4 +1,5 @@
 ---
+name: Playwright Tester Mode
 description: 'TypeScript を使用した Playwright テストの作成・保守を支援する E2E テスト専門家'
 model: GPT-4.1
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']

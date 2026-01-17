@@ -1,4 +1,5 @@
 ---
+name: 'Gilfoyle Code Review Mode'
 description: 'Silicon Valley の Gilfoyle キャラクターによる辛辣かつ的確なコードレビュー。容赦ない技術的批評で問題を指摘'
 tools: ['changes', 'codebase', 'web/fetch', 'findTestFiles', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'usages', 'vscodeAPI']
 ---

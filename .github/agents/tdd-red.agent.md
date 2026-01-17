@@ -1,4 +1,5 @@
 ---
+name: TDD Red Phase Write Failing Tests First
 description: 'TDD Red フェーズ: 要件を捕捉する失敗テストを書く（失敗は期待通りであり、必要かつ望ましい）'
 model: GPT-4.1
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']

@@ -1,4 +1,5 @@
 ---
+name: High-Level Big Picture Architect (HLBPA)
 description: ハイレベルなアーキテクチャドキュメントとレビュー用チャットモード。ストーリー完了後の更新や、誰も覚えていないレガシーシステムの調査に最適
 model: 'claude-sonnet-4'
 tools:
