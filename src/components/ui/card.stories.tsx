@@ -4,6 +4,13 @@
  * @remarks
  * Card は情報をグループ化して表示するためのコンテナコンポーネントです。
  *
+ * ## 新デザインシステム
+ *
+ * Card は以下の新デザイン要素を取り入れています：
+ * - **Brand ボーダー**: Teal 系のブランドカラーを使用したボーダー
+ * - **ホバー効果**: ホバー時にボーダーとシャドウが変化
+ * - **ダークモード対応**: ダークモードで最適化されたカラー
+ *
  * 構成要素:
  * - Card: メインのコンテナ
  * - CardHeader: タイトルと説明を含むヘッダー
@@ -160,11 +167,12 @@ export const MultipleActions: Story = {
  *
  * @remarks
  * 画像コンテンツを含むカードの例です。
+ * 新しいブランドカラーのグラデーションを使用しています。
  */
 export const WithImage: Story = {
   render: () => (
     <Card className="w-[350px] overflow-hidden">
-      <div className="h-48 bg-gradient-to-br from-primary/20 to-primary/5" />
+      <div className="h-48 bg-gradient-to-br from-brand-400/30 to-brand-600/10" />
       <CardHeader>
         <CardTitle>美しい風景</CardTitle>
         <CardDescription>山と湖の素晴らしい景色</CardDescription>
@@ -175,9 +183,56 @@ export const WithImage: Story = {
         </p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full">
+        <Button variant="brand-outline" className="w-full">
           詳細を見る
         </Button>
+      </CardFooter>
+    </Card>
+  ),
+};
+
+// ============================================================================
+// Brand バリエーション
+// ============================================================================
+
+/**
+ * Brand カードの例
+ *
+ * @remarks
+ * ブランドカラーを活用したカードのバリエーションです。
+ */
+export const BrandCard: Story = {
+  render: () => (
+    <Card className="w-[350px]">
+      <CardHeader>
+        <CardTitle className="text-brand-700 dark:text-brand-300">
+          新機能のお知らせ
+        </CardTitle>
+        <CardDescription>
+          新しいデザインシステムが導入されました。
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2 text-sm">
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+            Teal 系のブランドカラー
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+            Space Grotesk フォント
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+            ノイズテクスチャ
+          </li>
+        </ul>
+      </CardContent>
+      <CardFooter className="flex gap-2">
+        <Button variant="brand" className="flex-1">
+          詳細を見る
+        </Button>
+        <Button variant="brand-ghost">後で</Button>
       </CardFooter>
     </Card>
   ),

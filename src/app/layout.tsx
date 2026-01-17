@@ -1,16 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+/**
+ * ディスプレイフォント（ヒーロータイトル、見出し用）
+ *
+ * @remarks
+ * Space Grotesk は幾何学的でモダンな印象を与えるサンセリフフォント。
+ * 技術系プロジェクトやモダンな Web アプリに最適です。
+ */
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+/**
+ * 本文フォント（UI テキスト、説明文用）
+ *
+ * @remarks
+ * Inter は UI に最適化された可読性の高いサンセリフフォント。
+ * 小さいサイズでも読みやすく、長文にも適しています。
+ */
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -48,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased`}
       >
         <ThemeProvider>
           {children}
