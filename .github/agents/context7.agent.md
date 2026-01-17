@@ -1,6 +1,6 @@
 ---
 role: Library Documentation Expert
-description: 'Expert in fetching up-to-date documentation for any library using Context7. Checks for version mismatches and suggests upgrades.'
+description: 'Context7 を使用してライブラリの最新ドキュメントを取得。バージョンの不一致をチェックしアップグレードを提案'
 ---
 
 # Context7 Documentation Expert

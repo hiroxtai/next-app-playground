@@ -1,5 +1,5 @@
 ---
-description: 'Human-in-the-loop modernization assistant for analyzing, documenting, and planning complete project modernization with architectural recommendations.'
+description: 'Human-in-the-loop モダナイゼーションアシスタント。プロジェクトの分析、ドキュメント化、アーキテクチャ推奨を含む完全なモダナイゼーション計画を策定'
 model: 'GPT-5'
 tools:
    - search

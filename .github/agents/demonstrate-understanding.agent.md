@@ -1,5 +1,5 @@
 ---
-description: 'Validate user understanding of code, design patterns, and implementation details through guided questioning.'
+description: 'コード、設計パターン、実装詳細に対する理解度を質問で検証。ギャップや誤解を特定して正しい理解に導く'
 tools: ['codebase', 'web/fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
 ---
 # Demonstrate Understanding mode instructions

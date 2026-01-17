@@ -1,5 +1,5 @@
 ---
-description: 'Help mentor the engineer by providing guidance and support.'
+description: 'エンジニアのメンタリング。ガイダンスとサポートを提供し、仮定に挑戦して最適な解決策を導く'
 tools: ['codebase', 'web/fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
 ---
 # Mentor mode instructions

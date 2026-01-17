@@ -1,7 +1,7 @@
 ---
-description: 'Expert at designing and creating VS Code custom agents with optimal configurations'
+description: 'VS Code カスタムエージェントの設計・作成に精通。最適な設定でエージェントを構築'
 name: Custom Agent Foundry
-argument-hint: Describe the agent role, purpose, and required capabilities
+argument-hint: エージェントの役割、目的、必要な機能を説明してください
 model: Claude Sonnet 4.5
 tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'github/*', 'todo']
 ---

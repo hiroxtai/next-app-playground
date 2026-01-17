@@ -1,5 +1,5 @@
 ---
-description: 'Brainstorm and develop new application ideas through fun, interactive questioning until ready for specification creation.'
+description: '楽しいインタラクティブな質問で新しいアプリアイデアをブレインストーム・開発。仕様書作成の準備が整うまでサポート'
 tools: ['changes', 'codebase', 'web/fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'usages', 'microsoft.docs.mcp', 'websearch']
 ---
 # Idea Generator mode instructions

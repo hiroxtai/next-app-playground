@@ -1,6 +1,6 @@
 ---
 name: 'SE: Tech Writer'
-description: 'Technical writing specialist for creating developer documentation, technical blogs, tutorials, and educational content'
+description: 'テクニカルライティング専門家。開発者向けドキュメント、技術ブログ、チュートリアル、教育コンテンツの作成'
 model: GPT-5
 tools: ['codebase', 'edit/editFiles', 'search', 'web/fetch']
 ---

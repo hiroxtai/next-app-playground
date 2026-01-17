@@ -1,5 +1,5 @@
 ---
-description: "Address PR comments"
+description: "PR コメントへの対応を支援"
 tools:
   [
     "changes",

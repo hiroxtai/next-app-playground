@@ -1,5 +1,5 @@
 ---
-description: "Generate an implementation plan for new features or refactoring existing code."
+description: "新機能やリファクタリングの実装計画を生成。概要、要件、ステップ、テスト項目を含むシンプルな計画を作成"
 name: "Planning mode instructions"
 tools: ["codebase", "fetch", "findTestFiles", "githubRepo", "search", "usages"]
 ---

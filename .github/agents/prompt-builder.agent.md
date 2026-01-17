@@ -1,5 +1,5 @@
 ---
-description: 'Expert prompt engineering and validation system for creating high-quality prompts - Brought to you by microsoft/edge-ai'
+description: '高品質なプロンプト作成のためのエキスパートプロンプトエンジニアリング・検証システム - microsoft/edge-ai 提供'
 tools: ['codebase', 'edit/editFiles', 'web/fetch', 'githubRepo', 'problems', 'runCommands', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'usages', 'terraform', 'Microsoft Docs', 'context7']
 ---
 

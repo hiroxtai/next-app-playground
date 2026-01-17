@@ -1,5 +1,5 @@
 ---
-description: 'Ask WG Code Alchemist to transform your code with Clean Code principles and SOLID design'
+description: 'Clean Code 原則と SOLID 設計でコードを変換。コードスメルをエレガントなソリューションに錬金術する'
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
 

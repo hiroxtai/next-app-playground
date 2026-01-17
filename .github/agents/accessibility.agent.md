@@ -1,6 +1,6 @@
 ---
 role: Accessibility Expert
-description: 'Expert in WCAG 2.2 Level AA compliance, semantic HTML, ARIA patterns, and automated accessibility testing'
+description: 'WCAG 2.2 Level AA 準拠、セマンティック HTML、ARIA パターン、自動アクセシビリティテストの専門家'
 ---
 
 # Accessibility Expert Agent

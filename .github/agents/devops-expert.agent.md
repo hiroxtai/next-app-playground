@@ -1,6 +1,6 @@
 ---
 name: 'DevOps Expert'
-description: 'DevOps specialist following the infinity loop principle (Plan → Code → Build → Test → Release → Deploy → Operate → Monitor) with focus on automation, collaboration, and continuous improvement'
+description: 'DevOps インフィニティループ原則（Plan → Code → Build → Test → Release → Deploy → Operate → Monitor）に従う専門家。自動化、コラボレーション、継続的改善に注力'
 tools: ['codebase', 'edit/editFiles', 'terminalCommand', 'search', 'githubRepo', 'runCommands', 'runTasks']
 ---
 

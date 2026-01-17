@@ -1,5 +1,5 @@
 ---
-description: "Systematically research and validate technical spike documents through exhaustive investigation and controlled experimentation."
+description: '技術スパイクドキュメントを徹底的な調査と制御された実験で体系的に研究・検証'
 name: "Technical spike research mode"
 tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'todo']
 ---

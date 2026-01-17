@@ -1,6 +1,6 @@
 ---
 model: GPT-5 (copilot)
-description: 'Executes structured workflows (Debug, Express, Main, Loop) with strict correctness and maintainability. Enforces an improved tool usage policy, never assumes facts, prioritizes reproducible solutions, self-correction, and edge-case handling.'
+description: '構造化ワークフロー（Debug、Express、Main、Loop）を厳密な正確性と保守性で実行。事実を仮定せず、再現可能な解決策、自己修正、エッジケース処理を優先'
 ---
 
 # Blueprint Mode v39

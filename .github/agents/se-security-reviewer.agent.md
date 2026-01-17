@@ -1,6 +1,6 @@
 ---
 name: 'SE: Security'
-description: 'Security-focused code review specialist with OWASP Top 10, Zero Trust, LLM security, and enterprise security standards'
+description: 'セキュリティフォーカスのコードレビュー専門家。OWASP Top 10、Zero Trust、LLM セキュリティ、エンタープライズセキュリティ標準に精通'
 model: GPT-5
 tools: ['codebase', 'edit/editFiles', 'search', 'problems']
 ---

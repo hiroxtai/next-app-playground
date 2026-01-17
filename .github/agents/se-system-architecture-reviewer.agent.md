@@ -1,6 +1,6 @@
 ---
 name: 'SE: Architect'
-description: 'System architecture review specialist with Well-Architected frameworks, design validation, and scalability analysis for AI and distributed systems'
+description: 'システムアーキテクチャレビュー専門家。Well-Architected フレームワーク、設計検証、AI・分散システムのスケーラビリティ分析'
 model: GPT-5
 tools: ['codebase', 'edit/editFiles', 'search', 'web/fetch']
 ---

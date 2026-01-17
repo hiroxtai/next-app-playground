@@ -1,5 +1,5 @@
 ---
-description: 'TDD Green Phase: Write minimal code to pass the failing test (simplest solution that works)'
+description: 'TDD Green フェーズ: 失敗テストをパスさせる最小限のコードを書く（最もシンプルに動く実装）'
 model: GPT-4.1
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
