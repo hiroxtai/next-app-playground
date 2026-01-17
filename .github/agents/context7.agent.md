@@ -2,7 +2,7 @@
 name: Context7 Expert
 description: 'Context7 を使用してライブラリの最新ドキュメントを取得。バージョンの不一致をチェックしアップグレードを提案'
 argument-hint: 'Ask about specific libraries/frameworks (e.g., "Next.js routing", "React hooks", "Tailwind CSS")'
-tools: ['read', 'search', 'web', 'context7/*', 'agent/runSubagent']
+tools: ['read', 'search', 'web', 'io.github.upstash/context7/*', 'agent']
 mcp-servers:
   context7:
     type: http

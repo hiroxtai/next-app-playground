@@ -259,19 +259,18 @@
 }
 
 /**
- * グラスモーフィズム効果
+ * セミトランスペアレント背景
  *
  * @remarks
- * 背景ぼかしと透過を組み合わせたモダンな効果。
+ * パフォーマンスを考慮し、backdrop-filter を削除。
+ * 透過度を高めてシンプルな背景効果を実現します。
  */
 .glass {
-  background: oklch(1 0 0 / 60%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: oklch(1 0 0 / 90%);
 }
 
 .dark .glass {
-  background: oklch(0.21 0.006 285.885 / 60%);
+  background: oklch(0.21 0.006 285.885 / 90%);
 }
 
 /**
