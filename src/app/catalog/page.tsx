@@ -72,8 +72,8 @@ export default function CatalogPage() {
                 key={stat.label}
                 className="flex items-center gap-3 rounded-2xl border border-brand-200/30 bg-white/90 px-5 py-3 dark:border-brand-700/30 dark:bg-zinc-900/90"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/25">
-                  <stat.icon className="h-5 w-5" />
+                <div className="flex size-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-500/25">
+                  <stat.icon className="size-5" />
                 </div>
                 <div>
                   <p className="font-display text-2xl font-bold text-zinc-900 dark:text-zinc-50">
@@ -107,7 +107,7 @@ export default function CatalogPage() {
         {pages.length === 0 && (
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/50 p-16 text-center dark:border-brand-800 dark:bg-brand-900/50">
             <div className="mb-4 rounded-full bg-brand-100 p-4 dark:bg-brand-800">
-              <BookOpen className="h-8 w-8 text-brand-500" />
+              <BookOpen className="size-8 text-brand-500" />
             </div>
             <p className="text-lg font-medium text-zinc-600 dark:text-zinc-400">
               サンプルページはまだありません

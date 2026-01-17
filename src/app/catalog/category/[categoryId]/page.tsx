@@ -49,9 +49,6 @@ export default function CategoryPage({
         {/* 装飾的な背景パターン */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.7_0.14_182/0.08)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.7_0.14_182/0.08)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
 
-        {/* 装飾的なグラデーションオーブ */}
-        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-brand-400/20 to-brand-600/10 blur-3xl" />
-
         <div className="relative px-6 py-12 sm:px-8 sm:py-16">
           {/* パンくずリスト */}
           <AppBreadcrumb
@@ -68,7 +65,7 @@ export default function CategoryPage({
             <div
               className={`flex size-14 items-center justify-center rounded-2xl ${style.gradient} text-white shadow-lg shadow-brand-500/20`}
             >
-              <Icon className="h-7 w-7" />
+              <Icon className="size-7" />
             </div>
             <div>
               <h1 className="font-display text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
@@ -108,7 +105,7 @@ export default function CategoryPage({
         {pagesByCategory.length === 0 && (
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/50 p-16 text-center dark:border-brand-800 dark:bg-brand-900/50">
             <div className="mb-4 rounded-full bg-brand-100 p-4 dark:bg-brand-800">
-              <BookOpen className="h-8 w-8 text-brand-500" />
+              <BookOpen className="size-8 text-brand-500" />
             </div>
             <p className="text-lg font-medium text-zinc-600 dark:text-zinc-400">
               このカテゴリにはまだページがありません

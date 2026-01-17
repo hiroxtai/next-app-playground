@@ -58,11 +58,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
       {/* ヘッダー */}
-      <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-xl dark:border-zinc-800/80 dark:bg-zinc-900/80">
+      <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/95 dark:border-zinc-800/80 dark:bg-zinc-900/95">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-white shadow-md">
-              <Library className="h-5 w-5" />
+            <div className="flex size-9 items-center justify-center rounded-lg bg-violet-600 text-white shadow-md">
+              <Library className="size-5" />
             </div>
             <span className="text-lg font-bold">Next.js Playground</span>
           </Link>
@@ -74,7 +74,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 aria-label="GitHub"
               >
-                <Github className="h-5 w-5" />
+                <Github className="size-5" />
               </a>
             </Button>
             <ThemeToggle />
@@ -105,7 +105,7 @@ export default function Home() {
               <Button asChild size="lg" className="gap-2">
                 <Link href="/catalog">
                   カタログを見る
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
@@ -132,9 +132,9 @@ export default function Home() {
                 className="flex items-center gap-4 rounded-xl border border-zinc-200/50 bg-white p-6 shadow-sm dark:border-zinc-800/50 dark:bg-zinc-800/50"
               >
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${stat.bgColor}`}
+                  className={`flex size-12 items-center justify-center rounded-xl ${stat.bgColor}`}
                 >
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                  <stat.icon className={`size-6 ${stat.color}`} />
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
@@ -165,7 +165,7 @@ export default function Home() {
             <Button variant="ghost" asChild className="gap-1">
               <Link href="/catalog">
                 すべて見る
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="size-4" />
               </Link>
             </Button>
           </div>
@@ -184,9 +184,9 @@ export default function Home() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${style.iconBg} text-white`}
+                        className={`flex size-10 items-center justify-center rounded-lg ${style.iconBg} text-white`}
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="size-5" />
                       </div>
                       <div>
                         <CardTitle className="text-lg">{page.title}</CardTitle>
@@ -248,7 +248,7 @@ export default function Home() {
                   <div
                     className={`mb-4 flex size-14 items-center justify-center rounded-2xl ${style.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}
                   >
-                    <Icon className="h-7 w-7" />
+                    <Icon className="size-7" />
                   </div>
                   <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">
                     {category.label}

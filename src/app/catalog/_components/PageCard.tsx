@@ -69,25 +69,20 @@ export default function PageCard({
           className={`h-1.5 w-full ${style.gradient} opacity-80 transition-opacity group-hover:opacity-100`}
         />
 
-        {/* ホバー時のグロー効果 */}
-        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-          <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-brand-400/10 blur-3xl" />
-        </div>
-
         {/* カード本体 */}
         <div className="relative flex flex-1 flex-col p-5">
           {/* ヘッダー: アイコン + 難易度 */}
           <div className="mb-4 flex items-start justify-between">
             <div
-              className={`flex h-12 w-12 items-center justify-center rounded-xl ${style.iconBg} text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-xl`}
+              className={`flex size-12 items-center justify-center rounded-xl ${style.iconBg} text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-xl`}
             >
-              <Icon className="h-6 w-6" />
+              <Icon className="size-6" />
             </div>
 
             <span
               className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${diffStyle.bg} ${diffStyle.text}`}
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${diffStyle.dot}`} />
+              <span className={`size-1.5 rounded-full ${diffStyle.dot}`} />
               {page.difficulty}
             </span>
           </div>
@@ -126,8 +121,8 @@ export default function PageCard({
             <span className="text-sm font-medium text-zinc-500 transition-colors group-hover:text-brand-600 dark:text-zinc-500 dark:group-hover:text-brand-400">
               詳細を見る
             </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-all duration-300 group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand-500/25 dark:bg-brand-900/50 dark:text-brand-400 dark:group-hover:bg-brand-500">
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <div className="flex size-8 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-all duration-300 group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand-500/25 dark:bg-brand-900/50 dark:text-brand-400 dark:group-hover:bg-brand-500">
+              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </div>
           </div>
         </div>

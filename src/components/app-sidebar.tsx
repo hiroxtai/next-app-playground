@@ -39,8 +39,8 @@ export function AppSidebar() {
       {/* ヘッダー: ロゴとタイトル */}
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/25">
-            <Library className="h-5 w-5" />
+          <div className="flex size-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-500/25">
+            <Library className="size-5" />
           </div>
           <div>
             <h2 className="text-lg font-bold">Playground</h2>
@@ -60,7 +60,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={pathname === "/"}>
                   <Link href="/">
-                    <Library className="h-4 w-4" />
+                    <Library className="size-4" />
                     <span>ホーム</span>
                   </Link>
                 </SidebarMenuButton>
@@ -70,11 +70,9 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isAllActive}>
                   <Link href="/catalog">
-                    <Library className="h-4 w-4" />
+                    <Library className="size-4" />
                     <span>すべてのページ</span>
-                    {isAllActive && (
-                      <ChevronRight className="ml-auto h-4 w-4" />
-                    )}
+                    {isAllActive && <ChevronRight className="ml-auto size-4" />}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -105,17 +103,17 @@ export function AppSidebar() {
                       <Link href={`/catalog/category/${category.id}`}>
                         <div
                           className={cn(
-                            "flex h-6 w-6 items-center justify-center rounded-md transition-colors",
+                            "flex size-6 items-center justify-center rounded-md transition-colors",
                             isActive
                               ? `${style.iconBg} text-white`
                               : "bg-muted text-muted-foreground",
                           )}
                         >
-                          <Icon className="h-3.5 w-3.5" />
+                          <Icon className="size-3.5" />
                         </div>
                         <span>{category.label}</span>
                         {isActive && (
-                          <ChevronRight className="ml-auto h-4 w-4" />
+                          <ChevronRight className="ml-auto size-4" />
                         )}
                       </Link>
                     </SidebarMenuButton>
