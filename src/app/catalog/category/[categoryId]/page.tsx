@@ -68,10 +68,10 @@ export default function CategoryPage({
               <Icon className="size-7" />
             </div>
             <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+              <h1 className="font-display text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
                 {category.label}
               </h1>
-              <p className="mt-1 text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
+              <p className="mt-1 text-base text-zinc-600 dark:text-zinc-300 sm:text-lg">
                 {category.description}
               </p>
             </div>

@@ -57,7 +57,7 @@ export default function PageCard({
         } as React.CSSProperties
       }
     >
-      <div className="perspective-card-inner relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/50 bg-white transition-all duration-300 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-500/10 dark:border-brand-800/30 dark:bg-zinc-900 dark:hover:border-brand-700/50 dark:hover:shadow-brand-500/5">
+      <div className="perspective-card-inner relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/50 bg-white transition-all duration-300 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-500/10 dark:border-zinc-600/40 dark:bg-zinc-800/90 dark:hover:border-brand-500/50 dark:hover:shadow-brand-400/10">
         {/* ノイズテクスチャオーバーレイ */}
         <div
           className="pointer-events-none absolute inset-0 noise-texture opacity-[0.02] mix-blend-overlay"
@@ -88,12 +88,12 @@ export default function PageCard({
           </div>
 
           {/* タイトル */}
-          <h3 className="font-display mb-2 text-lg font-semibold text-zinc-900 transition-colors group-hover:text-brand-700 dark:text-zinc-50 dark:group-hover:text-brand-300">
+          <h3 className="font-display mb-2 text-lg font-semibold text-zinc-900 transition-colors group-hover:text-brand-700 dark:text-zinc-100 dark:group-hover:text-brand-400">
             {page.title}
           </h3>
 
           {/* 説明 */}
-          <p className="mb-4 line-clamp-2 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p className="mb-4 line-clamp-2 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
             {page.description}
           </p>
 
@@ -103,7 +103,7 @@ export default function PageCard({
               {page.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/50 dark:text-brand-300"
+                  className="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 dark:bg-brand-500/20 dark:text-brand-300"
                 >
                   {tag}
                 </span>
@@ -117,11 +117,11 @@ export default function PageCard({
           )}
 
           {/* フッター */}
-          <div className="mt-auto flex items-center justify-between border-t border-brand-100/50 pt-4 dark:border-brand-800/30">
-            <span className="text-sm font-medium text-zinc-500 transition-colors group-hover:text-brand-600 dark:text-zinc-500 dark:group-hover:text-brand-400">
+          <div className="mt-auto flex items-center justify-between border-t border-brand-100/50 pt-4 dark:border-zinc-600/30">
+            <span className="text-sm font-medium text-zinc-500 transition-colors group-hover:text-brand-600 dark:text-zinc-400 dark:group-hover:text-brand-400">
               詳細を見る
             </span>
-            <div className="flex size-8 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-all duration-300 group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand-500/25 dark:bg-brand-900/50 dark:text-brand-400 dark:group-hover:bg-brand-500">
+            <div className="flex size-8 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-all duration-300 group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-400 dark:group-hover:bg-brand-500">
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </div>
           </div>

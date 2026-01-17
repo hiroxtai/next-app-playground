@@ -52,13 +52,13 @@ export default function CatalogPage() {
 
           {/* タイトル */}
           <div className="max-w-2xl space-y-4">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl lg:text-6xl">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl lg:text-6xl">
               ページ
               <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent dark:from-brand-400 dark:to-brand-200">
                 カタログ
               </span>
             </h1>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 sm:text-xl">
+            <p className="text-lg text-zinc-600 dark:text-zinc-300 sm:text-xl">
               Next.js と React の学習用サンプルページ一覧。
               <br className="hidden sm:inline" />
               カテゴリから探すか、下記一覧からページを選択してください。
@@ -76,10 +76,10 @@ export default function CatalogPage() {
                   <stat.icon className="size-5" />
                 </div>
                 <div>
-                  <p className="font-display text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+                  <p className="font-display text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                     {stat.value}
                   </p>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-300">
                     {stat.label}
                   </p>
                 </div>

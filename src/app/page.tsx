@@ -58,7 +58,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
       {/* ヘッダー */}
-      <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/95 dark:border-zinc-800/80 dark:bg-zinc-900/95">
+      <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/95 dark:border-zinc-700/50 dark:bg-zinc-900/98">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex size-9 items-center justify-center rounded-lg bg-violet-600 text-white shadow-md">
@@ -123,13 +123,13 @@ export default function Home() {
       </section>
 
       {/* 統計セクション */}
-      <section className="border-y border-zinc-200 bg-white/50 py-12 dark:border-zinc-800 dark:bg-zinc-900/50">
+      <section className="border-y border-zinc-200 bg-white/50 py-12 dark:border-zinc-700/50 dark:bg-zinc-800/30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex items-center gap-4 rounded-xl border border-zinc-200/50 bg-white p-6 shadow-sm dark:border-zinc-800/50 dark:bg-zinc-800/50"
+                className="flex items-center gap-4 rounded-xl border border-zinc-200/50 bg-white p-6 shadow-sm dark:border-zinc-600/30 dark:bg-zinc-800/80"
               >
                 <div
                   className={`flex size-12 items-center justify-center rounded-xl ${stat.bgColor}`}
@@ -137,10 +137,10 @@ export default function Home() {
                   <stat.icon className={`size-6 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+                  <p className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
                     {stat.value}
                   </p>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-300">
                     {stat.label}
                   </p>
                 </div>
@@ -155,10 +155,10 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 flex items-end justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
                 サンプルページ
               </h2>
-              <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+              <p className="mt-2 text-zinc-600 dark:text-zinc-300">
                 最新のサンプルページをチェックしましょう
               </p>
             </div>
@@ -220,13 +220,13 @@ export default function Home() {
       </section>
 
       {/* カテゴリ一覧 */}
-      <section className="border-t border-zinc-200 bg-zinc-50/50 py-16 dark:border-zinc-800 dark:bg-zinc-900/50 sm:py-20">
+      <section className="border-t border-zinc-200 bg-zinc-50/50 py-16 dark:border-zinc-700/50 dark:bg-zinc-800/30 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
               カテゴリから探す
             </h2>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 text-zinc-600 dark:text-zinc-300">
               学びたい分野を選んでください
             </p>
           </div>
@@ -243,17 +243,17 @@ export default function Home() {
                 <Link
                   key={category.id}
                   href={`/catalog/category/${category.id}`}
-                  className="group flex flex-col items-center rounded-xl border border-zinc-200/50 bg-white p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-800/50 dark:hover:border-zinc-700"
+                  className="group flex flex-col items-center rounded-xl border border-zinc-200/50 bg-white p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-600/40 dark:bg-zinc-800/80 dark:hover:border-zinc-500"
                 >
                   <div
                     className={`mb-4 flex size-14 items-center justify-center rounded-2xl ${style.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}
                   >
                     <Icon className="size-7" />
                   </div>
-                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
                     {category.label}
                   </h3>
-                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-300">
                     {pageCount} ページ
                   </p>
                 </Link>
@@ -264,9 +264,9 @@ export default function Home() {
       </section>
 
       {/* フッター */}
-      <footer className="border-t border-zinc-200 bg-white py-8 dark:border-zinc-800 dark:bg-zinc-950">
+      <footer className="border-t border-zinc-200 bg-white py-8 dark:border-zinc-700/50 dark:bg-zinc-900/80">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-zinc-500 dark:text-zinc-300">
             Next.js Playground - Next.js 学習用プロジェクト
           </p>
         </div>
