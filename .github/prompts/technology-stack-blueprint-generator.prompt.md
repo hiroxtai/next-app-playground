@@ -1,5 +1,5 @@
 ---
-description: 'Comprehensive technology stack blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks, programming languages, and implementation patterns across multiple platforms (.NET, Java, JavaScript, React, Python). Generates configurable blueprints with version information, licensing details, usage patterns, coding conventions, and visual diagrams. Provides implementation-ready templates and maintains architectural consistency for guided development.'
+description: 'コードベースを解析して詳細なアーキテクチャドキュメントを生成する包括的な技術スタックブループリントジェネレーター。.NET, Java, JavaScript, React, Python など複数プラットフォームの技術スタック・言語・実装パターンを自動検出。バージョン情報・ライセンス詳細・使用パターン・コーディング規約・ビジュアルダイアグラムを含む設定可能なブループリントを生成'
 agent: 'agent'
 ---
 

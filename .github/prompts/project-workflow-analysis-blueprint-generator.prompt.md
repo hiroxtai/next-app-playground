@@ -1,7 +1,5 @@
 ---
-
-description: 'Comprehensive technology-agnostic prompt generator for documenting end-to-end application workflows. Automatically detects project architecture patterns, technology stacks, and data flow patterns to generate detailed implementation blueprints covering entry points, service layers, data access, error handling, and testing approaches across multiple technologies including .NET, Java/Spring, React, and microservices architectures.'
-
+description: 'エンドツーエンドのアプリケーションワークフローをドキュメント化。エントリポイント・サービスレイヤー・データアクセス・エラーハンドリング・テストアプローチをカバー。.NET, Java/Spring, React, マイクロサービスに対応'
 agent: 'agent'
 ---
 # Project Workflow Documentation Generator

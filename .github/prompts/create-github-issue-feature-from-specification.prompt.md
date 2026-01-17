@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create GitHub Issue for feature request from specification file using feature_request.yml template.'
+description: '仕様書ファイルから feature_request.yml テンプレートを使用して GitHub Issue を作成'
 tools: ['search/codebase', 'search', 'github', 'create_issue', 'search_issues', 'update_issue']
 ---
 # Create GitHub Issue from Specification

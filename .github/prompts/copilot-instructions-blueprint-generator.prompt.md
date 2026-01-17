@@ -1,5 +1,5 @@
 ---
-description: 'Technology-agnostic blueprint generator for creating comprehensive copilot-instructions.md files that guide GitHub Copilot to produce code consistent with project standards, architecture patterns, and exact technology versions by analyzing existing codebase patterns and avoiding assumptions.'
+description: '既存コードベースを解析し、プロジェクト標準・アーキテクチャパターン・技術バージョンに準拠した copilot-instructions.md を生成'
 agent: 'agent'
 ---
 

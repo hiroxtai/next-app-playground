@@ -1,5 +1,5 @@
 ---
-description: 'Migration and code evolution instructions generator for GitHub Copilot. Analyzes differences between two project versions (branches, commits, or releases) to create precise instructions allowing Copilot to maintain consistency during technology migrations, major refactoring, or framework version upgrades.'
+description: 'GitHub Copilot 用のマイグレーション・コード進化 Instructions ジェネレーター。2つのバージョン間の差分を解析し、技術マイグレーション・大規模リファクタリング・フレームワークアップグレード時の一貫性維持に活用'
 agent: 'agent'
 ---
 

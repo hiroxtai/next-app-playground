@@ -1,5 +1,5 @@
 ---
-description: 'Comprehensive project architecture blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks and architectural patterns, generates visual diagrams, documents implementation patterns, and provides extensible blueprints for maintaining architectural consistency and guiding new development.'
+description: 'コードベースを解析してアーキテクチャドキュメントを自動生成。技術スタック・アーキテクチャパターンの自動検出、ビジュアルダイアグラム生成、実装パターンのドキュメント化に対応'
 agent: 'agent'
 ---
 

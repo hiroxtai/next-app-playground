@@ -1,5 +1,6 @@
 ---
-description: 'Guide for generating Playwright tests based on website exploration'
+description: 'ウェブサイト探索結果に基づき Playwright テストを生成するガイド'
+agent: 'agent'
 ---
 
 # Playwright: Generate Tests from Exploration

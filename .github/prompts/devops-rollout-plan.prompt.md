@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Generate comprehensive rollout plans with preflight checks, step-by-step deployment, verification signals, rollback procedures, and communication plans for infrastructure and application changes'
+description: 'プリフライトチェック・ステップバイステップデプロイ・検証シグナル・ロールバック手順・コミュニケーション計画を含む包括的なロールアウト計画を生成'
 tools: ['codebase', 'terminalCommand', 'search', 'githubRepo']
 ---
 

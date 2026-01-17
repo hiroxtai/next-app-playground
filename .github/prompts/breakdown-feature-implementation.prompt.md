@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Prompt for creating detailed feature implementation plans, following Epoch monorepo structure.'
+description: 'Epoch モノレポ構造に従った Feature の詳細実装計画を作成'
 ---
 
 # Feature Implementation Plan Prompt

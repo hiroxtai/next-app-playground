@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create GitHub Issues for unimplemented requirements from specification files using feature_request.yml template.'
+description: '仕様書の未実装要件に対して feature_request.yml テンプレートを使用して GitHub Issues を作成'
 tools: ['search/codebase', 'search', 'github', 'create_issue', 'search_issues', 'update_issue']
 ---
 # Create GitHub Issues for Unmet Specification Requirements

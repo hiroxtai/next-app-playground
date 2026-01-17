@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Update an existing implementation plan file with new or update requirements to provide new features, refactoring existing code or upgrading packages, design, architecture or infrastructure.'
+description: '新規要件・既存コードのリファクタリング・パッケージアップグレード・設計/アーキテクチャ/インフラ変更に対応して既存の実装計画ファイルを更新'
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
 # Update Implementation Plan

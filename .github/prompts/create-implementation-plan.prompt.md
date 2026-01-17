@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create a new implementation plan file for new features, refactoring existing code or upgrading packages, design, architecture or infrastructure.'
+description: '新機能・リファクタリング・パッケージアップグレード・設計・アーキテクチャ・インフラのための実装計画ファイルを新規作成'
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
 # Create Implementation Plan

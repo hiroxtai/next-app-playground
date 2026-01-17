@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Suggest relevant GitHub Copilot collections from the awesome-copilot repository based on current repository context and chat history, providing automatic download and installation of collection assets.'
+description: 'awesome-copilot リポジトリから現在のコンテキストとチャット履歴に基づき、関連する GitHub Copilot Collections を提案。コレクションアセットの自動ダウンロード・インストールに対応'
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'think', 'changes', 'testFailure', 'openSimpleBrowser', 'web/fetch', 'githubRepo', 'todos', 'search']
 ---
 # Suggest Awesome GitHub Copilot Collections

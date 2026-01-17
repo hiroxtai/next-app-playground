@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Finalize prompt file using the role of an AI agent to polish the prompt for the end user.'
+description: 'AI エージェントの役割でプロンプトファイルをブラッシュアップしてエンドユーザー向けに最終調整'
 tools: ['edit/editFiles']
 ---
 

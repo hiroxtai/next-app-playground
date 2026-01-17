@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Review and refactor code in your project according to defined instructions'
+description: '定義された Instructions に従ってプロジェクトのコードをレビュー・リファクタ'
 ---
 
 ## Role

@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create GitHub Issues from implementation plan phases using feature_request.yml or chore_request.yml templates.'
+description: '実装計画のフェーズごとに feature_request.yml または chore_request.yml テンプレートを使用して GitHub Issues を作成'
 tools: ['search/codebase', 'search', 'github', 'create_issue', 'search_issues', 'update_issue']
 ---
 # Create GitHub Issue from Implementation Plan

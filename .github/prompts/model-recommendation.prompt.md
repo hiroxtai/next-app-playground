@@ -1,5 +1,5 @@
 ---
-description: "Analyze chatmode or prompt files and recommend optimal AI models based on task complexity, required capabilities, and cost-efficiency"
+description: 'チャットモードまたはプロンプトファイルを解析し、タスクの複雑さ・必要な能力・コスト効率に基づき最適な AI モデルを推奨'
 agent: "agent"
 tools:
   - "search/codebase"

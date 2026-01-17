@@ -1,5 +1,6 @@
 ---
-description: 'Guide for writing Jest or Vitest tests for JavaScript and TypeScript code'
+description: 'JavaScript/TypeScript コード用の Jest または Vitest テスト作成ガイド'
+agent: 'agent'
 ---
 
 # Writing Jest/Vitest Tests

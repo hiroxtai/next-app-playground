@@ -1,5 +1,6 @@
 ---
-description: 'Generate a comprehensive README.md by analyzing .github/copilot-instructions.md and project structure'
+description: '.github/copilot-instructions.md とプロジェクト構造を解析して包括的な README.md を生成'
+agent: 'agent'
 ---
 
 # README Blueprint Generator

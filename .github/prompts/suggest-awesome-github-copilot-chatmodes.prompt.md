@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Suggest relevant GitHub Copilot Custom Chat Modes files from the awesome-copilot repository based on current repository context and chat history, avoiding duplicates with existing custom chat modes in this repository.'
+description: 'awesome-copilot リポジトリから現在のコンテキストとチャット履歴に基づき、関連する GitHub Copilot カスタム Chat Modes を提案。既存のカスタム Chat Modes との重複を回避'
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'think', 'changes', 'testFailure', 'openSimpleBrowser', 'web/fetch', 'githubRepo', 'todos', 'search']
 ---
 

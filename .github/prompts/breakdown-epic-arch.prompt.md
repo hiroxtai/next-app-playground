@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Prompt for creating the high-level technical architecture for an Epic, based on a Product Requirements Document.'
+description: 'PRD（製品要件定義書）に基づき、Epic のハイレベル技術アーキテクチャを設計'
 ---
 
 # Epic Architecture Specification Prompt

@@ -2,7 +2,7 @@
 agent: 'agent'
 model: Claude Sonnet 4
 tools: ['edit', 'githubRepo', 'changes', 'problems', 'search', 'runCommands', 'web/fetch']
-description: 'Set up complete GitHub Copilot configuration for a new project based on technology stack'
+description: '技術スタックに応じた GitHub Copilot の完全な初期設定をセットアップ'
 ---
 
 You are a GitHub Copilot setup specialist. Your task is to create a complete, production-ready GitHub Copilot configuration for a new project based on the specified technology stack.

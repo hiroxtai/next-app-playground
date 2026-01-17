@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create GitHub Pull Request for feature request from specification file using pull_request_template.md template.'
+description: '仕様書ファイルから pull_request_template.md テンプレートを使用して GitHub Pull Request を作成'
 tools: ['search/codebase', 'search', 'github', 'create_pull_request', 'update_pull_request', 'get_pull_request_diff']
 ---
 # Create GitHub Pull Request from Specification

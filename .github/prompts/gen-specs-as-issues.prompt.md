@@ -1,5 +1,5 @@
 ---
-description: 'This workflow guides you through a systematic approach to identify missing features, prioritize them, and create detailed specifications for implementation.'
+description: '不足している機能の特定・優先順位付け・詳細仕様作成のための体系的アプローチをガイド'
 agent: 'agent'
 ---
 

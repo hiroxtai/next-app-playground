@@ -1,5 +1,6 @@
 ---
-description: 'Guide for exploring websites to prepare for Playwright test generation'
+description: 'Playwright テスト生成の準備としてウェブサイトを探索・解析するガイド'
+agent: 'agent'
 ---
 
 # Playwright: Explore Website for Test Generation

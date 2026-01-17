@@ -1,5 +1,6 @@
 ---
-description: 'Generate an Architectural Decision Record (ADR) for documenting important architectural choices'
+agent: 'agent'
+description: 'アーキテクチャ上の重要な意思決定を記録する ADR（Architecture Decision Record）を生成'
 ---
 
 # ADR Generator

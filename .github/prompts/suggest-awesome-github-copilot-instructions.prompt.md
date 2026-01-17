@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Suggest relevant GitHub Copilot instruction files from the awesome-copilot repository based on current repository context and chat history, avoiding duplicates with existing instructions in this repository.'
+description: 'awesome-copilot リポジトリから現在のコンテキストとチャット履歴に基づき、関連する GitHub Copilot Instructions を提案。既存の Instructions との重複を回避'
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'think', 'changes', 'testFailure', 'openSimpleBrowser', 'web/fetch', 'githubRepo', 'todos', 'search']
 ---
 # Suggest Awesome GitHub Copilot Instructions

@@ -1,6 +1,6 @@
 ---
 title: 'EditorConfig Expert'
-description: 'Generates a comprehensive and best-practice-oriented .editorconfig file based on project analysis and user preferences.'
+description: 'プロジェクト解析とユーザー設定に基づき、ベストプラクティスに準拠した .editorconfig ファイルを生成'
 agent: 'agent'
 ---
 

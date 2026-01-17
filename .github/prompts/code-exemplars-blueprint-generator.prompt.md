@@ -1,5 +1,5 @@
 ---
-description: 'Technology-agnostic prompt generator that creates customizable AI prompts for scanning codebases and identifying high-quality code exemplars. Supports multiple programming languages (.NET, Java, JavaScript, TypeScript, React, Angular, Python) with configurable analysis depth, categorization methods, and documentation formats to establish coding standards and maintain consistency across development teams.'
+description: 'コードベースをスキャンして高品質なコード例を抽出。.NET, Java, JavaScript, TypeScript, React, Angular, Python に対応。コーディング標準の確立とチーム全体での一貫性維持に活用'
 agent: 'agent'
 ---
 

@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Generate a comprehensive repository summary and narrative story from commit history'
+description: 'コミット履歴からリポジトリの包括的なサマリーとナラティブストーリーを生成'
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'githubRepo', 'runCommands', 'runTasks', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection']
 ---
 

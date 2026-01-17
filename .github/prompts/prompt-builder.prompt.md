@@ -1,7 +1,7 @@
 ---
 agent: 'agent'
 tools: ['search/codebase', 'edit/editFiles', 'search']
-description: 'Guide users through creating high-quality GitHub Copilot prompts with proper structure, tools, and best practices.'
+description: '適切な構造・ツール・ベストプラクティスで高品質な GitHub Copilot プロンプト作成をガイド'
 ---
 
 # Professional Prompt Builder

@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create time-boxed technical spike documents for researching and resolving critical development decisions before implementation.'
+description: '実装前に重要な技術的判断を調査・解決するためのタイムボックス付きテクニカルスパイクドキュメントを作成'
 tools: ['runCommands', 'runTasks', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'web/fetch', 'githubRepo', 'todos', 'Microsoft Docs', 'search']
 ---
 

@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Prompt for creating an Epic Product Requirements Document (PRD) for a new epic. This PRD will be used as input for generating a technical architecture specification.'
+description: '新規 Epic の PRD（製品要件定義書）を作成。技術アーキテクチャ仕様書の入力として使用'
 ---
 
 # Epic Product Requirements Document (PRD) Prompt

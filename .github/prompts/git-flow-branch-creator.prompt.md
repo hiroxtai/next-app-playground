@@ -1,5 +1,5 @@
 ---
-description: 'Intelligent Git Flow branch creator that analyzes git status/diff and creates appropriate branches following the nvie Git Flow branching model.'
+description: 'git status/diff を解析し、nvie Git Flow ブランチモデルに従って適切なブランチを自動作成'
 tools: ['runCommands/runInTerminal', 'runCommands/getTerminalOutput']
 agent: 'agent'
 ---

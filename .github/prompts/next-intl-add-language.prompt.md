@@ -1,7 +1,7 @@
 ---
 agent: 'agent'
 tools: ['changes','search/codebase', 'edit/editFiles', 'findTestFiles', 'search', 'writeTest']
-description: 'Add new language to a Next.js + next-intl application'
+description: 'Next.js + next-intl アプリケーションに新しい言語を追加'
 ---
 
 This is a guide to add a new language to a Next.js project using next-intl for internationalization,

@@ -1,6 +1,6 @@
 ---
 agent: 'agent'
-description: 'Create a tldr page from documentation URLs and command examples, requiring both URL and command name.'
+description: 'ドキュメント URL とコマンド例から tldr ページを作成（URL とコマンド名の両方が必須）'
 tools: ['edit/createFile', 'web/fetch']
 ---
 

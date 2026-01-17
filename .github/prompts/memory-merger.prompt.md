@@ -1,5 +1,6 @@
 ---
-description: 'Merges mature lessons from a domain memory file into its instruction file. Syntax: `/memory-merger >domain [scope]` where scope is `global` (default), `user`, `workspace`, or `ws`.'
+description: 'ドメインメモリファイルの成熟したレッスンを Instruction ファイルに統合。構文: `/memory-merger >domain [scope]`（scope: global, user, workspace, ws）'
+agent: 'agent'
 ---
 
 # Memory Merger
