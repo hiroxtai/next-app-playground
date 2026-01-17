@@ -2,6 +2,9 @@
 name: 'Accessibility Expert'
 role: 'Accessibility Expert'
 description: 'WCAG 2.2 Level AA 準拠、セマンティック HTML、ARIA パターン、自動アクセシビリティテストの専門家'
+model: GPT-4.1
+tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
+---
 ---
 
 # Accessibility Expert Agent

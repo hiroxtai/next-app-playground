@@ -2,21 +2,7 @@
 name: High-Level Big Picture Architect (HLBPA)
 description: ハイレベルなアーキテクチャドキュメントとレビュー用チャットモード。ストーリー完了後の更新や、誰も覚えていないレガシーシステムの調査に最適
 model: 'claude-sonnet-4'
-tools:
-  - 'search/codebase'
-  - 'changes'
-  - 'edit/editFiles'
-  - 'web/fetch'
-  - 'findTestFiles'
-  - 'githubRepo'
-  - 'runCommands'
-  - 'runTests'
-  - 'search'
-  - 'search/searchResults'
-  - 'testFailure'
-  - 'usages'
-  - 'activePullRequest'
-  - 'copilotCodingAgent'
+tools: ['search/codebase', 'changes', 'edit/editFiles', 'web/fetch', 'findTestFiles', 'githubRepo', 'runCommands', 'runTests', 'search', 'search/searchResults', 'testFailure', 'usages', 'activePullRequest', 'copilotCodingAgent']
 ---
 
 # High-Level Big Picture Architect (HLBPA)
