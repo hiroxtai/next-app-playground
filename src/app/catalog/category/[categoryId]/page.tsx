@@ -66,7 +66,7 @@ export default function CategoryPage({
           {/* タイトル */}
           <div className="flex items-center gap-4">
             <div
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${style.gradient} text-white shadow-lg shadow-brand-500/20`}
+              className={`flex size-14 items-center justify-center rounded-2xl ${style.gradient} text-white shadow-lg shadow-brand-500/20`}
             >
               <Icon className="h-7 w-7" />
             </div>
@@ -81,7 +81,7 @@ export default function CategoryPage({
           </div>
 
           {/* ページ数バッジ */}
-          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-200/30 glass px-4 py-2">
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-200/30 bg-white/80 px-4 py-2 dark:bg-zinc-900/80">
             <BookOpen className="h-4 w-4 text-brand-600 dark:text-brand-400" />
             <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {pagesByCategory.length} ページ

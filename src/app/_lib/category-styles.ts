@@ -35,7 +35,7 @@ export interface CategoryStyle {
  * ```tsx
  * const style = categoryStyles["ui-basics"];
  * const Icon = style.icon;
- * <div className={`bg-gradient-to-br ${style.gradient}`}>
+ * <div className={style.gradient}>
  *   <Icon className="h-5 w-5" />
  * </div>
  * ```
@@ -43,28 +43,28 @@ export interface CategoryStyle {
 export const categoryStyles: Record<CategoryId, CategoryStyle> = {
   "ui-basics": {
     icon: Palette,
-    gradient: "from-pink-500 via-rose-500 to-red-500",
-    iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+    gradient: "bg-rose-500",
+    iconBg: "bg-rose-600",
   },
   layout: {
     icon: Layout,
-    gradient: "from-blue-500 via-cyan-500 to-teal-500",
-    iconBg: "bg-gradient-to-br from-blue-500 to-cyan-600",
+    gradient: "bg-sky-500",
+    iconBg: "bg-sky-600",
   },
   animation: {
     icon: Sparkles,
-    gradient: "from-amber-500 via-orange-500 to-yellow-500",
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+    gradient: "bg-amber-500",
+    iconBg: "bg-amber-600",
   },
   "react-hooks": {
     icon: Atom,
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-    iconBg: "bg-gradient-to-br from-violet-500 to-purple-600",
+    gradient: "bg-violet-500",
+    iconBg: "bg-violet-600",
   },
   "next-features": {
     icon: Rocket,
-    gradient: "from-emerald-500 via-green-500 to-lime-500",
-    iconBg: "bg-gradient-to-br from-emerald-500 to-green-600",
+    gradient: "bg-emerald-500",
+    iconBg: "bg-emerald-600",
   },
 };
 

@@ -64,9 +64,9 @@ export default function PageCard({
           aria-hidden="true"
         />
 
-        {/* 上部のグラデーションアクセント */}
+        {/* 上部のカラーアクセント */}
         <div
-          className={`h-1.5 w-full bg-gradient-to-r ${style.gradient} opacity-80 transition-opacity group-hover:opacity-100`}
+          className={`h-1.5 w-full ${style.gradient} opacity-80 transition-opacity group-hover:opacity-100`}
         />
 
         {/* ホバー時のグロー効果 */}

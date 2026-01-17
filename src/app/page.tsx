@@ -180,9 +180,7 @@ export default function Home() {
                   key={page.id}
                   className="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
-                  <div
-                    className={`h-1.5 w-full bg-gradient-to-r ${style.gradient}`}
-                  />
+                  <div className={`h-1.5 w-full ${style.gradient}`} />
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <div
@@ -248,7 +246,7 @@ export default function Home() {
                   className="group flex flex-col items-center rounded-xl border border-zinc-200/50 bg-white p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-800/50 dark:hover:border-zinc-700"
                 >
                   <div
-                    className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${style.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}
+                    className={`mb-4 flex size-14 items-center justify-center rounded-2xl ${style.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}
                   >
                     <Icon className="h-7 w-7" />
                   </div>
