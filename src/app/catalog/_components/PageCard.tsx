@@ -1,101 +1,132 @@
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { PageInfo } from "@/app/_lib/catalog-data";
+import { categoryStyles } from "@/app/_lib/category-styles";
+
+/** 難易度のスタイル */
+const difficultyStyles: Record<
+  PageInfo["difficulty"],
+  { bg: string; text: string; dot: string }
+> = {
+  初級: {
+    bg: "bg-emerald-50 dark:bg-emerald-950/50",
+    text: "text-emerald-700 dark:text-emerald-300",
+    dot: "bg-emerald-500",
+  },
+  中級: {
+    bg: "bg-amber-50 dark:bg-amber-950/50",
+    text: "text-amber-700 dark:text-amber-300",
+    dot: "bg-amber-500",
+  },
+  上級: {
+    bg: "bg-rose-50 dark:bg-rose-950/50",
+    text: "text-rose-700 dark:text-rose-300",
+    dot: "bg-rose-500",
+  },
+};
 
 /**
  * ページカードコンポーネント
- * 個別のサンプルページを表示するカード。
- * Atomic Design でいう molecules レベルのコンポーネント。
+ *
+ * @remarks
+ * 個別のサンプルページを表示するモダンなカード。
+ * カテゴリごとに異なるグラデーションとアイコンを表示します。
+ * 3D ホバー効果とノイズテクスチャで洗練された印象を与えます。
  */
 export default function PageCard({
   page,
   examplePath,
+  index = 0,
 }: {
   page: PageInfo;
   examplePath: string;
+  /** アニメーション遅延用のインデックス */
+  index?: number;
 }) {
-  const difficultyColor: Record<PageInfo["difficulty"], string> = {
-    初級: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-    中級: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-    上級: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  };
+  const style = categoryStyles[page.category];
+  const diffStyle = difficultyStyles[page.difficulty];
+  const Icon = style.icon;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition-all duration-200 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
-      {/* プレースホルダーサムネイル */}
-      <div className="relative h-40 overflow-hidden bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-200 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-5xl opacity-80 transition-transform duration-200 group-hover:scale-110">
-            {page.category === "ui-basics" && "🎨"}
-            {page.category === "layout" && "📐"}
-            {page.category === "animation" && "✨"}
-            {page.category === "react-hooks" && "⚛️"}
-            {page.category === "next-features" && "🚀"}
-          </div>
-        </div>
-        {/* グラデーションオーバーレイ */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent dark:from-black/30" />
-      </div>
+    <Link
+      href={examplePath}
+      className="perspective-card animate-fade-in-scale group"
+      style={
+        {
+          "--animation-delay": `${index * 60}ms`,
+        } as React.CSSProperties
+      }
+    >
+      <div className="perspective-card-inner relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/50 bg-white transition-all duration-300 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-500/10 dark:border-zinc-600/40 dark:bg-zinc-800/90 dark:hover:border-brand-500/50 dark:hover:shadow-brand-400/10">
+        {/* ノイズテクスチャオーバーレイ */}
+        <div
+          className="pointer-events-none absolute inset-0 noise-texture opacity-[0.02] mix-blend-overlay"
+          aria-hidden="true"
+        />
 
-      {/* カード本体 */}
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-3 flex items-start justify-between gap-2">
-          <h3 className="flex-1 text-lg font-semibold leading-tight text-zinc-900 dark:text-zinc-50">
+        {/* 上部のカラーアクセント */}
+        <div
+          className={`h-1.5 w-full ${style.gradient} opacity-80 transition-opacity group-hover:opacity-100`}
+        />
+
+        {/* カード本体 */}
+        <div className="relative flex flex-1 flex-col p-5">
+          {/* ヘッダー: アイコン + 難易度 */}
+          <div className="mb-4 flex items-start justify-between">
+            <div
+              className={`flex size-12 items-center justify-center rounded-xl ${style.iconBg} text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-xl`}
+            >
+              <Icon className="size-6" />
+            </div>
+
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${diffStyle.bg} ${diffStyle.text}`}
+            >
+              <span className={`size-1.5 rounded-full ${diffStyle.dot}`} />
+              {page.difficulty}
+            </span>
+          </div>
+
+          {/* タイトル */}
+          <h3 className="font-display mb-2 text-lg font-semibold text-zinc-900 transition-colors group-hover:text-brand-700 dark:text-zinc-100 dark:group-hover:text-brand-400">
             {page.title}
           </h3>
-          <span
-            className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${difficultyColor[page.difficulty]}`}
-          >
-            {page.difficulty}
-          </span>
-        </div>
 
-        <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {page.description}
-        </p>
+          {/* 説明 */}
+          <p className="mb-4 line-clamp-2 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+            {page.description}
+          </p>
 
-        {/* タグ */}
-        {page.tags && page.tags.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-1.5">
-            {page.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center rounded-md bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-700 ring-1 ring-inset ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700"
-              >
-                {tag}
-              </span>
-            ))}
-            {page.tags.length > 3 && (
-              <span className="inline-flex items-center text-xs text-zinc-500 dark:text-zinc-500">
-                +{page.tags.length - 3}
-              </span>
-            )}
+          {/* タグ */}
+          {page.tags && page.tags.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              {page.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 dark:bg-zinc-700/80 dark:text-zinc-200"
+                >
+                  {tag}
+                </span>
+              ))}
+              {page.tags.length > 3 && (
+                <span className="px-1 text-xs text-zinc-400 dark:text-zinc-500">
+                  +{page.tags.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* フッター */}
+          <div className="mt-auto flex items-center justify-between border-t border-brand-100/50 pt-4 dark:border-zinc-600/30">
+            <span className="text-sm font-medium text-zinc-500 transition-colors group-hover:text-brand-600 dark:text-zinc-400 dark:group-hover:text-brand-400">
+              詳細を見る
+            </span>
+            <div className="flex size-8 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-all duration-300 group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-400 dark:group-hover:bg-brand-500">
+              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </div>
           </div>
-        )}
-
-        {/* フッター */}
-        <div className="mt-auto pt-4">
-          <Link
-            href={examplePath}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-zinc-800 hover:shadow-md dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            <span>ページを開く</span>
-            <svg
-              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </Link>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
