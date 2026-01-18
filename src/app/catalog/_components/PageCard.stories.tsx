@@ -4,6 +4,14 @@
  * @remarks
  * このファイルでは PageCard コンポーネントのさまざまな状態を Story として定義しています。
  *
+ * ## デザインシステム
+ *
+ * PageCard は以下の新デザイン要素を取り入れています：
+ * - **3D ホバー効果**: perspective-card クラスによる奥行きのあるホバーアニメーション
+ * - **ノイズテクスチャ**: 微細なノイズオーバーレイでテクスチャ感を追加
+ * - **Brand カラー**: Teal 系のブランドカラーを使用（タグ、ボーダー、ホバー効果）
+ * - **グロー効果**: ホバー時に微細なグロー効果を表示
+ *
  * ## Story の書き方（CSF 3 形式）
  *
  * Story は Component Story Format (CSF) という形式で記述します。
@@ -193,5 +201,78 @@ export const ReactHooksCategory: Story = {
       tags: ["useState", "React", "Hooks"],
     },
     examplePath: "/examples/react-hooks/use-state",
+  },
+};
+
+// ============================================================================
+// グリッド表示
+// ============================================================================
+
+/**
+ * グリッド表示（複数カード）
+ *
+ * @remarks
+ * 実際のカタログページと同様のグリッドレイアウトで複数のカードを表示します。
+ * スタガードアニメーション（各カードが順番に出現）も確認できます。
+ */
+export const Grid: Story = {
+  args: {
+    page: {
+      id: "button-basics",
+      title: "ボタンの基礎",
+      description:
+        "異なるスタイルのボタンを実装し、Tailwind CSSでの表現方法を学びます。",
+      category: "ui-basics",
+      difficulty: "初級",
+      tags: ["Button", "Tailwind CSS"],
+    },
+    examplePath: "/examples/ui-basics/button-basics",
+    index: 0,
+  },
+  render: () => (
+    <div className="grid w-full max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <PageCard
+        page={{
+          id: "button-basics",
+          title: "ボタンの基礎",
+          description:
+            "異なるスタイルのボタンを実装し、Tailwind CSSでの表現方法を学びます。",
+          category: "ui-basics",
+          difficulty: "初級",
+          tags: ["Button", "Tailwind CSS"],
+        }}
+        examplePath="/examples/ui-basics/button-basics"
+        index={0}
+      />
+      <PageCard
+        page={{
+          id: "flexbox-layout",
+          title: "Flexboxレイアウト",
+          description:
+            "Flexboxを使用した柔軟なレイアウト設計とレスポンシブ対応。",
+          category: "layout",
+          difficulty: "中級",
+          tags: ["Flexbox", "Responsive"],
+        }}
+        examplePath="/examples/layout/flexbox-layout"
+        index={1}
+      />
+      <PageCard
+        page={{
+          id: "server-actions",
+          title: "Server Actions",
+          description:
+            "Next.js の Server Actions を使用したフォーム処理と API 連携。",
+          category: "next-features",
+          difficulty: "上級",
+          tags: ["Server Actions", "Next.js"],
+        }}
+        examplePath="/examples/next-features/server-actions"
+        index={2}
+      />
+    </div>
+  ),
+  parameters: {
+    layout: "padded",
   },
 };

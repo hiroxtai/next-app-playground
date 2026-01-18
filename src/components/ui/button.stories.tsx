@@ -39,6 +39,9 @@ const meta = {
         "secondary",
         "ghost",
         "link",
+        "brand",
+        "brand-outline",
+        "brand-ghost",
       ],
       description: "ボタンのスタイルバリアント",
     },
@@ -148,6 +151,52 @@ export const LinkVariant: Story = {
   args: {
     variant: "link",
     children: "Link",
+  },
+};
+
+// ============================================================================
+// Brand バリエーション（新デザインシステム）
+// ============================================================================
+
+/**
+ * Brand バリアント
+ *
+ * @remarks
+ * ブランドカラー（Teal）を使用したグラデーションボタン。
+ * 主要な CTA（Call to Action）に使用します。
+ */
+export const Brand: Story = {
+  args: {
+    variant: "brand",
+    children: "Get Started",
+  },
+};
+
+/**
+ * Brand Outline バリアント
+ *
+ * @remarks
+ * ブランドカラーの境界線を持つボタン。
+ * セカンダリな CTA に使用します。
+ */
+export const BrandOutline: Story = {
+  args: {
+    variant: "brand-outline",
+    children: "Learn More",
+  },
+};
+
+/**
+ * Brand Ghost バリアント
+ *
+ * @remarks
+ * ブランドカラーのテキストを持つ透明なボタン。
+ * ナビゲーションやサブアクションに使用します。
+ */
+export const BrandGhost: Story = {
+  args: {
+    variant: "brand-ghost",
+    children: "View Details",
   },
 };
 
@@ -302,13 +351,20 @@ export const ClickTest: Story = {
  */
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-4">
-      <Button variant="default">Default</Button>
-      <Button variant="destructive">Destructive</Button>
-      <Button variant="outline">Outline</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="link">Link</Button>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap gap-4">
+        <Button variant="default">Default</Button>
+        <Button variant="destructive">Destructive</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="link">Link</Button>
+      </div>
+      <div className="flex flex-wrap gap-4">
+        <Button variant="brand">Brand</Button>
+        <Button variant="brand-outline">Brand Outline</Button>
+        <Button variant="brand-ghost">Brand Ghost</Button>
+      </div>
     </div>
   ),
 };
