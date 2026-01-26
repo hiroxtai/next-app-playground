@@ -1,14 +1,19 @@
 {
   "servers": {
-    "awesome-copilot": {
+    "oraios/serena": {
       "type": "stdio",
-      "command": "docker",
+      "command": "uvx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "ghcr.io/microsoft/mcp-dotnet-samples/awesome-copilot:latest"
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project",
+        "${workspaceFolder}"
       ]
     }
-  }
+  },
+  "inputs": []
 }
