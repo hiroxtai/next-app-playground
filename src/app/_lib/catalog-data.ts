@@ -131,6 +131,42 @@ export const pages: PageInfo[] = [
     difficulty: "中級",
     tags: ["Server Components", "Next.js"],
   },
+  {
+    id: "custom-hooks",
+    title: "カスタムフック",
+    description:
+      "useLocalStorageやuseDebounceなど、再利用可能なカスタムフックの作成方法。",
+    category: "react-hooks",
+    difficulty: "中級",
+    tags: ["Custom Hooks", "React", "再利用"],
+  },
+  {
+    id: "server-actions",
+    title: "Server Actions",
+    description:
+      "フォーム送信とサーバー処理を統合するServer Actionsの実装パターン。",
+    category: "next-features",
+    difficulty: "中級",
+    tags: ["Server Actions", "Form", "Next.js"],
+  },
+  {
+    id: "suspense-loading",
+    title: "Suspense とローディング",
+    description:
+      "React Suspenseを使用した非同期コンポーネントのローディング状態管理。",
+    category: "next-features",
+    difficulty: "上級",
+    tags: ["Suspense", "Loading", "Streaming"],
+  },
+  {
+    id: "compound-components",
+    title: "Compound Components",
+    description:
+      "複合コンポーネントパターンによる柔軟で再利用可能なUIコンポーネント設計。",
+    category: "react-hooks",
+    difficulty: "上級",
+    tags: ["Design Patterns", "Context", "コンポーネント設計"],
+  },
 ];
 
 /**
