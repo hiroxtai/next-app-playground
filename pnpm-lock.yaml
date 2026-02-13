@@ -79,8 +79,8 @@ importers:
         specifier: ^10.2.4
         version: 10.2.4(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@storybook/addon-docs':
-        specifier: ^10.2.4
-        version: 10.2.4(@types/react@19.2.14)(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))
+        specifier: ^10.2.7
+        version: 10.2.7(@types/react@19.2.14)(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))
       '@storybook/addon-onboarding':
         specifier: ^10.2.4
         version: 10.2.4(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
@@ -1543,10 +1543,10 @@ packages:
     peerDependencies:
       storybook: ^10.2.4
 
-  '@storybook/addon-docs@10.2.4':
-    resolution: {integrity: sha512-FzscAmdBiOGnGrxiEM+8eTg43kjqgjLfObg+lbJVRR/a0DmZ3xfAPNB0+VKYQbN0FacNcWLM9LZ/7U0hRBPBnQ==}
+  '@storybook/addon-docs@10.2.7':
+    resolution: {integrity: sha512-RHw+uHA05A7t48OtVu6gvNOueSGK8P/5NCmVRl3Vx/Kg3mxCyU2nGOHwWBt3C3CsWOLioZPsa7f5UdjOkhJ35Q==}
     peerDependencies:
-      storybook: ^10.2.4
+      storybook: ^10.2.7
 
   '@storybook/addon-onboarding@10.2.4':
     resolution: {integrity: sha512-Z0FinInZ1wGcLSaPur1hQesx1PzoChejLomK/MqPQG+oiZf9Pa4lJWnoFglMGpvETG5n7+sjsnVTkUr6haNm5w==}
@@ -1581,24 +1581,6 @@ packages:
     peerDependencies:
       storybook: ^10.2.7
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
-
-  '@storybook/csf-plugin@10.2.4':
-    resolution: {integrity: sha512-kupPQEV+4N9mzsZHYaokvhO/KHBjYdWda9PNmPQwy0TR7r2mzthgaNH72TjmgN1L6DIbsuyOG1wtczcPJn4+Jg==}
-    peerDependencies:
-      esbuild: '*'
-      rollup: '*'
-      storybook: ^10.2.4
-      vite: '*'
-      webpack: '*'
-    peerDependenciesMeta:
-      esbuild:
-        optional: true
-      rollup:
-        optional: true
-      vite:
-        optional: true
-      webpack:
-        optional: true
 
   '@storybook/csf-plugin@10.2.7':
     resolution: {integrity: sha512-10JblhVYXYmz+XjU86kvAV6pdqCLdkgGcARS6ehhR6W98lKGskWhLNgu4KM9BEKa/2roH8je+DmrlX3ugkMEgw==}
@@ -1639,13 +1621,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  '@storybook/react-dom-shim@10.2.4':
-    resolution: {integrity: sha512-i22OtrZ7GeZPt/odLf0vqyDhRSKyaLsHkkKSBcANQfzRRnBZmiz2FchOtWm9uvoDWybQsTruZq7kTdtpEhwyGw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.2.4
 
   '@storybook/react-dom-shim@10.2.7':
     resolution: {integrity: sha512-TCD46eKy0JlqUU3DZDaJNecen09HjT74NpJjmgpwOyMXrm+Wl/HfshMyn4GZj/rVQfFN90udNp0NzfbBAPbJAQ==}
@@ -4075,12 +4050,12 @@ snapshots:
       axe-core: 4.11.1
       storybook: 10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
-  '@storybook/addon-docs@10.2.4(@types/react@19.2.14)(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))':
+  '@storybook/addon-docs@10.2.7(@types/react@19.2.14)(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       '@mdx-js/react': 3.1.1(@types/react@19.2.14)(react@19.2.4)
-      '@storybook/csf-plugin': 10.2.4(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))
+      '@storybook/csf-plugin': 10.2.7(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))
       '@storybook/icons': 2.0.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@storybook/react-dom-shim': 10.2.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+      '@storybook/react-dom-shim': 10.2.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       storybook: 10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -4126,15 +4101,6 @@ snapshots:
       - rollup
       - webpack
 
-  '@storybook/csf-plugin@10.2.4(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))':
-    dependencies:
-      storybook: 10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      unplugin: 2.3.11
-    optionalDependencies:
-      esbuild: 0.27.3
-      rollup: 4.55.1
-      vite: 7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2)
-
   '@storybook/csf-plugin@10.2.7(esbuild@0.27.3)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       storybook: 10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -4172,12 +4138,6 @@ snapshots:
       - rollup
       - supports-color
       - webpack
-
-  '@storybook/react-dom-shim@10.2.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
-    dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      storybook: 10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@storybook/react-dom-shim@10.2.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.7(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
