@@ -32,6 +32,11 @@ export const categories = [
     label: "Next.js機能",
     description: "App Router、Server Components、その他Next.js固有機能",
   },
+  {
+    id: "ai",
+    label: "AI",
+    description: "Vercel AI SDKを使用したAIアプリケーション開発",
+  },
 ] as const;
 
 /**
@@ -166,6 +171,15 @@ export const pages: PageInfo[] = [
     category: "react-hooks",
     difficulty: "上級",
     tags: ["Design Patterns", "Context", "コンポーネント設計"],
+  },
+  {
+    id: "chatbot",
+    title: "AI チャットボット",
+    description:
+      "Vercel AI SDKのuseChat フックとstreamTextを使用したSSEストリーミング対応チャットボット。",
+    category: "ai",
+    difficulty: "中級",
+    tags: ["AI SDK", "useChat", "SSE", "OpenAI"],
   },
 ];
 
