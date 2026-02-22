@@ -33,6 +33,11 @@ export const categories = [
     description: "App Router、Server Components、その他Next.js固有機能",
   },
   {
+    id: "state-management",
+    label: "状態管理",
+    description: "Jotaiなどの状態管理ライブラリの使い方",
+  },
+  {
     id: "ai",
     label: "AI",
     description: "Vercel AI SDKを使用したAIアプリケーション開発",
@@ -171,6 +176,32 @@ export const pages: PageInfo[] = [
     category: "react-hooks",
     difficulty: "上級",
     tags: ["Design Patterns", "Context", "コンポーネント設計"],
+  },
+  {
+    id: "jotai-basics",
+    title: "Jotai 基礎",
+    description: "Jotaiのatom・useAtomフックを使ったシンプルな状態管理の基礎。",
+    category: "state-management",
+    difficulty: "初級",
+    tags: ["Jotai", "状態管理", "Atom"],
+  },
+  {
+    id: "jotai-derived",
+    title: "Jotai 派生Atom",
+    description:
+      "読み取り専用・書き込み専用・読み書き可能な派生Atomの作成方法。",
+    category: "state-management",
+    difficulty: "中級",
+    tags: ["Jotai", "Derived Atom", "状態管理"],
+  },
+  {
+    id: "jotai-todo-app",
+    title: "Jotai Todoアプリ",
+    description:
+      "Jotaiを使った本格的なTodoアプリで学ぶ、実践的な状態管理パターン。",
+    category: "state-management",
+    difficulty: "上級",
+    tags: ["Jotai", "CRUD", "atomFamily", "実践"],
   },
   {
     id: "chatbot",
