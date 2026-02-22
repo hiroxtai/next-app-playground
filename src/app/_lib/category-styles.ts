@@ -9,6 +9,7 @@
 import {
   Atom,
   Bot,
+  Database,
   Layout,
   type LucideIcon,
   Palette,
@@ -66,6 +67,11 @@ export const categoryStyles: Record<CategoryId, CategoryStyle> = {
     icon: Rocket,
     gradient: "bg-emerald-500",
     iconBg: "bg-emerald-600",
+  },
+  "state-management": {
+    icon: Database,
+    gradient: "bg-cyan-500",
+    iconBg: "bg-cyan-600",
   },
   ai: {
     icon: Bot,
