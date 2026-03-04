@@ -1,5 +1,8 @@
 import { openai } from "@ai-sdk/openai";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { logger } from "@/lib/logger";
+
+const chatLogger = logger.child({ module: "api/chat" });
 
 /**
  * ストリーミングレスポンスの最大持続時間（秒）
@@ -28,6 +31,11 @@ export const maxDuration = 30;
  */
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
+
+  chatLogger.info(
+    { messageCount: messages.length },
+    "チャットリクエストを受信",
+  );
 
   const result = streamText({
     // OpenAI のモデルを指定（学習用なのでコスト効率の良い gpt-4o-mini を使用）

@@ -8,6 +8,8 @@
  * すべてサーバーサイドで実行される Server Actions になります。
  */
 
+import { logger } from "@/lib/logger";
+
 // 連絡フォームの送信結果
 export interface ContactFormState {
   success: boolean;
@@ -51,7 +53,7 @@ export async function submitContactForm(
   }
 
   // 実際のアプリケーションではここでデータベース保存やメール送信を行う
-  console.log("Contact form submitted:", { name, email, message });
+  logger.info({ name, email, message }, "お問い合わせフォームが送信されました");
 
   return {
     success: true,
