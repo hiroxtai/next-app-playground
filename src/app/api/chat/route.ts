@@ -17,6 +17,9 @@ export const maxDuration = 30;
  * Vercel AI SDK の `streamText` を使用して、OpenAI の GPT-4o-mini モデルから
  * SSE（Server-Sent Events）形式でレスポンスをストリーミングします。
  *
+ * **必要な環境変数:**
+ * - `OPENAI_API_KEY`: OpenAI の API キー（`.env.local` に設定）
+ *
  * **処理の流れ:**
  * 1. クライアントから送信されたメッセージ配列を受け取る
  * 2. `convertToModelMessages` で UI メッセージをモデル形式に変換
@@ -27,6 +30,16 @@ export const maxDuration = 30;
  * @returns SSE 形式のストリーミングレスポンス
  */
 export async function POST(req: Request) {
+  // 環境変数のチェック
+  if (!process.env.OPENAI_API_KEY) {
+    return new Response(
+      JSON.stringify({
+        error:
+          "OPENAI_API_KEY が設定されていません。.env.local に OPENAI_API_KEY=sk-... を追加してください。",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
+  }
   const { messages }: { messages: UIMessage[] } = await req.json();
 
   const result = streamText({

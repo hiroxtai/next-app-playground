@@ -1,6 +1,5 @@
 import { BookOpen } from "lucide-react";
 import { notFound } from "next/navigation";
-import { use } from "react";
 import { categories, getPagesByCategory } from "@/app/_lib/catalog-data";
 import { categoryStyles } from "@/app/_lib/category-styles";
 import { AppBreadcrumb } from "@/components/app-breadcrumb";
@@ -13,14 +12,17 @@ import { PageCard } from "../../_components";
  * 指定したカテゴリのページのみをフィルタして表示します。
  * パンくずリストでカタログ → カテゴリの階層を明示し、
  * ユーザーが現在どのカテゴリを閲覧しているか分かりやすくします。
+ *
+ * Next.js 16 では動的ルートの params が Promise として提供されるため、
+ * async/await で解決します。React 19 の `use()` フックも代替手段として利用可能です。
  */
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
   params: Promise<{ categoryId: string }>;
 }) {
-  // 非同期のpramsを処理（Next.js 15+）
-  const { categoryId } = use(params);
+  // Next.js 16 ではパラメータが Promise として提供されるため await で解決する
+  const { categoryId } = await params;
 
   // カテゴリ情報を取得
   const category = categories.find((cat) => cat.id === categoryId);

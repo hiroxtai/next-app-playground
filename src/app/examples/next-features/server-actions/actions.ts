@@ -36,7 +36,9 @@ export async function submitContactForm(
     };
   }
 
-  if (!email || !email.includes("@")) {
+  // 簡易的なメールバリデーション
+  // 本番アプリでは zod などのバリデーションライブラリの使用を推奨します
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return {
       success: false,
       message: "正しいメールアドレスを入力してください",
@@ -60,6 +62,8 @@ export async function submitContactForm(
 }
 
 // TODOリストの状態
+// useActionState のクライアント側ステートとして保持されるため、
+// ページリロードでリセットされます。本番アプリではデータベース等への永続化が必要です。
 export interface TodoState {
   todos: string[];
   message: string;

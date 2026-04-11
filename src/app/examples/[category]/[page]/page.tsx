@@ -52,13 +52,20 @@ export default async function ExamplePage({
             {pageInfo.description}
           </p>
 
-          {/* プレースホルダー */}
-          <div className="rounded-lg border-2 border-dashed border-zinc-300 bg-zinc-50 p-12 text-center dark:border-zinc-700 dark:bg-zinc-900">
-            <p className="text-zinc-600 dark:text-zinc-400">
-              このページは学習用テンプレートです。
-              <br />
-              サンプルコンテンツはここに表示されます。
+          {/* 準備中の表示 */}
+          <div className="rounded-lg border-2 border-dashed border-amber-300 bg-amber-50 p-12 text-center dark:border-amber-700 dark:bg-amber-900/20">
+            <p className="text-lg font-semibold text-amber-800 dark:text-amber-200">
+              🚧 このサンプルは準備中です
             </p>
+            <p className="mt-2 text-amber-700 dark:text-amber-300">
+              専用の実装ページは近日公開予定です。
+            </p>
+            <Link
+              href="/catalog"
+              className="mt-4 inline-block text-sm font-medium text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
+            >
+              ← カタログに戻る
+            </Link>
           </div>
 
           {/* タグ表示 */}
