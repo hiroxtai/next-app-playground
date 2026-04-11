@@ -206,9 +206,7 @@ echo "✅ worktree とブランチの削除が完了しました！"
 echo ""
 echo "【削除されたもの】"
 echo "- Worktree: $WORKTREE_DIR"
-if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME" 2>/dev/null; then
-  : # ブランチは既に削除されている
-else
+if ! git show-ref --verify --quiet "refs/heads/$BRANCH_NAME" 2>/dev/null; then
   echo "- ブランチ: $BRANCH_NAME"
 fi
 echo ""

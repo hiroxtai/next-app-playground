@@ -69,8 +69,8 @@ export function Accordion({ children, defaultIndex = null }: AccordionProps) {
       <div className="divide-y divide-border rounded-lg border">
         {/* Children.map + cloneElement で子要素に index を自動付与 */}
         {Children.map(children, (child, index) => {
-          if (isValidElement(child)) {
-            return cloneElement(child, { index } as { index: number });
+          if (isValidElement<AccordionItemProps>(child)) {
+            return cloneElement(child, { index });
           }
           return child;
         })}

@@ -14,7 +14,10 @@ import { PageCard } from "../../_components";
  * ユーザーが現在どのカテゴリを閲覧しているか分かりやすくします。
  *
  * Next.js 16 では動的ルートの params が Promise として提供されるため、
- * async/await で解決します。React 19 の `use()` フックも代替手段として利用可能です。
+ * async Server Component で await して解決します。
+ * Server Component では async/await が最も直感的かつ Next.js 公式ドキュメントの
+ * 推奨パターンです（Client Component では async が使えないため、
+ * 代わりに React 19 の `use()` フックを使用します）。
  */
 export default async function CategoryPage({
   params,

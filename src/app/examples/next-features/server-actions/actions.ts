@@ -36,8 +36,10 @@ export async function submitContactForm(
     };
   }
 
-  // 簡易的なメールバリデーション
-  // 本番アプリでは zod などのバリデーションライブラリの使用を推奨します
+  // 簡易的なメールバリデーション（学習用）
+  // この正規表現は「@を含み、ドメイン部分にドットがある」程度の最低限チェックです。
+  // user+tag@ 形式、国際化ドメイン名、連続ドットなどは正しく検証できません。
+  // 本番アプリでは zod（z.string().email()）や validator.js の使用を推奨します。
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return {
       success: false,
