@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { createAnimationDelayStyle } from "@/app/examples/_components";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -30,7 +31,7 @@ export default function HelloWorldPage() {
         {/* ヒーローセクション */}
         <header
           className="animate-fade-in-scale mb-16 text-center"
-          style={{ "--animation-delay": "0ms" } as React.CSSProperties}
+          style={createAnimationDelayStyle(0)}
         >
           <Badge variant="secondary" className="mb-6">
             Sample Page
@@ -51,7 +52,7 @@ export default function HelloWorldPage() {
           {/* このページについて */}
           <Card
             className="animate-fade-in-up sm:col-span-2"
-            style={{ "--animation-delay": "100ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(100)}
           >
             <CardHeader>
               <CardTitle>このページについて</CardTitle>
@@ -80,7 +81,7 @@ export default function HelloWorldPage() {
           {/* 使用技術 */}
           <Card
             className="animate-fade-in-up"
-            style={{ "--animation-delay": "200ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(200)}
           >
             <CardHeader>
               <CardTitle>使用技術</CardTitle>
@@ -115,7 +116,7 @@ export default function HelloWorldPage() {
           {/* Next Steps */}
           <Card
             className="animate-fade-in-up border-brand-200/50 bg-gradient-to-br from-brand-50/50 to-brand-100/30 dark:border-brand-800/30 dark:from-brand-950/50 dark:to-brand-900/30"
-            style={{ "--animation-delay": "300ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(300)}
           >
             <CardHeader>
               <CardTitle>Next Steps</CardTitle>

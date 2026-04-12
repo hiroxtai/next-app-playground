@@ -10,9 +10,12 @@
  * 2. storybook プロジェクト: Story のテスト（ブラウザ環境）
  *
  * テスト実行方法:
- * - 単体テストのみ: pnpm test --project=unit
- * - Storybook テストのみ: pnpm test:storybook（--project=storybook）
- * - 全プロジェクト: pnpm test（projects 配列内のすべて）
+ * - 単体テストのみ（watch）: pnpm test:unit
+ * - 単体テストのみ（non-watch）: pnpm test:unit:run
+ * - Storybook テストのみ（watch）: pnpm test:storybook
+ * - Storybook テストのみ（non-watch）: pnpm test:storybook:run
+ * - 全プロジェクト（watch）: pnpm test（projects 配列内のすべて）
+ * - 全プロジェクト（non-watch）: pnpm test:run
  *
  * CI では単体テストと Storybook テストを分離して実行することを推奨:
  * - test ジョブ: --project=unit（Playwright 不要）

@@ -17,6 +17,7 @@ import { addTodo, type TodoState } from "../actions";
 export function TodoForm() {
   const initialState: TodoState = {
     todos: [],
+    status: "idle",
     message: "",
   };
 
@@ -42,17 +43,22 @@ export function TodoForm() {
         </Button>
       </form>
 
-      {state.message && (
-        <p className="text-sm text-muted-foreground">{state.message}</p>
+      {state.status !== "idle" && (
+        <p
+          className={`text-sm ${
+            state.status === "success"
+              ? "text-green-700 dark:text-green-400"
+              : "text-red-700 dark:text-red-400"
+          }`}
+        >
+          {state.message}
+        </p>
       )}
 
       <ul className="space-y-2">
-        {state.todos.map((todo, index) => (
-          <li
-            key={`todo-${todo}-${index}`}
-            className="rounded-lg bg-muted px-4 py-2 text-sm"
-          >
-            {todo}
+        {state.todos.map((todo) => (
+          <li key={todo.id} className="rounded-lg bg-muted px-4 py-2 text-sm">
+            {todo.text}
           </li>
         ))}
         {state.todos.length === 0 && (

@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { createAnimationDelayStyle } from "@/app/examples/_components";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,7 +40,7 @@ export default function FadeTransitionPage() {
         {/* ヒーローセクション */}
         <header
           className="animate-fade-in-scale mb-16 text-center"
-          style={{ "--animation-delay": "0ms" } as React.CSSProperties}
+          style={createAnimationDelayStyle(0)}
         >
           <Badge variant="secondary" className="mb-6">
             Animation
@@ -60,7 +61,7 @@ export default function FadeTransitionPage() {
           {/* フェードイン/アウト */}
           <Card
             className="animate-fade-in-up sm:col-span-2"
-            style={{ "--animation-delay": "100ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(100)}
           >
             <CardHeader>
               <CardTitle>フェードイン / アウト</CardTitle>
@@ -91,7 +92,7 @@ export default function FadeTransitionPage() {
           {/* ホバーエフェクト */}
           <Card
             className="animate-fade-in-up"
-            style={{ "--animation-delay": "200ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(200)}
           >
             <CardHeader>
               <CardTitle>ホバーエフェクト</CardTitle>
@@ -112,7 +113,7 @@ export default function FadeTransitionPage() {
           {/* スケールトランジション */}
           <Card
             className="animate-fade-in-up"
-            style={{ "--animation-delay": "300ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(300)}
           >
             <CardHeader>
               <CardTitle>スケールトランジション</CardTitle>
@@ -135,7 +136,7 @@ export default function FadeTransitionPage() {
           {/* スライドトランジション */}
           <Card
             className="animate-fade-in-up"
-            style={{ "--animation-delay": "400ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(400)}
           >
             <CardHeader>
               <CardTitle>スライドトランジション</CardTitle>
@@ -160,7 +161,7 @@ export default function FadeTransitionPage() {
           {/* 複合トランジション */}
           <Card
             className="animate-fade-in-up"
-            style={{ "--animation-delay": "500ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(500)}
           >
             <CardHeader>
               <CardTitle>複合トランジション</CardTitle>
@@ -180,7 +181,7 @@ export default function FadeTransitionPage() {
           {/* Next Steps */}
           <Card
             className="animate-fade-in-up border-brand-200/50 bg-gradient-to-br from-brand-50/50 to-brand-100/30 dark:border-brand-800/30 dark:from-brand-950/50 dark:to-brand-900/30"
-            style={{ "--animation-delay": "600ms" } as React.CSSProperties}
+            style={createAnimationDelayStyle(600)}
           >
             <CardHeader>
               <CardTitle>Next Steps</CardTitle>

@@ -75,8 +75,8 @@ next-app-playground/
 
 ### 必要な環境
 
-- Node.js 18.17 以上
-- pnpm (推奨)
+- Node.js 22（CI と同じバージョンを推奨）
+- pnpm 9
 
 ### インストール
 
@@ -107,19 +107,46 @@ pnpm lint
 
 ### テストコマンド
 
+**Watch モード（ローカル開発向け）**
+
 ```bash
-# テストを実行（watch mode）
+# 全テストを実行
 pnpm test
 
-# テストを1回だけ実行（CI用）
-pnpm test -- --run
+# ユニットテストのみ
+pnpm test:unit
 
-# UIモードでテストを実行
+# Storybook テストのみ
+pnpm test:storybook
+```
+
+**Non-watch モード（CI / 1回実行向け）**
+
+```bash
+# 全プロジェクトを1回だけ実行
+pnpm test:run
+
+# ユニットテストを1回だけ実行（CIで使用）
+pnpm test:unit:run
+
+# Storybook テストを1回だけ実行（CIで使用）
+pnpm test:storybook:run
+```
+
+**補助コマンド**
+
+```bash
+# UI モード
 pnpm test:ui
 
 # カバレッジを計測
 pnpm test:coverage
 ```
+
+> CI では `pnpm test:unit:run -- --reporter=verbose` と
+> `pnpm test:storybook:run -- --reporter=verbose` を実行します。
+> `test:storybook*` は Playwright を使うため、初回のみ
+> `pnpm exec playwright install chromium` が必要です（CI では自動実行）。
 
 ### Storybook コマンド
 
@@ -234,16 +261,16 @@ git commit --no-verify -m "緊急修正"
 
 このプロジェクトでは、コード品質とセキュリティを保つために GitHub Actions を使用しています。
 
-- ✅ **自動テスト**: リント・型チェック・ビルドを自動実行
-- 🎨 **フォーマットチェック**: コードスタイルの一貫性を保証
+- ✅ **CI (`ci.yml`)**: `pnpm lint`、`pnpm type-check`、`pnpm test:unit:run -- --reporter=verbose`、`pnpm test:storybook:run -- --reporter=verbose`、`pnpm build` を自動実行
+- 🎨 **Format Check**: `pnpm biome ci` でフォーマット・リントを検証
 - 🔒 **セキュリティレビュー**: 依存関係の脆弱性を自動検出
-- 🤖 **自動更新**: Dependabot による依存関係の週次更新
+- 🤖 **自動承認/更新**: `auto-approve` ラベル付き PR の自動承認と Dependabot 更新の自動化
 
 各ワークフローには学習用のコメントが記載されています。詳細は [GitHub Actions ドキュメント](.github/workflows/README.md) を参照してください。
 
 ## テスト
 
-このプロジェクトでは **Vitest** と **React Testing Library** を使用して、コンポーネントとロジックの単体テストを実装しています。
+このプロジェクトでは **Vitest** と **React Testing Library** を使用して、コンポーネントとロジックのユニットテスト、Storybook のインタラクションテストを実装しています。
 
 ### テストの方針
 
@@ -297,7 +324,7 @@ describe("MyComponent", () => {
 
 ### CI での自動実行
 
-すべてのテストは GitHub Actions で自動実行されます。プルリクエストやプッシュ時に、リント・型チェックと並行して実行されるため、品質を保ちながら開発を進められます。
+GitHub Actions では、ユニットテスト（`test:unit:run`）と Storybook テスト（`test:storybook:run`）を非 watch モードで実行します。リント・型チェックと並行実行されるため、品質を保ちながら開発を進められます。
 
 詳細なガイドラインは [GitHub Copilot Instructions](.github/copilot-instructions.md) を参照してください。
 
@@ -338,6 +365,7 @@ describe("MyComponent", () => {
 このプロジェクトでは以下の内容を学ぶことができます：
 
 - App Router の基本的な使い方
+- 動的ルートでの `generateStaticParams` / `generateMetadata` 活用
 - TypeScript と Next.js の統合
 - Biome による効率的なコード管理
 - React Compiler の活用

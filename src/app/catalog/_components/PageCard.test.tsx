@@ -144,6 +144,8 @@ describe("PageCard Component", () => {
     ["animation", "lucide-sparkles"],
     ["react-hooks", "lucide-atom"],
     ["next-features", "lucide-rocket"],
+    ["state-management", "lucide-database"],
+    ["ai", "lucide-bot"],
   ] as const)("should render category icon for %s category", (category, expectedIconClass) => {
     const mockPage: PageInfo = {
       id: "test-page",

@@ -17,10 +17,15 @@ import { type ContactFormState, submitContactForm } from "../actions";
  * useActionState を使用して Server Action の状態を管理します。
  */
 export function ContactForm() {
+  const initialState: ContactFormState = {
+    status: "idle",
+    message: "",
+  };
+
   const [state, formAction, isPending] = useActionState<
-    ContactFormState | null,
+    ContactFormState,
     FormData
-  >(submitContactForm, null);
+  >(submitContactForm, initialState);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -70,15 +75,15 @@ export function ContactForm() {
         )}
       </Button>
 
-      {state && (
+      {state.status !== "idle" && (
         <div
           className={`flex items-center gap-2 rounded-lg p-3 text-sm ${
-            state.success
+            state.status === "success"
               ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
               : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
           }`}
         >
-          {state.success ? (
+          {state.status === "success" ? (
             <CheckCircle2 className="size-4" />
           ) : (
             <XCircle className="size-4" />
