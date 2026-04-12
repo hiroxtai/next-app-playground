@@ -30,7 +30,7 @@ jobs:
       # 更新タイプ（patch/minor/major）や依存関係の種類を判定するために使用
       - name: Fetch Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v3
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
