@@ -46,17 +46,25 @@ function CurrentTime() {
   );
 }
 
+type LifecycleLog = {
+  id: string;
+  message: string;
+};
+
 export default function UseEffectLifecyclePage() {
   const [showClock, setShowClock] = useState(true);
   const [count, setCount] = useState(0);
-  const [logs, setLogs] = useState<string[]>([]);
+  const [logs, setLogs] = useState<LifecycleLog[]>([]);
 
   // マウント時のみ実行
   useEffect(() => {
     const timestamp = new Date().toLocaleTimeString("ja-JP");
     setLogs((prev) => [
       ...prev,
-      `[${timestamp}] コンポーネントがマウントされました`,
+      {
+        id: crypto.randomUUID(),
+        message: `[${timestamp}] コンポーネントがマウントされました`,
+      },
     ]);
   }, []);
 
@@ -66,7 +74,10 @@ export default function UseEffectLifecyclePage() {
       const timestamp = new Date().toLocaleTimeString("ja-JP");
       setLogs((prev) => [
         ...prev,
-        `[${timestamp}] count が ${count} に変更されました`,
+        {
+          id: crypto.randomUUID(),
+          message: `[${timestamp}] count が ${count} に変更されました`,
+        },
       ]);
     }
   }, [count]);
@@ -205,12 +216,9 @@ export default function UseEffectLifecyclePage() {
               <div className="h-48 overflow-y-auto rounded-lg bg-muted p-4">
                 {logs.length > 0 ? (
                   <ul className="space-y-1 font-mono text-sm">
-                    {logs.map((log, index) => (
-                      <li
-                        key={`log-${index}`}
-                        className="text-muted-foreground"
-                      >
-                        {log}
+                    {logs.map((log) => (
+                      <li key={log.id} className="text-muted-foreground">
+                        {log.message}
                       </li>
                     ))}
                   </ul>

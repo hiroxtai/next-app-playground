@@ -1,6 +1,46 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPageById } from "@/app/_lib/catalog-data";
+import { categories, getPageById, pages } from "@/app/_lib/catalog-data";
+
+type ExamplePageParams = {
+  category: string;
+  page: string;
+};
+
+export function generateStaticParams(): ExamplePageParams[] {
+  return pages.map((pageInfo) => ({
+    category: pageInfo.category,
+    page: pageInfo.id,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<ExamplePageParams>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const pageInfo = getPageById(resolvedParams.page);
+
+  if (!pageInfo || pageInfo.category !== resolvedParams.category) {
+    return {
+      title: "サンプルが見つかりません",
+      description:
+        "指定されたサンプルページは存在しないか、カテゴリが一致しません。",
+    };
+  }
+
+  const categoryLabel =
+    categories.find((category) => category.id === pageInfo.category)?.label ??
+    pageInfo.category;
+
+  return {
+    title: `${pageInfo.title} | ${categoryLabel}`,
+    description: pageInfo.description,
+    keywords: pageInfo.tags,
+  };
+}
 
 /**
  * サンプルページ表示ページ
@@ -9,7 +49,7 @@ import { getPageById } from "@/app/_lib/catalog-data";
 export default async function ExamplePage({
   params,
 }: {
-  params: Promise<{ category: string; page: string }>;
+  params: Promise<ExamplePageParams>;
 }) {
   const { category, page } = await params;
 

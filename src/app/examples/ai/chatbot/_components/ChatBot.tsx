@@ -24,6 +24,7 @@ function ChatMessage({
   };
 }) {
   const isUser = message.role === "user";
+  const partOccurrenceMap = new Map<string, number>();
 
   return (
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
@@ -46,11 +47,16 @@ function ChatMessage({
             : "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
         }`}
       >
-        {message.parts.map((part, index) => {
+        {message.parts.map((part) => {
           if (part.type === "text") {
+            const partSignature = `${part.type}:${part.text ?? ""}`;
+            const occurrence = (partOccurrenceMap.get(partSignature) ?? 0) + 1;
+            partOccurrenceMap.set(partSignature, occurrence);
+            const partKey = `${message.id}:${partSignature}:${occurrence}`;
+
             return (
               <p
-                key={`${message.id}-${index}`}
+                key={partKey}
                 className="whitespace-pre-wrap text-sm leading-relaxed"
               >
                 {part.text}
@@ -115,7 +121,7 @@ export function ChatBot() {
   };
 
   return (
-    <div className="flex h-150 flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="flex h-[600px] flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
       {/* メッセージ表示エリア */}
       <div className="flex-1 space-y-4 overflow-y-auto p-4">
         {messages.length === 0 ? (

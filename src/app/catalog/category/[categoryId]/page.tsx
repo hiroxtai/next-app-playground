@@ -1,9 +1,45 @@
 import { BookOpen } from "lucide-react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { categories, getPagesByCategory } from "@/app/_lib/catalog-data";
 import { categoryStyles } from "@/app/_lib/category-styles";
 import { AppBreadcrumb } from "@/components/app-breadcrumb";
 import { PageCard } from "../../_components";
+
+type CategoryPageParams = {
+  categoryId: string;
+};
+
+export function generateStaticParams(): CategoryPageParams[] {
+  return categories.map((category) => ({
+    categoryId: category.id,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<CategoryPageParams>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const category = categories.find(
+    (cat) => cat.id === resolvedParams.categoryId,
+  );
+
+  if (!category) {
+    return {
+      title: "カテゴリが見つかりません",
+      description: "指定されたカテゴリは存在しません。",
+    };
+  }
+
+  const pageCount = getPagesByCategory(category.id).length;
+
+  return {
+    title: `${category.label} (${pageCount}ページ)`,
+    description: category.description,
+  };
+}
 
 /**
  * カテゴリフィルタページ
@@ -22,7 +58,7 @@ import { PageCard } from "../../_components";
 export default async function CategoryPage({
   params,
 }: {
-  params: Promise<{ categoryId: string }>;
+  params: Promise<CategoryPageParams>;
 }) {
   // Next.js 16 ではパラメータが Promise として提供されるため await で解決する
   const { categoryId } = await params;

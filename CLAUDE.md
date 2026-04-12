@@ -18,8 +18,13 @@ pnpm build          # プロダクションビルド
 pnpm lint           # Biome によるリント
 pnpm format         # Biome によるフォーマット
 pnpm type-check     # TypeScript 型チェック
-pnpm test           # 全テスト実行
-pnpm test -- --run --project=unit  # ユニットテストのみ
+pnpm test           # 全テスト実行（watch）
+pnpm test:unit      # ユニットテストのみ（watch）
+pnpm test:storybook # Storybook テストのみ（watch）
+pnpm test:run       # 全テスト実行（non-watch）
+pnpm test:unit:run  # ユニットテストのみ（non-watch, CI）
+pnpm test:storybook:run  # Storybook テストのみ（non-watch, CI）
+pnpm test:coverage  # カバレッジ計測
 pnpm storybook      # Storybook 起動 (port 6006)
 ```
 
@@ -32,7 +37,7 @@ src/
 │   ├── api/chat/       # AI チャット API ルート
 │   ├── catalog/        # カタログページ（サイドバーレイアウト）
 │   ├── examples/       # カテゴリ別サンプルページ
-│   │   └── [category]/[page]/  # 汎用フォールバック
+│   │   └── [category]/[page]/  # 汎用フォールバック（静的 params / metadata 対応）
 │   ├── globals.css     # Tailwind v4 テーマ定義
 │   ├── layout.tsx      # ルートレイアウト
 │   └── page.tsx        # ホームページ
