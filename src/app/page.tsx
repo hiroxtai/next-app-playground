@@ -69,7 +69,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" asChild>
               <a
-                href="https://github.com"
+                href="https://github.com/hiroxtai/next-app-playground"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"

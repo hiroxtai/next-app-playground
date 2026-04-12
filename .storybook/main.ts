@@ -18,13 +18,12 @@ const config: StorybookConfig = {
    * Story ファイルのパスパターン
    *
    * @remarks
-   * - `*.mdx`: MDX 形式のドキュメント
    * - `*.stories.tsx`: Component Story Format (CSF) 形式の Story
    *
    * このパターンにより、src ディレクトリ内のすべての Story が自動的に読み込まれます。
    * コロケーションパターンに従い、コンポーネントと同じディレクトリに Story を配置できます。
    */
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
 
   /**
    * Storybook アドオン（拡張機能）

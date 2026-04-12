@@ -1,10 +1,45 @@
 import { BookOpen } from "lucide-react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { use } from "react";
 import { categories, getPagesByCategory } from "@/app/_lib/catalog-data";
 import { categoryStyles } from "@/app/_lib/category-styles";
 import { AppBreadcrumb } from "@/components/app-breadcrumb";
 import { PageCard } from "../../_components";
+
+type CategoryPageParams = {
+  categoryId: string;
+};
+
+export function generateStaticParams(): CategoryPageParams[] {
+  return categories.map((category) => ({
+    categoryId: category.id,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<CategoryPageParams>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const category = categories.find(
+    (cat) => cat.id === resolvedParams.categoryId,
+  );
+
+  if (!category) {
+    return {
+      title: "カテゴリが見つかりません",
+      description: "指定されたカテゴリは存在しません。",
+    };
+  }
+
+  const pageCount = getPagesByCategory(category.id).length;
+
+  return {
+    title: `${category.label} (${pageCount}ページ)`,
+    description: category.description,
+  };
+}
 
 /**
  * カテゴリフィルタページ
@@ -13,14 +48,20 @@ import { PageCard } from "../../_components";
  * 指定したカテゴリのページのみをフィルタして表示します。
  * パンくずリストでカタログ → カテゴリの階層を明示し、
  * ユーザーが現在どのカテゴリを閲覧しているか分かりやすくします。
+ *
+ * Next.js 16 では動的ルートの params が Promise として提供されるため、
+ * async Server Component で await して解決します。
+ * Server Component では async/await が最も直感的かつ Next.js 公式ドキュメントの
+ * 推奨パターンです（Client Component では async が使えないため、
+ * 代わりに React 19 の `use()` フックを使用します）。
  */
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
-  params: Promise<{ categoryId: string }>;
+  params: Promise<CategoryPageParams>;
 }) {
-  // 非同期のpramsを処理（Next.js 15+）
-  const { categoryId } = use(params);
+  // Next.js 16 ではパラメータが Promise として提供されるため await で解決する
+  const { categoryId } = await params;
 
   // カテゴリ情報を取得
   const category = categories.find((cat) => cat.id === categoryId);

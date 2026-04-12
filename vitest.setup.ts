@@ -12,6 +12,27 @@ import { afterEach } from "vitest";
  */
 
 /**
+ * jsdom 環境に window.matchMedia のモックを追加
+ *
+ * @remarks
+ * next-themes など、matchMedia を使用するライブラリのテストに必要です。
+ * jsdom はデフォルトで matchMedia を実装していないため、最小限のモックを提供します。
+ */
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});
+
+/**
  * 各テスト後に DOM をクリーンアップ
  *
  * @remarks

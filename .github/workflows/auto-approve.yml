@@ -1,12 +1,13 @@
 name: Auto-Approve PR
 
-# 一人での開発環境向け: PR を自動承認
-# Dependabot PR 以外の通常の PR を対象とする
-# 注意: CI が成功したかどうかに関わらず承認されるため、
+# 一人での開発環境向け: 明示的に opt-in した PR のみ自動承認
+# 既定では承認しない（ラベル + actor 条件を満たした場合のみ実行）
+# 注意: 承認は CI 成否とは独立して行われるため、
 # ブランチ保護ルールで必須ステータスチェックを設定することが重要
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    # ラベル付与時に明示的に承認フローを開始できるようにする
+    types: [opened, synchronize, reopened, labeled]
 
 # PR を承認するために必要な権限
 # GitHub リポジトリ設定で "Allow GitHub Actions to create and approve pull requests" を
@@ -19,9 +20,18 @@ jobs:
   auto-approve:
     name: Auto-Approve PR
     runs-on: ubuntu-latest
-    # Dependabot PR は別のワークフローで処理するため除外
-    # bot 以外のユーザー（開発者本人）が作成した PR のみを対象
-    if: github.event.pull_request.user.login != 'dependabot[bot]'
+    # 明示的なガード条件:
+    # 1) PR 作成者がリポジトリ owner 本人
+    # 2) このイベントを発火させた actor も owner 本人
+    # 3) draft PR は除外
+    # 4) 同一リポジトリ内ブランチからの PR のみ（fork 由来を除外）
+    # 5) `auto-approve` ラベルが付いた PR のみ（opt-in）
+    if: >
+      github.event.pull_request.user.login == github.repository_owner &&
+      github.actor == github.repository_owner &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'auto-approve')
     # タイムアウト設定: 5分以上かかる場合は強制終了
     timeout-minutes: 5
 
@@ -33,7 +43,7 @@ jobs:
       # CI が成功しない限りマージできないようにしてください
       - name: Approve PR
         run: |
-          gh pr review --approve "$PR_URL" --body "✅ PR を自動承認しました。CI が成功したらマージできます。"
+          gh pr review --approve "$PR_URL" --body "✅ auto-approve ラベル付き PR を自動承認しました。CI が成功したらマージできます。"
           echo "✅ PR を自動承認しました"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}

@@ -1,7 +1,15 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { createContext, type ReactNode, useContext, useState } from "react";
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  type ReactNode,
+  useContext,
+  useState,
+} from "react";
 
 // ============================================
 // Accordion Context
@@ -38,6 +46,14 @@ interface AccordionProps {
  * @remarks
  * 子の AccordionItem コンポーネントに状態を提供します。
  * Compound Components パターンにより、柔軟な構成が可能です。
+ *
+ * React.Children.map と cloneElement を使用して、子コンポーネントに
+ * index を自動的に注入しています。この方法は直感的で分かりやすいですが、
+ * Accordion と AccordionItem の間にラッパー要素を挟むと index が正しく
+ * 伝わらない制約があります。
+ *
+ * Radix UI（shadcn/ui の基盤）などの本格的なライブラリでは、
+ * より堅牢な Context ベースの自己登録パターンを採用しています。
  */
 export function Accordion({ children, defaultIndex = null }: AccordionProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(defaultIndex);
@@ -51,15 +67,13 @@ export function Accordion({ children, defaultIndex = null }: AccordionProps) {
       value={{ activeIndex, setActiveIndex: toggleIndex }}
     >
       <div className="divide-y divide-border rounded-lg border">
-        {/* 子要素に index を自動付与 */}
-        {Array.isArray(children)
-          ? children.map((child, index) => {
-              if (child && typeof child === "object" && "props" in child) {
-                return { ...child, props: { ...child.props, index } };
-              }
-              return child;
-            })
-          : children}
+        {/* Children.map + cloneElement で子要素に index を自動付与 */}
+        {Children.map(children, (child, index) => {
+          if (isValidElement<AccordionItemProps>(child)) {
+            return cloneElement(child, { index });
+          }
+          return child;
+        })}
       </div>
     </AccordionContext.Provider>
   );
