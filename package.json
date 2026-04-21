@@ -17,6 +17,12 @@
     "test:coverage": "vitest --coverage",
     "test:storybook": "vitest --project=storybook",
     "test:storybook:run": "vitest run --project=storybook",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:report": "playwright show-report",
     "prepare": "node .husky/install.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
