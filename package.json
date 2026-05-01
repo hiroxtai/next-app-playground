@@ -70,7 +70,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "babel-plugin-react-compiler": "1.0.0",
     "husky": "^9.1.7",
-    "jsdom": "^29.0.2",
+    "jsdom": "^29.1.1",
     "playwright": "^1.59.1",
     "storybook": "^10.3.5",
     "tailwindcss": "^4",
