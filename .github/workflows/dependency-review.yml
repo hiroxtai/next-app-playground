@@ -31,7 +31,7 @@ jobs:
       # fail-on-severity: moderate - 中程度以上の脆弱性で失敗
       # comment-summary-in-pr: always - 結果を常に PR にコメント
       - name: Dependency Review
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: moderate
           comment-summary-in-pr: always
