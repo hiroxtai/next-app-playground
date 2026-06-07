@@ -204,6 +204,15 @@ export const pages: PageInfo[] = [
     tags: ["Jotai", "CRUD", "atomFamily", "実践"],
   },
   {
+    id: "simple-todo",
+    title: "シンプルTodoアプリ",
+    description:
+      "useStateによるインメモリ状態管理で、タスクの作成・完了切替・削除（確認付き）を学ぶサンプル。",
+    category: "state-management",
+    difficulty: "初級",
+    tags: ["useState", "状態管理", "CRUD"],
+  },
+  {
     id: "chatbot",
     title: "AI チャットボット",
     description:

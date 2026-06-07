@@ -12,9 +12,9 @@
 
 **Purpose**: Todo サンプルページを追加するための最小セットアップ
 
-- [ ] T001 Create simple todo page scaffold in src/app/examples/state-management/simple-todo/page.tsx and src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
-- [ ] T002 Register simple todo page metadata entry in src/app/_lib/catalog-data.ts
-- [ ] T003 Align catalog page count assertions for new entry in src/app/_lib/catalog-data.test.ts
+- [X] T001 Create simple todo page scaffold in src/app/examples/state-management/simple-todo/page.tsx and src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T002 Register simple todo page metadata entry in src/app/_lib/catalog-data.ts
+- [X] T003 Align catalog page count assertions for new entry in src/app/_lib/catalog-data.test.ts
 
 ---
 
@@ -24,11 +24,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Define Task and delete-confirmation domain types in src/app/examples/state-management/simple-todo/_components/todo-types.ts
-- [ ] T005 [P] Implement pure task state transition helpers in src/app/examples/state-management/simple-todo/_components/todo-state.ts
-- [ ] T006 [P] Create reusable task row component API in src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
-- [ ] T007 Compose base TodoApp screen layout and sections in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
-- [ ] T008 Wire page-level metadata and TodoApp mount in src/app/examples/state-management/simple-todo/page.tsx
+- [X] T004 Define Task and delete-confirmation domain types in src/app/examples/state-management/simple-todo/_components/todo-types.ts
+- [X] T005 [P] Implement pure task state transition helpers in src/app/examples/state-management/simple-todo/_components/todo-state.ts
+- [X] T006 [P] Create reusable task row component API in src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
+- [X] T007 Compose base TodoApp screen layout and sections in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T008 Wire page-level metadata and TodoApp mount in src/app/examples/state-management/simple-todo/page.tsx
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -42,13 +42,13 @@
 
 ### Tests for User Story 1
 
-- [ ] T009 [US1] Add unit tests for task creation success and validation failures in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
+- [X] T009 [US1] Add unit tests for task creation success and validation failures in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Implement input validation rules (trim, min/max length) and error messaging in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
-- [ ] T011 [US1] Implement add-task flow appending tasks by creation order in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
-- [ ] T012 [US1] Render created task items with stable ids via src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
+- [X] T010 [US1] Implement input validation rules (trim, min/max length) and error messaging in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T011 [US1] Implement add-task flow appending tasks by creation order in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T012 [US1] Render created task items with stable ids via src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
 
 **Checkpoint**: User Story 1 should be fully functional and testable independently
 
@@ -62,13 +62,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T013 [US2] Add unit tests for completion toggling and creation-order invariance in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
+- [X] T013 [US2] Add unit tests for completion toggling and creation-order invariance in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Add completion toggle UI controls to each task in src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
-- [ ] T015 [US2] Wire toggle handlers through state helpers in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
-- [ ] T016 [US2] Add completed-state visual/semantic representation in src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
+- [X] T014 [US2] Add completion toggle UI controls to each task in src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
+- [X] T015 [US2] Wire toggle handlers through state helpers in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T016 [US2] Add completed-state visual/semantic representation in src/app/examples/state-management/simple-todo/_components/TodoItem.tsx
 
 **Checkpoint**: User Stories 1 and 2 should both work independently
 
@@ -82,13 +82,13 @@
 
 ### Tests for User Story 3
 
-- [ ] T017 [US3] Add unit tests for delete confirmation approve/cancel and final empty-state behavior in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
+- [X] T017 [US3] Add unit tests for delete confirmation approve/cancel and final empty-state behavior in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Implement delete request and confirmation UI flow in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
-- [ ] T019 [US3] Implement confirm/cancel delete transitions in src/app/examples/state-management/simple-todo/_components/todo-state.ts
-- [ ] T020 [US3] Implement post-delete empty-state message behavior in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T018 [US3] Implement delete request and confirmation UI flow in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
+- [X] T019 [US3] Implement confirm/cancel delete transitions in src/app/examples/state-management/simple-todo/_components/todo-state.ts
+- [X] T020 [US3] Implement post-delete empty-state message behavior in src/app/examples/state-management/simple-todo/_components/TodoApp.tsx
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -98,11 +98,11 @@
 
 **Purpose**: 文書整合と最終検証
 
-- [ ] T021 [P] Update state management example index guidance for the new todo page in src/app/examples/state-management/README.md
-- [ ] T022 Run unit test suite and address failures relevant to new feature in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
-- [ ] T023 Run type/lint quality gates and resolve issues in src/app/examples/state-management/simple-todo/page.tsx
-- [ ] T024 Add explicit reload-reset verification test for FR-009 in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
-- [ ] T025 Add measurable interaction latency check (<1s) for SC-002 in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
+- [X] T021 [P] Update state management example index guidance for the new todo page in src/app/examples/state-management/README.md
+- [X] T022 Run unit test suite and address failures relevant to new feature in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
+- [X] T023 Run type/lint quality gates and resolve issues in src/app/examples/state-management/simple-todo/page.tsx
+- [X] T024 Add explicit reload-reset verification test for FR-009 in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
+- [X] T025 Add measurable interaction latency check (<1s) for SC-002 in src/app/examples/state-management/simple-todo/_components/TodoApp.test.tsx
 
 ---
 

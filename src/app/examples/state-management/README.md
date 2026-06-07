@@ -40,6 +40,9 @@ import { atom, useAtom } from "jotai";
 
 3つのサンプルで段階的に学べるように構成されています。
 
+> **補足:** `simple-todo`（初級）は Jotai を使わず `useState` のみで実装した最小構成のTodoアプリです。
+> 永続化を行わず、リロードで状態が初期化される点が `jotai-todo-app` との違いです。
+
 ### 1. Jotai 基礎（初級）
 
 **パス:** `/examples/state-management/jotai-basics`
