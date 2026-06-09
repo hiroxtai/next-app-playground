@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GitHub Spec Kit 完全ガイド — 仕様駆動開発の進め方</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-soft: #161b22;
+    --bg-card: #1a2029;
+    --border: #2d333b;
+    --text: #e6edf3;
+    --text-dim: #9da7b3;
+    --accent: #58a6ff;
+    --accent-2: #bc8cff;
+    --green: #3fb950;
+    --amber: #d29922;
+    --pink: #f778ba;
+    --cyan: #39c5cf;
+    --radius: 14px;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Layout ===== */
+  .wrap { display: grid; grid-template-columns: 260px 1fr; max-width: 1400px; margin: 0 auto; }
+
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-soft);
+  }
+  nav.toc h2 {
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 0 0 14px;
+  }
+  nav.toc a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border-left: 2px solid transparent;
+    transition: all .15s ease;
+  }
+  nav.toc a:hover { color: var(--text); background: var(--bg-card); border-left-color: var(--accent); }
+  nav.toc a.sub { padding-left: 22px; font-size: 13px; }
+
+  main { padding: 0 48px 120px; min-width: 0; }
+
+  /* ===== Hero ===== */
+  header.hero {
+    padding: 72px 48px 56px;
+    margin: 0 -48px 48px;
+    background:
+      radial-gradient(900px 400px at 12% -10%, rgba(88,166,255,.22), transparent 60%),
+      radial-gradient(700px 360px at 92% 6%, rgba(188,140,255,.20), transparent 60%),
+      linear-gradient(180deg, #11161e, #0d1117);
+    border-bottom: 1px solid var(--border);
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; font-weight: 600; letter-spacing: .05em;
+    color: var(--accent);
+    background: rgba(88,166,255,.12);
+    border: 1px solid rgba(88,166,255,.35);
+    padding: 5px 14px; border-radius: 999px;
+  }
+  header.hero h1 {
+    font-size: 42px; line-height: 1.25; margin: 22px 0 14px;
+    background: linear-gradient(120deg, #fff 10%, #9bc5ff 55%, #d2b3ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  header.hero p.lead { font-size: 18px; color: var(--text-dim); max-width: 760px; margin: 0; }
+
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .hero-meta span {
+    font-size: 13px; color: var(--text-dim);
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 7px 13px; border-radius: 8px;
+  }
+  .hero-meta b { color: var(--text); }
+
+  /* ===== Typography ===== */
+  section { margin-bottom: 64px; scroll-margin-top: 20px; }
+  h2.sec {
+    font-size: 28px; margin: 0 0 8px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  h2.sec .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; flex: none;
+    font-size: 16px; font-weight: 700;
+    color: #0d1117; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 10px;
+  }
+  h3 { font-size: 20px; margin: 38px 0 12px; color: #fff; }
+  h4 { font-size: 16px; margin: 26px 0 8px; color: var(--cyan); }
+  p { margin: 12px 0; }
+  .sec-intro { color: var(--text-dim); font-size: 16px; max-width: 820px; }
+  a.inline { color: var(--accent); }
+  code.ic {
+    font-family: var(--mono); font-size: 13.5px;
+    background: var(--bg-soft); border: 1px solid var(--border);
+    padding: 2px 7px; border-radius: 6px; color: var(--pink);
+  }
+  strong { color: #fff; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 26px; margin: 18px 0;
+  }
+  .grid { display: grid; gap: 18px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .note {
+    border-left: 4px solid var(--accent); background: rgba(88,166,255,.08);
+    padding: 14px 20px; border-radius: 0 10px 10px 0; margin: 18px 0;
+  }
+  .note.warn { border-left-color: var(--amber); background: rgba(210,153,34,.09); }
+  .note.tip { border-left-color: var(--green); background: rgba(63,185,80,.09); }
+  .note .t { font-weight: 700; display: block; margin-bottom: 4px; }
+
+  /* ===== Code ===== */
+  pre {
+    background: #0a0e14; border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; overflow-x: auto; margin: 16px 0;
+    font-family: var(--mono); font-size: 13.5px; line-height: 1.7;
+  }
+  pre .c { color: #6e7681; } /* comment */
+  pre .k { color: #ff7b72; } /* keyword/command */
+  pre .s { color: #a5d6ff; } /* string */
+  pre .v { color: #ffa657; } /* value */
+  pre .p { color: #d2a8ff; } /* prompt slash */
+  .codecap {
+    font-size: 12px; color: var(--text-dim); margin: -8px 0 18px;
+    font-family: var(--mono);
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14.5px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--accent); font-weight: 600; background: var(--bg-soft); }
+  tr:hover td { background: rgba(255,255,255,.015); }
+  td code { font-family: var(--mono); font-size: 13px; color: var(--pink); }
+
+  /* ===== Workflow pipeline ===== */
+  .pipeline { display: flex; flex-direction: column; gap: 0; margin: 28px 0; }
+  .step {
+    display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+    position: relative; padding-bottom: 26px;
+  }
+  .step:not(:last-child)::before {
+    content: ""; position: absolute; left: 27px; top: 56px; bottom: 0;
+    width: 2px; background: linear-gradient(var(--accent), var(--accent-2));
+    opacity: .4;
+  }
+  .step .dot {
+    width: 56px; height: 56px; border-radius: 14px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700;
+    background: var(--bg-card); border: 2px solid var(--accent);
+    color: var(--accent); z-index: 1;
+  }
+  .step.opt .dot { border-color: var(--text-dim); color: var(--text-dim); border-style: dashed; }
+  .step .body {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+  }
+  .step .body h4 { margin: 0 0 4px; color: #fff; font-size: 17px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cmd-pill {
+    font-family: var(--mono); font-size: 12.5px; color: var(--accent-2);
+    background: rgba(188,140,255,.12); border: 1px solid rgba(188,140,255,.3);
+    padding: 2px 9px; border-radius: 6px;
+  }
+  .tag-opt {
+    font-size: 11px; font-weight: 600; color: var(--amber);
+    background: rgba(210,153,34,.12); border: 1px solid rgba(210,153,34,.3);
+    padding: 1px 8px; border-radius: 999px;
+  }
+  .io { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; }
+  .io span { color: var(--text-dim); }
+  .io b { color: var(--cyan); font-family: var(--mono); font-size: 12.5px; }
+  .io .out b { color: var(--green); }
+
+  /* ===== Artifact flow diagram ===== */
+  .flow {
+    display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+    justify-content: center; margin: 26px 0; padding: 26px;
+    background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .flow .box {
+    text-align: center; padding: 14px 16px; border-radius: 10px;
+    background: var(--bg-card); border: 1px solid var(--border); min-width: 116px;
+  }
+  .flow .box .ttl { font-weight: 700; font-size: 14px; color: #fff; }
+  .flow .box .file { font-family: var(--mono); font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+  .flow .arrow { color: var(--accent); font-size: 24px; padding: 0 12px; }
+
+  /* ===== File tree ===== */
+  .tree {
+    font-family: var(--mono); font-size: 13px; line-height: 1.95;
+    background: #0a0e14; border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; overflow-x: auto;
+  }
+  .tree .d { color: var(--accent); }
+  .tree .f { color: var(--text); }
+  .tree .cm { color: #6e7681; }
+
+  /* ===== Pills row ===== */
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 14px 0 0; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--text-dim); }
+  .legend i { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 28px 0; margin-top: 60px;
+    color: var(--text-dim); font-size: 13.5px; text-align: center;
+  }
+
+  @media (max-width: 980px) {
+    .wrap { grid-template-columns: 1fr; }
+    nav.toc { display: none; }
+    main { padding: 0 22px 80px; }
+    header.hero { margin: 0 -22px 36px; padding: 52px 22px 40px; }
+    header.hero h1 { font-size: 32px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .flow .arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== TOC ===== -->
+  <nav class="toc">
+    <h2>目次</h2>
+    <a href="#intro">1. Spec Kit とは</a>
+    <a href="#why">2. なぜ仕様駆動開発か</a>
+    <a href="#structure">3. ディレクトリ構成</a>
+    <a href="#workflow">4. 開発フロー全体像</a>
+    <a href="#commands">5. コマンド詳解</a>
+    <a href="#commands" class="sub">↳ constitution</a>
+    <a href="#commands" class="sub">↳ specify / clarify</a>
+    <a href="#commands" class="sub">↳ plan / tasks</a>
+    <a href="#commands" class="sub">↳ analyze / implement</a>
+    <a href="#prompts">6. プロンプト実例</a>
+    <a href="#case">7. 実プロジェクト例</a>
+    <a href="#tips">8. 実践のコツ</a>
+    <a href="#ref">9. 参考リンク</a>
+  </nav>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+      <span class="badge">● GitHub Spec Kit / Spec-Driven Development</span>
+      <h1>GitHub Spec Kit 完全ガイド<br />仕様駆動開発の進め方</h1>
+      <p class="lead">
+        AI コーディングエージェントに「いきなりコードを書かせる」のではなく、
+        <strong>意図 → 仕様 → 設計 → タスク → 実装</strong> という構造化されたプロセスを通すための仕組みが
+        GitHub Spec Kit です。本ガイドでは、このプロジェクトに導入された Spec Kit の具体的な使い方を、
+        実際のコマンド・プロンプト例・成果物とともに解説します。
+      </p>
+      <div class="hero-meta">
+        <span>対象: <b>このリポジトリ（Copilot 連携済み）</b></span>
+        <span>コマンド: <b>/speckit.* スラッシュコマンド</b></span>
+        <span>成果物: <b>spec.md / plan.md / tasks.md</b></span>
+      </div>
+    </header>
+
+    <!-- ===== 1. INTRO ===== -->
+    <section id="intro">
+      <h2 class="sec"><span class="num">1</span>Spec Kit とは</h2>
+      <p class="sec-intro">
+        <strong>GitHub Spec Kit</strong> は、<strong>Spec-Driven Development（SDD / 仕様駆動開発）</strong>を実践するためのツールキットです。
+        「何を作るか（仕様）」を実行可能なドキュメントとして先に固め、それを入力として AI エージェントに設計・タスク分解・実装を行わせます。
+      </p>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <h4>📋 仕様が主役</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            コードではなく<strong>仕様書が「真実の源（source of truth）」</strong>。仕様を変えれば実装が追従する、という発想です。
+          </p>
+        </div>
+        <div class="card">
+          <h4>🤖 AI エージェント連携</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            Copilot / Claude などのエージェントが各フェーズを担当。人間は<strong>レビューと意思決定</strong>に集中します。
+          </p>
+        </div>
+        <div class="card">
+          <h4>🔁 段階的な成果物</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            各フェーズが Markdown 成果物を生成し、<strong>次フェーズの入力</strong>になります。文脈が途切れません。
+          </p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="t">💡 一言でいうと</span>
+        「仕様 → 設計 → タスク → 実装」を <code class="ic">/speckit.*</code> という一連のスラッシュコマンドで進める、
+        AI 時代のウォーターフォール × アジャイルの良いとこ取りの開発手法です。
+      </div>
+    </section>
+
+    <!-- ===== 2. WHY ===== -->
+    <section id="why">
+      <h2 class="sec"><span class="num">2</span>なぜ仕様駆動開発か</h2>
+      <p class="sec-intro">
+        AI に直接「〇〇を作って」と頼むと、前提の取り違え・スコープのブレ・手戻りが頻発します。
+        Spec Kit はその間に<strong>明示的な合意ポイント</strong>を挟むことで、品質と再現性を高めます。
+      </p>
+
+      <table>
+        <thead>
+          <tr><th style="width:50%">いきなり実装を依頼する場合</th><th>Spec Kit を使う場合</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>要件の解釈が AI 任せ。意図とズレても気づきにくい</td>
+            <td><strong>spec.md</strong> で要件を言語化・合意してから進む</td>
+          </tr>
+          <tr>
+            <td>曖昧な点が暗黙のまま実装に紛れ込む</td>
+            <td><strong>/speckit.clarify</strong> で曖昧点を質問形式で潰す</td>
+          </tr>
+          <tr>
+            <td>技術選定の根拠が残らない</td>
+            <td><strong>plan.md</strong> に設計・技術スタックの根拠を記録</td>
+          </tr>
+          <tr>
+            <td>大きな塊で生成され、レビューが困難</td>
+            <td><strong>tasks.md</strong> で小さく独立検証可能な単位に分割</td>
+          </tr>
+          <tr>
+            <td>プロジェクト規約が無視されがち</td>
+            <td><strong>constitution.md</strong>（憲法）で原則を全フェーズに強制</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== 3. STRUCTURE ===== -->
+    <section id="structure">
+      <h2 class="sec"><span class="num">3</span>ディレクトリ構成</h2>
+      <p class="sec-intro">
+        <code class="ic">specify init</code> でプロジェクトに導入すると、主に次の 3 領域が生成されます。
+        このリポジトリは <strong>Copilot 連携（<code class="ic">--integration copilot</code>）</strong>で初期化されています。
+      </p>
+
+      <div class="tree">
+<span class="d">.specify/</span>                       <span class="cm"># Spec Kit 本体（設定・テンプレ・スクリプト）</span>
+├── <span class="d">memory/</span>
+│   └── <span class="f">constitution.md</span>         <span class="cm"># プロジェクト憲法（不変の原則）</span>
+├── <span class="d">templates/</span>                  <span class="cm"># 各成果物のひな形</span>
+│   ├── <span class="f">spec-template.md</span>
+│   ├── <span class="f">plan-template.md</span>
+│   ├── <span class="f">tasks-template.md</span>
+│   └── <span class="f">constitution-template.md</span>
+├── <span class="d">scripts/bash/</span>              <span class="cm"># 機能ディレクトリ作成等の補助スクリプト</span>
+├── <span class="d">workflows/</span>                  <span class="cm"># コマンドを連結する自動ワークフロー定義</span>
+├── <span class="f">extensions.yml</span>              <span class="cm"># フック（前後処理）の登録</span>
+└── <span class="f">feature.json</span>                <span class="cm"># 現在作業中の機能ディレクトリを記録</span>
+
+<span class="d">.github/</span>
+├── <span class="d">prompts/</span>                    <span class="cm"># /speckit.* スラッシュコマンドの入口</span>
+│   ├── <span class="f">speckit.specify.prompt.md</span>
+│   ├── <span class="f">speckit.plan.prompt.md</span>
+│   └── <span class="f">... (constitution, tasks, implement 等)</span>
+└── <span class="d">agents/</span>                     <span class="cm"># 各コマンドの実体（エージェント定義）</span>
+    ├── <span class="f">speckit.specify.agent.md</span>
+    ├── <span class="f">speckit.plan.agent.md</span>
+    └── <span class="f">...</span>
+
+<span class="d">specs/</span>                          <span class="cm"># 機能ごとの成果物（フィーチャー単位）</span>
+└── <span class="d">001-simple-todo-app/</span>
+    ├── <span class="f">spec.md</span>                 <span class="cm"># 要件仕様</span>
+    ├── <span class="f">plan.md</span>                 <span class="cm"># 技術設計</span>
+    ├── <span class="f">tasks.md</span>                <span class="cm"># 実装タスク一覧</span>
+    ├── <span class="f">research.md</span>             <span class="cm"># 技術調査メモ</span>
+    ├── <span class="f">data-model.md</span>           <span class="cm"># データモデル</span>
+    ├── <span class="d">contracts/</span>              <span class="cm"># API / UI コントラクト</span>
+    └── <span class="d">checklists/</span>             <span class="cm"># 品質チェックリスト</span>
+      </div>
+
+      <div class="note tip">
+        <span class="t">🔑 prompts と agents の関係</span>
+        スラッシュコマンド（例 <code class="ic">/speckit.specify</code>）は <code class="ic">.github/prompts/</code> の薄い入口で、
+        実際の手順・ルールは <code class="ic">.github/agents/</code> のエージェント定義に書かれています。
+        「コマンドが何をするか」を深く知りたいときは agents 側を読むと分かります。
+      </div>
+    </section>
+
+    <!-- ===== 4. WORKFLOW ===== -->
+    <section id="workflow">
+      <h2 class="sec"><span class="num">4</span>開発フロー全体像</h2>
+      <p class="sec-intro">
+        SDD の中核は <strong>Spec → Plan → Tasks → Implement</strong> の 4 フェーズです。
+        各フェーズが Markdown 成果物を生み、それが次フェーズの入力になります。
+        前段に「憲法」、間に「明確化」「分析」といった品質ゲートを挟むのが実践的な流れです。
+      </p>
+
+      <h3>成果物のバトンリレー</h3>
+      <div class="flow">
+        <div class="box"><div class="ttl">意図</div><div class="file">自然言語の要望</div></div>
+        <span class="arrow">→</span>
+        <div class="box"><div class="ttl">Spec</div><div class="file">spec.md</div></div>
+        <span class="arrow">→</span>
+        <div class="box"><div class="ttl">Plan</div><div class="file">plan.md</div></div>
+        <span class="arrow">→</span>
+        <div class="box"><div class="ttl">Tasks</div><div class="file">tasks.md</div></div>
+        <span class="arrow">→</span>
+        <div class="box"><div class="ttl">Implement</div><div class="file">ソースコード</div></div>
+      </div>
+
+      <h3>コマンド実行順（パイプライン）</h3>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>必須フェーズ</span>
+        <span><i style="background:var(--text-dim)"></i>任意・推奨フェーズ</span>
+      </div>
+      <div class="pipeline">
+
+        <div class="step opt">
+          <div class="dot">0</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.constitution</span> プロジェクト憲法の設定 <span class="tag-opt">最初に一度</span></h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">プロジェクト全体で守る原則（テスト方針・品質基準・技術制約）を定義。以降の全フェーズに影響します。</p>
+            <div class="io"><span class="out">生成 → <b>.specify/memory/constitution.md</b></span></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="dot">1</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.specify</span> 要件仕様の作成</h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">「何を・なぜ作るか」を自然言語の要望から構造化。ユーザーストーリー・受入基準・成功条件を記述（<strong>実装の詳細は書かない</strong>）。</p>
+            <div class="io"><span>入力: 自然言語の要望</span><span class="out">生成 → <b>spec.md</b> + checklists/requirements.md</span></div>
+          </div>
+        </div>
+
+        <div class="step opt">
+          <div class="dot">2</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.clarify</span> 曖昧点の明確化 <span class="tag-opt">推奨</span></h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">仕様の曖昧な箇所を最大 5 個まで質問。回答を spec.md の「Clarifications」セクションに反映します。</p>
+            <div class="io"><span>入力: <b>spec.md</b></span><span class="out">更新 → <b>spec.md</b>（Clarifications 追記）</span></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="dot">3</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.plan</span> 技術設計の作成</h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">仕様を<strong>どう実装するか</strong>に変換。技術スタック・アーキテクチャ・データモデル・契約を設計し、憲法との整合を確認します。</p>
+            <div class="io"><span>入力: <b>spec.md</b> + constitution.md</span><span class="out">生成 → <b>plan.md</b> / research.md / data-model.md / contracts/</span></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="dot">4</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.tasks</span> タスク分解</h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">設計を<strong>依存順に並んだ実装タスク</strong>へ分割。ユーザーストーリー単位でグループ化し、並列実行可能なものに <code class="ic">[P]</code> を付与します。</p>
+            <div class="io"><span>入力: <b>plan.md</b> 他設計文書</span><span class="out">生成 → <b>tasks.md</b></span></div>
+          </div>
+        </div>
+
+        <div class="step opt">
+          <div class="dot">5</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.analyze</span> 整合性分析 <span class="tag-opt">推奨</span></h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">spec / plan / tasks の<strong>横断的な矛盾・抜け漏れ</strong>を非破壊でチェック。実装前の最終品質ゲートです。</p>
+            <div class="io"><span>入力: <b>spec.md / plan.md / tasks.md</b></span><span class="out">出力 → 分析レポート（不整合の指摘）</span></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="dot">6</div>
+          <div class="body">
+            <h4><span class="cmd-pill">/speckit.implement</span> 実装の実行</h4>
+            <p style="margin:4px 0 0;color:var(--text-dim);font-size:14px">tasks.md を上から順に実行し、実際のコードを生成。完了したタスクには <code class="ic">[X]</code> が付き、進捗が追跡されます。</p>
+            <div class="io"><span>入力: <b>tasks.md</b></span><span class="out">生成 → 実際のソースコード / テスト</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="note">
+        <span class="t">🧩 補助コマンド</span>
+        上記の他に <code class="ic">/speckit.checklist</code>（任意の観点でチェックリスト生成）、
+        <code class="ic">/speckit.taskstoissues</code>（tasks.md を GitHub Issue 群に変換）などがあります。
+      </div>
+    </section>
+
+    <!-- ===== 5. COMMANDS ===== -->
+    <section id="commands">
+      <h2 class="sec"><span class="num">5</span>コマンド詳解</h2>
+      <p class="sec-intro">各コマンドの役割・入出力・使いどころを整理します。</p>
+
+      <table>
+        <thead>
+          <tr><th>コマンド</th><th>役割</th><th>主な出力</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/speckit.constitution</code></td><td>プロジェクト原則（憲法）の作成・更新</td><td><code>constitution.md</code></td></tr>
+          <tr><td><code>/speckit.specify</code></td><td>自然言語の要望から要件仕様を作成</td><td><code>spec.md</code></td></tr>
+          <tr><td><code>/speckit.clarify</code></td><td>仕様の曖昧点を質問で明確化</td><td><code>spec.md</code>（更新）</td></tr>
+          <tr><td><code>/speckit.plan</code></td><td>技術設計・実装計画を作成</td><td><code>plan.md</code> 他</td></tr>
+          <tr><td><code>/speckit.tasks</code></td><td>計画を依存順タスクに分解</td><td><code>tasks.md</code></td></tr>
+          <tr><td><code>/speckit.analyze</code></td><td>成果物間の整合性を分析</td><td>分析レポート</td></tr>
+          <tr><td><code>/speckit.checklist</code></td><td>任意観点の品質チェックリスト生成</td><td><code>checklists/*.md</code></td></tr>
+          <tr><td><code>/speckit.implement</code></td><td>タスクを実行しコードを生成</td><td>ソースコード</td></tr>
+          <tr><td><code>/speckit.taskstoissues</code></td><td>タスクを GitHub Issue に変換</td><td>GitHub Issues</td></tr>
+        </tbody>
+      </table>
+
+      <h3>① constitution — プロジェクト憲法</h3>
+      <p>
+        最初に一度だけ実行し、<strong>プロジェクト全体で守るべき不変の原則</strong>を定めます。
+        テンプレートには「テストファースト（NON-NEGOTIABLE）」「シンプルさ（YAGNI）」など、原則の例が記載されています。
+        ここで定めた内容は plan フェーズで<strong>整合チェックの基準</strong>として使われます。
+      </p>
+
+      <h3>② specify — 「何を・なぜ」を固める</h3>
+      <p>
+        要望文から <strong>ユーザーストーリー（優先度付き）/ 受入シナリオ（Given-When-Then）/ 機能要件（FR）/ 成功条件</strong> を生成します。
+        重要なのは <strong>「実装の詳細（言語・FW・API）を書かない」</strong>こと。非技術者でも読める仕様を目指します。
+      </p>
+      <div class="note warn">
+        <span class="t">⚠️ specify の流儀</span>
+        曖昧な点は最大 3 個まで <code class="ic">[NEEDS CLARIFICATION]</code> マーカーで明示。
+        それ以外は「業界標準に基づく妥当な推測」で埋め、Assumptions セクションに記録します。
+        作成後は <code class="ic">checklists/requirements.md</code> で品質を自己検証します。
+      </div>
+
+      <h3>③ clarify — 曖昧さを潰す</h3>
+      <p>
+        spec.md を読み込み、判断に影響する曖昧点を<strong>選択肢付きの質問</strong>として提示。
+        回答は spec.md の「Clarifications」セクションに日付つきで追記されます。plan の前に実行するのが定石です。
+      </p>
+
+      <h3>④ plan — 「どう作るか」を設計する</h3>
+      <p>
+        ここで初めて<strong>技術選定</strong>を行います。技術スタック・アーキテクチャ・データモデル・API/UI コントラクトを決め、
+        必要に応じて <code class="ic">research.md</code>（調査）・<code class="ic">data-model.md</code>・<code class="ic">contracts/</code> を生成します。
+        憲法に反する設計がないかもこの段階で検証されます。
+      </p>
+
+      <h3>⑤ tasks — 実行可能な単位に割る</h3>
+      <p>
+        計画を<strong>依存順に並んだタスク</strong>へ分解。このプロジェクトの実例では次のような構造になっています。
+      </p>
+      <ul style="color:var(--text-dim);font-size:14.5px">
+        <li><strong>Phase 1: Setup</strong> — 共有インフラ（ページ雛形・カタログ登録）</li>
+        <li><strong>Phase 2: Foundational</strong> — 全ストーリー共通の基盤（型・状態遷移ヘルパー）</li>
+        <li><strong>Phase 3+: User Story 単位</strong> — ストーリーごとにテスト → 実装をまとめる</li>
+      </ul>
+      <p style="color:var(--text-dim);font-size:14px">
+        各タスクには ID（<code class="ic">T001</code>…）、並列可能マーク <code class="ic">[P]</code>、対象ストーリー <code class="ic">[US1]</code>、
+        そして<strong>具体的なファイルパス</strong>が付きます。
+      </p>
+
+      <h3>⑥ analyze — 横断チェック</h3>
+      <p>
+        spec / plan / tasks を突き合わせ、「仕様にあるのにタスクが無い」「計画と仕様が矛盾」といった
+         <strong>整合性の問題を非破壊で洗い出す</strong>最終ゲートです。指摘を反映してから implement に進みます。
+      </p>
+
+      <h3>⑦ implement — 実装する</h3>
+      <p>
+        tasks.md を上から順に実行。Phase 単位のチェックポイントで動作確認しながら進み、
+        完了タスクは <code class="ic">[X]</code> でマークされて<strong>進捗がファイル上で可視化</strong>されます。
+      </p>
+    </section>
+
+    <!-- ===== 6. PROMPTS ===== -->
+    <section id="prompts">
+      <h2 class="sec"><span class="num">6</span>プロンプト実例</h2>
+      <p class="sec-intro">
+        実際の使い方は「Copilot Chat にスラッシュコマンド + 自然言語」を入力するだけ。各フェーズの具体的な指示例を示します。
+      </p>
+
+      <h4>セットアップ（CLI / 初回のみ）</h4>
+      <pre><span class="c"># Spec Kit を取得して Copilot 連携で初期化</span>
+<span class="k">uvx</span> --from git+https://github.com/github/spec-kit.git
+<span class="k">specify</span> init my-project --integration <span class="v">copilot</span>
+
+<span class="c"># 既存プロジェクトに導入する場合</span>
+<span class="k">specify</span> init . --integration <span class="v">copilot</span></pre>
+      <p class="codecap">※ このリポジトリは導入済みのため、以降はチャットのスラッシュコマンドだけで進められます。</p>
+
+      <h4>① 憲法を定める</h4>
+      <pre><span class="p">/speckit.constitution</span> このプロジェクトは学習用です。可読性を最優先し、
+テストは Vitest で書く。過度な抽象化を避け、シンプルな実装を原則とする。</pre>
+
+      <h4>② 仕様を作る（何を・なぜ）</h4>
+      <pre><span class="p">/speckit.specify</span> 学習向けの簡易的アプリとしてシンプルな Todo アプリを作りたい。
+タスクの作成・完了・削除ができる Web アプリケーションである。</pre>
+
+      <h4>③ 曖昧点を明確化</h4>
+      <pre><span class="p">/speckit.clarify</span></pre>
+      <p class="codecap">→ AI が「削除時は確認を出す？」「並び順は？」等を選択肢付きで質問。答えると spec.md に反映される。</p>
+
+      <h4>④ 技術設計（どう作るか）</h4>
+      <pre><span class="p">/speckit.plan</span> Next.js 16 App Router + React 19 + TypeScript で実装する。
+状態はクライアント側のみ（ページセッション内保持）。UI は shadcn/ui を使う。</pre>
+      <p class="codecap">※ 公式例: 「.NET Aspire + Postgres + Blazor、REST API は projects/tasks/notifications…」のように技術を具体指定する。</p>
+
+      <h4>⑤ タスク分解 → ⑥ 整合性分析 → ⑦ 実装</h4>
+      <pre><span class="p">/speckit.tasks</span>      <span class="c"># plan.md からタスク一覧を生成</span>
+<span class="p">/speckit.analyze</span>    <span class="c"># spec/plan/tasks の矛盾をチェック（任意）</span>
+<span class="p">/speckit.implement</span>  <span class="c"># tasks.md を順に実行してコード生成</span></pre>
+
+      <div class="note tip">
+        <span class="t">✅ 進め方のコツ</span>
+        各コマンドの後は<strong>必ず生成物を人間がレビュー</strong>してから次へ。
+        特に <code class="ic">specify</code> と <code class="ic">plan</code> の出力は、後工程の品質を大きく左右します。
+      </div>
+    </section>
+
+    <!-- ===== 7. CASE STUDY ===== -->
+    <section id="case">
+      <h2 class="sec"><span class="num">7</span>実プロジェクト例: シンプル Todo アプリ</h2>
+      <p class="sec-intro">
+        このリポジトリの <code class="ic">specs/001-simple-todo-app/</code> は、実際に Spec Kit で進めた成果物です。
+        各成果物の中身を抜粋で見てみましょう。
+      </p>
+
+      <h4>spec.md — ユーザーストーリーと受入シナリオ（抜粋）</h4>
+      <pre><span class="c">### User Story 1 - タスクを作成する (Priority: P1)</span>
+
+学習者として、新しいタスクを入力して追加し、やるべきことを一覧に残したい。
+
+<span class="k">**Acceptance Scenarios**:</span>
+1. <span class="v">Given</span> タスク一覧が表示されている,
+   <span class="v">When</span> ユーザーがタスク名を入力して追加する,
+   <span class="v">Then</span> 新しい未完了タスクが一覧の末尾に表示される
+2. <span class="v">Given</span> 入力欄が空文字または空白のみ,
+   <span class="v">When</span> 追加を実行する,
+   <span class="v">Then</span> タスクは追加されず入力不備が明確に示される</pre>
+
+      <h4>spec.md — clarify で確定した仕様（抜粋）</h4>
+      <pre><span class="c">## Clarifications — Session 2026-06-07</span>
+- Q: 「セッション内保持」の範囲は？
+  → A: ページを開いている間のみ保持し、再読み込みで初期化する
+- Q: タスク削除時の挙動は？
+  → A: 削除時に確認を表示し、承認時のみ削除する
+- Q: タスク名の文字数制約は？
+  → A: 1〜100 文字に制限する</pre>
+      <p class="codecap">→ 曖昧だった点が「決定事項」として記録され、以降の設計・実装の根拠になる。</p>
+
+      <h4>spec.md — 機能要件（FR / テスト可能な形）</h4>
+      <pre><span class="k">FR-001</span>: ユーザーはテキスト入力＋送信で新規タスクを作成できる
+<span class="k">FR-002</span>: 空・空白のみ・100 文字超の入力は拒否し、理由を伝える
+<span class="k">FR-006</span>: 削除は明示的な確認ステップの後にのみ実行できる
+<span class="k">FR-009</span>: タスク状態はページセッション中のみ保持し、再読込で初期化</pre>
+
+      <h4>tasks.md — 依存順タスク（抜粋）</h4>
+      <pre><span class="c">## Phase 2: Foundational（全ストーリー共通基盤）</span>
+[X] <span class="k">T004</span> ドメイン型を定義  .../_components/todo-types.ts
+[X] <span class="k">T005</span> <span class="v">[P]</span> 純粋な状態遷移ヘルパー  .../_components/todo-state.ts
+[X] <span class="k">T006</span> <span class="v">[P]</span> 再利用可能な行コンポーネント  .../_components/TodoItem.tsx
+
+<span class="c">## Phase 3: User Story 1（P1）🎯 MVP</span>
+[X] <span class="k">T009</span> <span class="v">[US1]</span> 作成成功/検証失敗の unit テスト  .../TodoApp.test.tsx
+[X] <span class="k">T010</span> <span class="v">[US1]</span> 入力バリデーション実装  .../TodoApp.tsx
+[X] <span class="k">T011</span> <span class="v">[US1]</span> 作成順で追加するフロー  .../TodoApp.tsx</pre>
+
+      <div class="legend">
+        <span><i style="background:var(--green)"></i><code class="ic">[X]</code> 完了済みタスク</span>
+        <span><i style="background:var(--amber)"></i><code class="ic">[P]</code> 並列実行可能</span>
+        <span><i style="background:var(--accent-2)"></i><code class="ic">[US1]</code> 対応ユーザーストーリー</span>
+      </div>
+
+      <div class="note">
+        <span class="t">📌 この例から分かること</span>
+        spec（FR-002 の入力制約）→ tasks（T010 のバリデーション実装）→ コード、という形で
+        <strong>要件が一本の線でトレース可能</strong>になっています。これが仕様駆動開発の最大の利点です。
+      </div>
+    </section>
+
+    <!-- ===== 8. TIPS ===== -->
+    <section id="tips">
+      <h2 class="sec"><span class="num">8</span>実践のコツ</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🧱 spec では実装を書かない</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            言語・FW・API は plan で決める。spec は「何を・なぜ」に徹すると、技術が変わっても仕様が再利用できます。
+          </p>
+        </div>
+        <div class="card">
+          <h4>🔍 clarify と analyze を省略しない</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            任意フェーズですが、手戻りを最も減らす品質ゲート。特に複雑な機能では効果絶大です。
+          </p>
+        </div>
+        <div class="card">
+          <h4>👤 各フェーズ後に人間がレビュー</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            生成物をそのまま次に流さない。spec と plan のレビューが全体品質を決めます。
+          </p>
+        </div>
+        <div class="card">
+          <h4>🗂️ 機能は specs/ 配下に独立管理</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            <code class="ic">NNN-機能名/</code> 単位で成果物が完結。複数機能を並行して進めやすい構成です。
+          </p>
+        </div>
+        <div class="card">
+          <h4>📜 憲法は最初に整える</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            テスト方針・品質基準を constitution に書くと、全フェーズで自動的に意識されます。
+          </p>
+        </div>
+        <div class="card">
+          <h4>🔗 タスクを Issue 化して協業</h4>
+          <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">
+            <code class="ic">/speckit.taskstoissues</code> でチーム開発に展開。進捗を GitHub 上で追跡できます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 9. REF ===== -->
+    <section id="ref">
+      <h2 class="sec"><span class="num">9</span>参考リンク</h2>
+      <table>
+        <thead><tr><th>リソース</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Spec Kit リポジトリ</td><td><a class="inline" href="https://github.com/github/spec-kit">github.com/github/spec-kit</a></td></tr>
+          <tr><td>公式ドキュメント</td><td><a class="inline" href="https://github.github.io/spec-kit/">github.github.io/spec-kit</a></td></tr>
+          <tr><td>本リポジトリの仕様例</td><td><code>specs/001-simple-todo-app/</code></td></tr>
+          <tr><td>コマンド定義</td><td><code>.github/agents/speckit.*.agent.md</code></td></tr>
+          <tr><td>テンプレート</td><td><code>.specify/templates/</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      GitHub Spec Kit 完全ガイド — 仕様駆動開発の進め方 · このリポジトリ向けに作成 ·
+      情報源: 公式ドキュメント（Context7 / github.com/github/spec-kit）＋ 本リポジトリの実成果物
+    </footer>
+  </main>
+</div>
+</body>
+</html>
