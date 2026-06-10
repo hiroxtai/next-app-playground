@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自律型コーディングエージェント開発環境 — 調査と設計（2026年6月）</title>
+<style>
+  :root {
+    --text: #1a1a1a;
+    --text-muted: #555;
+    --bg: #ffffff;
+    --surface: #f6f5f1;
+    --border: #ddd;
+    --accent: #534AB7;
+    --accent-bg: #EEEDFE;
+    --teal: #0F6E56;
+    --teal-bg: #E1F5EE;
+    --coral: #993C1D;
+    --coral-bg: #FAECE7;
+    --warn: #854F0B;
+    --warn-bg: #FAEEDA;
+    --danger: #A32D2D;
+    --danger-bg: #FCEBEB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text: #e8e6e0;
+      --text-muted: #a8a69e;
+      --bg: #1b1a17;
+      --surface: #26241f;
+      --border: #44423c;
+      --accent: #AFA9EC;
+      --accent-bg: #26215C;
+      --teal: #5DCAA5;
+      --teal-bg: #04342C;
+      --coral: #F0997B;
+      --coral-bg: #4A1B0C;
+      --warn: #FAC775;
+      --warn-bg: #412402;
+      --danger: #F09595;
+      --danger-bg: #501313;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.85;
+    margin: 0;
+    padding: 0 24px 80px;
+  }
+  main { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; font-weight: 600; line-height: 1.4; margin: 48px 0 8px; }
+  h2 {
+    font-size: 1.35rem; font-weight: 600; margin: 56px 0 16px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--accent);
+  }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 36px 0 12px; }
+  p { margin: 12px 0; }
+  .meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 32px; }
+  .tldr {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0;
+  }
+  .tldr strong { color: var(--accent); }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn);
+    padding: 12px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+  .danger-box {
+    background: var(--danger-bg); border-left: 4px solid var(--danger);
+    padding: 12px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 0.95rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--surface); font-weight: 600; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 6px; font-size: 0.875em;
+  }
+  pre {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; overflow-x: auto;
+    font-size: 0.85rem; line-height: 1.6;
+  }
+  pre code { background: none; border: none; padding: 0; }
+  figure { margin: 28px 0; text-align: center; }
+  figure svg { max-width: 100%; height: auto; }
+  figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
+  nav.toc {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 28px; margin: 32px 0;
+  }
+  nav.toc ol { margin: 8px 0 0; padding-left: 24px; }
+  a { color: var(--accent); }
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+  ul li, ol li { margin: 6px 0; }
+  .sources { font-size: 0.9rem; }
+  .pill {
+    display: inline-block; border-radius: 999px; padding: 1px 12px;
+    font-size: 0.8rem; font-weight: 600;
+  }
+  .pill.purple { background: var(--accent-bg); color: var(--accent); }
+  .pill.teal { background: var(--teal-bg); color: var(--teal); }
+  .pill.coral { background: var(--coral-bg); color: var(--coral); }
+  /* SVG 共通: 図はライト/ダーク両対応のため CSS 変数を使用 */
+  .diag-box { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+  .diag-purple { fill: var(--accent-bg); stroke: var(--accent); stroke-width: 1; }
+  .diag-teal { fill: var(--teal-bg); stroke: var(--teal); stroke-width: 1; }
+  .diag-coral { fill: var(--coral-bg); stroke: var(--coral); stroke-width: 1; }
+  .diag-warn { fill: var(--warn-bg); stroke: var(--warn); stroke-width: 1; }
+  .diag-t { fill: var(--text); font-size: 14px; font-weight: 600; font-family: inherit; }
+  .diag-ts { fill: var(--text-muted); font-size: 12px; font-family: inherit; }
+  .diag-arr { stroke: var(--text-muted); stroke-width: 1.5; fill: none; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>自律型コーディングエージェント開発環境<br>— 調査と設計</h1>
+<p class="meta">調査日: 2026年6月10日 ／ 対象リポジトリ: next-app-playground ／ ブランチ: feature/orchestrator</p>
+
+<div class="tldr">
+<strong>結論（TL;DR）</strong><br>
+2026年6月時点のベストプラクティスは、<strong>「賢い単一のオーケストレーターエージェント」を自作することではなく、「GitHub をイベントバス兼状態管理として使うイベント駆動パイプライン」を組むこと</strong>。
+LLM に任せるのは各ステージ内の判断（コードを書く・レビューする・提案する）だけに絞り、ステージ間の遷移と品質ゲートは GitHub Actions・CI・ブランチ保護・フックといった決定論的な仕組みで制御する。
+汎用性（どのプロジェクトでも使える性質）は、手順を「スキル」に、プロジェクト固有知識を「CLAUDE.md」に分離することで確保する。
+</div>
+
+<nav class="toc">
+<strong>目次</strong>
+<ol>
+  <li><a href="#requirements">背景と要件</a></li>
+  <li><a href="#why-not-orchestrator">なぜ「単一オーケストレーター」方式を採らないのか</a></li>
+  <li><a href="#architecture">推奨アーキテクチャ（4層構成）</a></li>
+  <li><a href="#components">構成要素の詳細</a></li>
+  <li><a href="#usecases">3つのユースケースの実現方法</a></li>
+  <li><a href="#security">セキュリティと自律度の段階制</a></li>
+  <li><a href="#implementation">このリポジトリでの実装構成</a></li>
+  <li><a href="#setup">セットアップ手順</a></li>
+  <li><a href="#sources">参考資料</a></li>
+</ol>
+</nav>
+
+<h2 id="requirements">1. 背景と要件</h2>
+<p>このリポジトリ（Next.js 16 学習プレイグラウンド）で、コーディングエージェントができる限り自律的に開発を進める環境を構築したい。具体的には次の3つのフローを、人間の関与を最小化しながら実現する。</p>
+<ol>
+  <li><strong>Issue 駆動</strong>: Issue が登録されたら、問題の理解 → 解決策の検討 → 実装 → テスト → PR 作成 → レビュー → マージ → ADR 作成までを自動で行う。</li>
+  <li><strong>提案駆動</strong>: ユーザーが「何か新しい提案はない？」と尋ねたら複数の提案を行い、指示があれば要件検討 → 設計 → プラン → タスク分割 → 実装 → マージ → ADR まで進める。</li>
+  <li><strong>定期スキャン駆動</strong>: 毎日セキュリティ関連の問題を調査し、対応すべき問題があれば対応方法の調査 → プラン → 実装 → マージ → ADR まで進める。</li>
+</ol>
+<p>加えて、特定プロジェクトに依存しない<strong>汎用的な仕組み</strong>であることを重視する。</p>
+
+<h2 id="why-not-orchestrator">2. なぜ「単一オーケストレーター」方式を採らないのか</h2>
+<p>「強力なオーケストレーターエージェントがサブエージェントを指揮する」構成は広く発信されているが、調査の結果、<strong>1セッション内の並列化には有効でも、システム全体の制御を1つの LLM に委ねるのは現時点ではアンチパターンに近い</strong>と判断した。理由は次の3点。</p>
+<ol>
+  <li><strong>信頼性は「賢さ」ではなく「構造」から生まれる。</strong> 2026年の自律エージェント成功事例の分析では、成功要因はモデル性能ではなく「テストインフラへの投資」「速いフィードバックループ」「明確なチェックポイント」で一致している。LLM オーケストレーターは実行のたびに判断が揺れ、失敗時のデバッグが困難になる。</li>
+  <li><strong>状態管理が破綻する。</strong> 長時間動くオーケストレーターはコンテキストが肥大化し、途中で停止すると全状態を失う。状態を GitHub（Issue・PR・ラベル・コメント）に持たせれば、各エージェント実行はステートレスになり、失敗したステージだけを再実行できる。</li>
+  <li><strong>スペック駆動開発の知見。</strong> GitHub Spec Kit の実践報告では、「全部お任せ」型では10〜20分のタスクが委任の限界だったのに対し、仕様 → 計画 → タスク分割のチェックポイント構造を入れることで、数時間規模の機能開発を安全に委任できるようになったとされる。自律度を上げる鍵はエージェントの賢さではなく<strong>パイプラインの構造化</strong>である。</li>
+</ol>
+
+<table>
+<tr><th>関心事</th><th>担当する仕組み</th><th>性質</th></tr>
+<tr><td>いつ動くか（トリガー）</td><td>GitHub イベント / cron</td><td>決定論的</td></tr>
+<tr><td>何をどの手順でやるか</td><td>スキル（<code>.claude/skills/</code>）</td><td>LLM が解釈する手順書</td></tr>
+<tr><td>1タスク内の並列化・分業</td><td>サブエージェント / Agent Teams</td><td>LLM</td></tr>
+<tr><td>品質ゲート</td><td>CI・フック・ブランチ保護</td><td>決定論的</td></tr>
+<tr><td>プロジェクト知識</td><td>CLAUDE.md・ADR</td><td>ドキュメント</td></tr>
+</table>
+
+<h2 id="architecture">3. 推奨アーキテクチャ（4層構成）</h2>
+<p>下図の4層で構成する。下の層ほど「信頼の土台」となる。</p>
+
+<figure>
+<svg width="680" viewBox="0 0 680 470" role="img" aria-label="自律型開発環境のレイヤードアーキテクチャ">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g><rect class="diag-purple" x="50" y="40" width="180" height="56" rx="6"/><text class="diag-t" x="140" y="62" text-anchor="middle">Issue / @claude</text><text class="diag-ts" x="140" y="84" text-anchor="middle">登録・割当・コメント</text></g>
+<g><rect class="diag-purple" x="250" y="40" width="180" height="56" rx="6"/><text class="diag-t" x="340" y="62" text-anchor="middle">スケジュール</text><text class="diag-ts" x="340" y="84" text-anchor="middle">cron 定期実行</text></g>
+<g><rect class="diag-purple" x="450" y="40" width="180" height="56" rx="6"/><text class="diag-t" x="540" y="62" text-anchor="middle">ユーザー対話</text><text class="diag-ts" x="540" y="84" text-anchor="middle">ローカル CLI</text></g>
+<line class="diag-arr" x1="140" y1="98" x2="140" y2="134" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="340" y1="98" x2="285" y2="134" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="540" y1="98" x2="505" y2="134" marker-end="url(#arrow)"/>
+<g><rect class="diag-teal" x="50" y="140" width="280" height="56" rx="6"/><text class="diag-t" x="190" y="162" text-anchor="middle">GitHub Actions 実行</text><text class="diag-ts" x="190" y="184" text-anchor="middle">claude-code-action@v1</text></g>
+<g><rect class="diag-teal" x="370" y="140" width="260" height="56" rx="6"/><text class="diag-t" x="500" y="162" text-anchor="middle">ローカル Claude Code</text><text class="diag-ts" x="500" y="184" text-anchor="middle">対話・計画・承認</text></g>
+<line class="diag-arr" x1="190" y1="198" x2="190" y2="234" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="500" y1="198" x2="500" y2="234" marker-end="url(#arrow)"/>
+<g><rect class="diag-box" x="50" y="240" width="580" height="56" rx="6"/><text class="diag-t" x="340" y="262" text-anchor="middle">共有ワークフロー定義（汎用性の鍵）</text><text class="diag-ts" x="340" y="284" text-anchor="middle">.claude/skills / CLAUDE.md / agents</text></g>
+<line class="diag-arr" x1="115" y1="298" x2="115" y2="334" marker-end="url(#arrow)"/>
+<g><rect class="diag-coral" x="50" y="340" width="130" height="56" rx="6"/><text class="diag-t" x="115" y="362" text-anchor="middle">実装・テスト</text><text class="diag-ts" x="115" y="384" text-anchor="middle">ブランチ作業</text></g>
+<g><rect class="diag-coral" x="200" y="340" width="130" height="56" rx="6"/><text class="diag-t" x="265" y="362" text-anchor="middle">PR・レビュー</text><text class="diag-ts" x="265" y="384" text-anchor="middle">エージェント審査</text></g>
+<g><rect class="diag-coral" x="350" y="340" width="130" height="56" rx="6"/><text class="diag-t" x="415" y="362" text-anchor="middle">CI ゲート</text><text class="diag-ts" x="415" y="384" text-anchor="middle">test / lint 必須</text></g>
+<g><rect class="diag-coral" x="500" y="340" width="130" height="56" rx="6"/><text class="diag-t" x="565" y="362" text-anchor="middle">マージ・ADR</text><text class="diag-ts" x="565" y="384" text-anchor="middle">人間ゲート可</text></g>
+<line class="diag-arr" x1="182" y1="368" x2="194" y2="368" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="332" y1="368" x2="344" y2="368" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="482" y1="368" x2="494" y2="368" marker-end="url(#arrow)"/>
+<text class="diag-ts" x="50" y="440">紫 = トリガー層 ／ 緑 = 実行層 ／ グレー = 共有定義層 ／ オレンジ = 成果物パイプライン</text>
+</svg>
+<figcaption>図1: 4層アーキテクチャ。トリガーと品質ゲートは決定論的に、判断はステージ内の LLM に。</figcaption>
+</figure>
+
+<h3>トリガー層 <span class="pill purple">決定論的</span></h3>
+<p>人間の関与を GitHub イベントに置き換える。<code>issues: [labeled]</code>、<code>pull_request</code>、<code>schedule: cron</code>、および <code>@claude</code> メンション。ローカルの対話セッションも「提案駆動」フローの入口としてここに含まれる。</p>
+
+<h3>実行層 <span class="pill teal">claude-code-action@v1</span></h3>
+<p><a href="https://github.com/anthropics/claude-code-action">anthropics/claude-code-action</a> は GitHub Actions ランナー上でフル機能の Claude Code を実行する公式 Action。<code>@claude</code> メンションへの応答（対話モード）と <code>prompt</code> 指定による無人実行（自動化モード）を自動判別する。ローカルの Claude Code と<strong>同じ CLAUDE.md・同じスキルを読む</strong>ため、ローカルで磨いたワークフローがそのまま CI で動く。</p>
+
+<h3>共有定義層 — 汎用性の鍵</h3>
+<p>手順（Issue 解決・ADR 作成・セキュリティ監査など）は<strong>スキル</strong>として書き、プロジェクト固有の知識（規約・コマンド・構成）は <strong>CLAUDE.md</strong> に書く。スキルは CLAUDE.md を参照する前提でプロジェクト非依存に書く。この分離により、スキル群とワークフロー YAML のセットを任意のリポジトリへ数分で導入できる（プラグイン化・テンプレートリポジトリ化も可能）。</p>
+
+<h3>ガードレール層 <span class="pill coral">決定論的</span></h3>
+<ul>
+  <li><strong>CI</strong>: lint / type-check / test を required status check に。エージェントの成果物も人間のコードと同じ検証を通す。</li>
+  <li><strong>フック</strong>: 「テストが通るまで停止しない」「生成ファイルの編集禁止」などをプロンプトではなくコードで強制（フックはハルシネーションしない）。</li>
+  <li><strong>ブランチ保護</strong>: main への直接 push 禁止、PR レビュー必須。</li>
+</ul>
+
+<h2 id="components">4. 構成要素の詳細</h2>
+<table>
+<tr><th>要素</th><th>役割</th><th>使いどころ</th></tr>
+<tr><td><strong>スキル</strong><br><code>.claude/skills/*/SKILL.md</code></td><td>再利用可能な手順書。ローカルでも CI でも <code>/skill-name</code> で起動できる</td><td>Issue 解決・提案・監査・ADR 作成などの定型ワークフロー</td></tr>
+<tr><td><strong>サブエージェント</strong><br><code>.claude/agents/</code></td><td>独立コンテキストで動く専門エージェント。冗長な探索や検証を本体から分離</td><td>レビュー・テスト実行・調査の並列化</td></tr>
+<tr><td><strong>Agent Teams</strong>（実験的機能）</td><td>複数の Claude Code インスタンス（2〜16体）が共有タスクとメッセージングで協調</td><td>マルチモジュール実装、競合仮説のデバッグ。トークン消費は単体の約7倍なので限定的に使用</td></tr>
+<tr><td><strong>フック</strong></td><td>ライフサイクルイベントで決定論的なコードを実行</td><td>品質ゲートの強制、危険操作のブロック</td></tr>
+<tr><td><strong>Spec Kit</strong>（speckit スキル群）</td><td>Constitution → Specify → Clarify → Plan → Tasks → Implement の6段階で大きな機能開発を構造化</td><td>提案駆動フローの設計・タスク分割フェーズ</td></tr>
+<tr><td><strong>Claude Agent SDK</strong></td><td>Claude Code をプログラムから組み込む SDK</td><td>独自システムが必要になった場合のみ。本構成では不要</td></tr>
+</table>
+
+<h2 id="usecases">5. 3つのユースケースの実現方法</h2>
+<p>3つのフローはすべて<strong>「ラベル付き Issue」という共通フォーマットに正規化して、単一の実装パイプラインに合流させる</strong>。これがイベント駆動設計の最大の利点で、仕組みが最小で済む。</p>
+
+<figure>
+<svg width="680" viewBox="0 0 680 430" role="img" aria-label="3つの入口が単一パイプラインに合流する図">
+<defs><marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g><rect class="diag-purple" x="40" y="40" width="190" height="56" rx="6"/><text class="diag-t" x="135" y="62" text-anchor="middle">人間が Issue 登録</text><text class="diag-ts" x="135" y="84" text-anchor="middle">バグ報告・機能要望</text></g>
+<g><rect class="diag-purple" x="245" y="40" width="190" height="56" rx="6"/><text class="diag-t" x="340" y="62" text-anchor="middle">提案セッション</text><text class="diag-ts" x="340" y="84" text-anchor="middle">/propose + Spec Kit</text></g>
+<g><rect class="diag-purple" x="450" y="40" width="190" height="56" rx="6"/><text class="diag-t" x="545" y="62" text-anchor="middle">日次セキュリティ監査</text><text class="diag-ts" x="545" y="84" text-anchor="middle">/security-audit (cron)</text></g>
+<line class="diag-arr" x1="135" y1="98" x2="300" y2="146" marker-end="url(#arrow2)"/>
+<line class="diag-arr" x1="340" y1="98" x2="340" y2="146" marker-end="url(#arrow2)"/>
+<line class="diag-arr" x1="545" y1="98" x2="380" y2="146" marker-end="url(#arrow2)"/>
+<g><rect class="diag-warn" x="190" y="152" width="300" height="56" rx="6"/><text class="diag-t" x="340" y="174" text-anchor="middle">claude:auto ラベル付き Issue</text><text class="diag-ts" x="340" y="196" text-anchor="middle">共通フォーマット（人間の承認ゲート）</text></g>
+<line class="diag-arr" x1="340" y1="210" x2="340" y2="246" marker-end="url(#arrow2)"/>
+<g><rect class="diag-teal" x="115" y="252" width="450" height="56" rx="6"/><text class="diag-t" x="340" y="274" text-anchor="middle">/resolve-issue（実装パイプライン）</text><text class="diag-ts" x="340" y="296" text-anchor="middle">調査 → 方針コメント → 実装 → テスト → PR 作成</text></g>
+<line class="diag-arr" x1="340" y1="310" x2="340" y2="346" marker-end="url(#arrow2)"/>
+<g><rect class="diag-coral" x="40" y="352" width="180" height="56" rx="6"/><text class="diag-t" x="130" y="374" text-anchor="middle">自動レビュー</text><text class="diag-ts" x="130" y="396" text-anchor="middle">PR イベントで発火</text></g>
+<g><rect class="diag-coral" x="250" y="352" width="180" height="56" rx="6"/><text class="diag-t" x="340" y="374" text-anchor="middle">CI + マージ</text><text class="diag-ts" x="340" y="396" text-anchor="middle">人間 or 条件付き自動</text></g>
+<g><rect class="diag-coral" x="460" y="352" width="180" height="56" rx="6"/><text class="diag-t" x="550" y="374" text-anchor="middle">ADR 自動作成</text><text class="diag-ts" x="550" y="396" text-anchor="middle">マージイベントで発火</text></g>
+<line class="diag-arr" x1="224" y1="380" x2="244" y2="380" marker-end="url(#arrow2)"/>
+<line class="diag-arr" x1="434" y1="380" x2="454" y2="380" marker-end="url(#arrow2)"/>
+</svg>
+<figcaption>図2: 3つの入口を「ラベル付き Issue」に正規化し、単一の実装パイプラインに合流させる。</figcaption>
+</figure>
+
+<h3>A. Issue 駆動（自動解決）</h3>
+<p>1つの巨大ワークフローではなく、<strong>イベントで連鎖する小さなワークフローの列</strong>として組む。各段が独立しているため、どこで失敗しても再実行・人間介入が容易。</p>
+<ol>
+  <li><code>claude:auto</code> ラベルが付いた Issue に対して <code>/resolve-issue</code> スキルが発火（ラベルゲート）</li>
+  <li>スキルが調査 → 解決方針を Issue にコメント → 実装 → テスト合格まで修正 → PR 作成</li>
+  <li>PR イベントで自動レビューワークフローが発火</li>
+  <li>CI（lint / type-check / test）が required check として検証</li>
+  <li>マージ後、ADR ワークフローが発火（ADR に値する決定かはスキルが判断）</li>
+</ol>
+
+<h3>B. 提案駆動</h3>
+<p>入口はローカルの Claude Code セッション（提案の取捨選択は人間の判断そのもののため）。</p>
+<ol>
+  <li><code>/propose</code> スキル: コードベース・Issue 一覧・未実装パターンを調査し、複数の提案を提示</li>
+  <li>ユーザーが選択したら Spec Kit の6段階（Constitution → Specify → Clarify → Plan → Tasks → Implement）で構造化</li>
+  <li>タスク分割後、各タスクを <code>claude:auto</code> ラベル付き Issue として起票 → <strong>パイプライン A に合流</strong></li>
+</ol>
+
+<h3>C. 定期セキュリティ監査</h3>
+<ol>
+  <li>cron（毎日）で <code>/security-audit</code> スキルが発火</li>
+  <li>依存関係の既知脆弱性・コードのセキュリティパターン・GitHub Advisory を点検</li>
+  <li>対応が必要なら調査結果・対応方針付きの Issue を起票 → <strong>パイプライン A に合流</strong></li>
+</ol>
+<p>Dependabot や CodeQL は決定論的なスキャナとして併用し、エージェントは「判断が必要な調査」に専念させる。</p>
+
+<h2 id="security">6. セキュリティと自律度の段階制</h2>
+<div class="danger-box">
+<strong>完全無人のマージは公式に非推奨。</strong>理由は品質ではなくセキュリティ。Issue 本文・コメントは「信頼できない入力」であり、隠し命令（HTML コメント・不可視文字など）によるプロンプトインジェクション攻撃が2026年に実際に多発している。OWASP Agentic Top 10 でも「Agent Goal Hijacking」が1位。claude-code-action の公式セキュリティドキュメントも自動マージを明確に非推奨としている。
+</div>
+
+<figure>
+<svg width="680" viewBox="0 0 680 250" role="img" aria-label="自律度の3段階">
+<defs><marker id="arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g><rect class="diag-box" x="40" y="50" width="180" height="120" rx="6"/>
+<text class="diag-t" x="130" y="80" text-anchor="middle">レベル1</text>
+<text class="diag-ts" x="130" y="106" text-anchor="middle">ラベルゲート</text>
+<text class="diag-ts" x="130" y="126" text-anchor="middle">人間が claude:auto を</text>
+<text class="diag-ts" x="130" y="144" text-anchor="middle">付けた Issue だけ処理</text></g>
+<g><rect class="diag-warn" x="250" y="50" width="180" height="120" rx="6"/>
+<text class="diag-t" x="340" y="80" text-anchor="middle">レベル2（推奨起点）</text>
+<text class="diag-ts" x="340" y="106" text-anchor="middle">マージのみ人間</text>
+<text class="diag-ts" x="340" y="126" text-anchor="middle">調査〜レビューまで全自動</text>
+<text class="diag-ts" x="340" y="144" text-anchor="middle">1 PR あたり1〜2分の関与</text></g>
+<g><rect class="diag-coral" x="460" y="50" width="180" height="120" rx="6"/>
+<text class="diag-t" x="550" y="80" text-anchor="middle">レベル3</text>
+<text class="diag-ts" x="550" y="106" text-anchor="middle">条件付き自動マージ</text>
+<text class="diag-ts" x="550" y="126" text-anchor="middle">低リスク変更に限り</text>
+<text class="diag-ts" x="550" y="144" text-anchor="middle">checks 全通過で auto-merge</text></g>
+<line class="diag-arr" x1="224" y1="110" x2="244" y2="110" marker-end="url(#arrow3)"/>
+<line class="diag-arr" x1="434" y1="110" x2="454" y2="110" marker-end="url(#arrow3)"/>
+<text class="diag-ts" x="340" y="210" text-anchor="middle">信頼実績ができたカテゴリ（依存更新・ドキュメント・テスト追加など）から右へ広げる</text>
+</svg>
+<figcaption>図3: 自律度はレベル2から始め、実績に応じてカテゴリ単位でレベル3へ拡大する。</figcaption>
+</figure>
+
+<p>その他のセキュリティ設計:</p>
+<ul>
+  <li>ワークフローの <code>permissions</code> は最小権限（ジョブごとに必要なものだけ）</li>
+  <li>API キーは GitHub Secrets（<code>ANTHROPIC_API_KEY</code>）でのみ管理</li>
+  <li>ラベルゲート自体がインジェクション対策になる（外部の人が Issue を立てるだけでは発火しない。人間がラベルを付けるときに本文を一読する）</li>
+  <li>定期監査ジョブは <code>contents: read</code> のみ（Issue 起票だけ許可、コード変更はパイプライン A 経由）</li>
+</ul>
+
+<h2 id="implementation">7. このリポジトリでの実装構成</h2>
+<pre><code>.github/workflows/
+├── claude.yml                  # @claude メンション応答（対話）
+├── claude-resolve-issue.yml    # claude:auto ラベル → 実装 → PR
+├── claude-review.yml           # PR 自動レビュー
+├── claude-adr.yml              # マージ後の ADR 作成
+└── claude-security-scan.yml    # cron 日次セキュリティ監査
+.claude/skills/
+├── resolve-issue/SKILL.md      # Issue 解決の手順書
+├── propose/SKILL.md            # 改善提案の手順書
+├── security-audit/SKILL.md     # セキュリティ監査の手順書
+└── write-adr/SKILL.md          # ADR 作成の手順書
+docs/adr/
+├── README.md                   # ADR の運用ルール
+├── 0000-template.md            # ADR テンプレート
+└── 0001-*.md                   # 個別の ADR
+CLAUDE.md                       # 自律パイプラインの節を追記
+</code></pre>
+<p>既存資産との関係:</p>
+<ul>
+  <li><code>ci.yml</code>（lint / type-check / test / build）はそのまま品質ゲートとして機能</li>
+  <li><code>dependabot.yml</code> + <code>dependabot-auto-merge.yml</code> は決定論的スキャナ・低リスク自動マージの実例としてレベル3の先行例</li>
+  <li><code>.claude/skills/speckit-*</code> は提案駆動フローの設計・タスク分割フェーズで使用</li>
+</ul>
+
+<h2 id="setup">8. セットアップ手順</h2>
+<ol>
+  <li>ローカルの Claude Code で <code>/install-github-app</code> を実行（GitHub App のインストールと <code>ANTHROPIC_API_KEY</code> シークレット設定が対話的に完了する）</li>
+  <li>ラベルを作成: <code>gh label create "claude:auto" --description "エージェントによる自動処理を承認" --color 7F77DD</code></li>
+  <li>ブランチ保護を設定: main への直接 push 禁止、required checks に CI のジョブを指定</li>
+  <li>スキルをローカルで試運転（例: <code>/resolve-issue 123</code>）して手順を磨く — <strong>ここが品質の8割を決める</strong></li>
+  <li>安定したら、<code>.claude/skills/</code> + <code>.github/workflows/</code> をテンプレートリポジトリまたはプラグインとして横展開</li>
+</ol>
+<div class="note">
+<strong>運用のコツ</strong>: 最初の数週間はレベル2（マージのみ人間）で運用し、PR の品質を観察する。修正なしでマージできた PR の比率が安定して高いカテゴリから、レベル3（条件付き自動マージ）へ拡大する。
+</div>
+
+<h2 id="sources">9. 参考資料</h2>
+<ul class="sources">
+  <li><a href="https://code.claude.com/docs/en/github-actions">Claude Code GitHub Actions — 公式ドキュメント</a></li>
+  <li><a href="https://github.com/anthropics/claude-code-action">anthropics/claude-code-action — 公式 Action リポジトリ</a></li>
+  <li><a href="https://github.com/anthropics/claude-code-action/blob/main/docs/security.md">claude-code-action セキュリティドキュメント</a></li>
+  <li><a href="https://code.claude.com/docs/en/agent-teams">Agent Teams — 公式ドキュメント</a></li>
+  <li><a href="https://github.com/github/spec-kit">GitHub Spec Kit</a> ／ <a href="https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/">GitHub Blog: Spec-driven development</a></li>
+  <li><a href="https://www.epam.com/insights/ai/blogs/inside-spec-driven-development-what-githubspec-kit-makes-possible-for-ai-engineering">EPAM: Inside Spec-Driven Development</a></li>
+  <li><a href="https://kilo.ai/articles/beyond-autocomplete">Kilo: Beyond Autocomplete — Best Agentic Coding Workflow in 2026</a></li>
+  <li><a href="https://ofox.ai/blog/claude-code-hooks-subagents-skills-complete-guide-2026/">Claude Code: Hooks, Subagents &amp; Skills Complete Guide</a></li>
+  <li><a href="https://www.developersdigest.tech/blog/claude-code-agent-teams-subagents-2026">Developers Digest: Claude Code Agent Teams, Subagents, and MCP — The 2026 Playbook</a></li>
+  <li><a href="https://www.anthropic.com/engineering/how-we-contain-claude">Anthropic: How we contain Claude</a></li>
+  <li><a href="https://venturebeat.com/security/ai-agent-runtime-security-system-card-audit-comment-and-control-2026">VentureBeat: AI agent runtime security (2026)</a></li>
+  <li><a href="https://www.truefoundry.com/blog/claude-code-prompt-injection">TrueFoundry: Claude Code prompt injection guide</a></li>
+</ul>
+
+</main>
+</body>
+</html>

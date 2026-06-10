@@ -68,3 +68,18 @@ src/
 1. `src/app/_lib/catalog-data.ts` の `pages` 配列にエントリ追加
 2. `src/app/examples/<category>/<page-id>/page.tsx` に専用ページ作成
 3. 必要に応じて `_components/` にコンポーネントをコロケーション
+
+## 自律開発パイプライン
+
+このリポジトリはコーディングエージェントによる自律開発を前提に運用する。
+設計の全体像は `docs/AUTONOMOUS_AGENT_ENVIRONMENT.html`、採用理由は `docs/adr/0001` を参照。
+
+- **共通フォーマット**: 自動処理してよいタスクは `claude:auto` ラベル付き Issue にする。
+  ラベルが付くと `claude-resolve-issue.yml` が発火し、調査 → 実装 → テスト → PR 作成まで自動で行う
+- **スキル**: `/resolve-issue <番号>`（Issue 解決）、`/propose`（改善提案）、
+  `/security-audit`（セキュリティ監査）、`/write-adr <PR番号>`（ADR 作成）。
+  いずれもローカルでも CI でも同じものが動く
+- **品質ゲート**: PR は CI（lint / type-check / test / build）と自動レビューを通過すること。
+  **マージは人間が行う**（自動マージしない）
+- **ADR**: 重要な設計判断は `docs/adr/` に記録する（基準は `docs/adr/README.md`）
+- **検証コマンド**: 実装後は `pnpm lint && pnpm type-check && pnpm test:run` が全て成功するまで完了としない

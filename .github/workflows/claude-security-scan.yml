@@ -1,0 +1,55 @@
+name: Claude Security Scan
+
+# 日次セキュリティ監査ワークフロー
+# 依存関係の既知脆弱性・コードのセキュリティパターンを毎日点検し、
+# 対応が必要な問題を「調査結果と対応方針付きの Issue」として起票する
+#
+# セキュリティ設計:
+# - このジョブはコードを変更しない（contents: read のみ）
+# - 修正は人間が Issue に claude:auto ラベルを付けたときに
+#   claude-resolve-issue.yml が実行する（自律度の段階制）
+on:
+  schedule:
+    # 毎日 JST 9:00（UTC 0:00）に実行
+    - cron: "0 0 * * *"
+  # 手動実行用
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # pnpm audit の実行に必要なセットアップ
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # リポジトリ内の .claude/skills/security-audit を起動
+          prompt: "/security-audit"
+          # 監査ジョブは読み取り系コマンドと Issue 操作のみに制限
+          claude_args: |
+            --model claude-sonnet-4-6
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,WebFetch,WebSearch,Bash(pnpm audit:*),Bash(pnpm outdated:*),Bash(gh issue:*),Bash(gh pr list:*),Bash(gh api:*)"
