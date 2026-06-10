@@ -181,3 +181,8 @@ import { cn } from "@/lib/utils";
 - [shadcn/ui ガイド](../docs/SHADCN_GUIDE.md) - コンポーネントライブラリの詳細
 - [パンくずリスト実装](../docs/BREADCRUMB_IMPLEMENTATION.md) - 実装例
 - [改善ロードマップ](../docs/IMPROVEMENT_ROADMAP.md) - 今後の計画
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
