@@ -76,6 +76,9 @@ src/
 
 - **共通フォーマット**: 自動処理してよいタスクは `claude:auto` ラベル付き Issue にする。
   ラベルが付くと `claude-resolve-issue.yml` が発火し、調査 → 実装 → テスト → PR 作成まで自動で行う
+- **Copilot との併用**: `copilot:auto` ラベルを付けると代わりに GitHub Copilot coding agent が
+  処理する（`docs/COPILOT_AGENT_ENVIRONMENT.html` 参照）。ADR 作成は実装した側が担当する
+  （`copilot/*` ブランチの PR → copilot-adr.yml、それ以外 → claude-adr.yml）
 - **スキル**: `/resolve-issue <番号>`（Issue 解決）、`/propose`（改善提案）、
   `/security-audit`（セキュリティ監査）、`/write-adr <PR番号>`（ADR 作成）。
   いずれもローカルでも CI でも同じものが動く

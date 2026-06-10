@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Copilot 版 自律パイプライン環境の構築（2026年6月）</title>
+<style>
+  :root {
+    --text: #1a1a1a;
+    --text-muted: #555;
+    --bg: #ffffff;
+    --surface: #f6f5f1;
+    --border: #ddd;
+    --accent: #534AB7;
+    --accent-bg: #EEEDFE;
+    --teal: #0F6E56;
+    --teal-bg: #E1F5EE;
+    --coral: #993C1D;
+    --coral-bg: #FAECE7;
+    --warn: #854F0B;
+    --warn-bg: #FAEEDA;
+    --danger: #A32D2D;
+    --danger-bg: #FCEBEB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text: #e8e6e0;
+      --text-muted: #a8a69e;
+      --bg: #1b1a17;
+      --surface: #26241f;
+      --border: #44423c;
+      --accent: #AFA9EC;
+      --accent-bg: #26215C;
+      --teal: #5DCAA5;
+      --teal-bg: #04342C;
+      --coral: #F0997B;
+      --coral-bg: #4A1B0C;
+      --warn: #FAC775;
+      --warn-bg: #412402;
+      --danger: #F09595;
+      --danger-bg: #501313;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.85;
+    margin: 0;
+    padding: 0 24px 80px;
+  }
+  main { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; font-weight: 600; line-height: 1.4; margin: 48px 0 8px; }
+  h2 {
+    font-size: 1.35rem; font-weight: 600; margin: 56px 0 16px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--accent);
+  }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 36px 0 12px; }
+  p { margin: 12px 0; }
+  .meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 32px; }
+  .tldr {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0;
+  }
+  .tldr strong { color: var(--accent); }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn);
+    padding: 12px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+  .danger-box {
+    background: var(--danger-bg); border-left: 4px solid var(--danger);
+    padding: 12px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 0.95rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--surface); font-weight: 600; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 6px; font-size: 0.875em;
+  }
+  pre {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; overflow-x: auto;
+    font-size: 0.85rem; line-height: 1.6;
+  }
+  pre code { background: none; border: none; padding: 0; }
+  figure { margin: 28px 0; text-align: center; }
+  figure svg { max-width: 100%; height: auto; }
+  figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
+  nav.toc {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 28px; margin: 32px 0;
+  }
+  nav.toc ol { margin: 8px 0 0; padding-left: 24px; }
+  a { color: var(--accent); }
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+  ul li, ol li { margin: 6px 0; }
+  .sources { font-size: 0.9rem; }
+  .pill {
+    display: inline-block; border-radius: 999px; padding: 1px 12px;
+    font-size: 0.8rem; font-weight: 600;
+  }
+  .pill.purple { background: var(--accent-bg); color: var(--accent); }
+  .pill.teal { background: var(--teal-bg); color: var(--teal); }
+  .pill.coral { background: var(--coral-bg); color: var(--coral); }
+  /* SVG 共通: 図はライト/ダーク両対応のため CSS 変数を使用 */
+  .diag-box { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+  .diag-purple { fill: var(--accent-bg); stroke: var(--accent); stroke-width: 1; }
+  .diag-teal { fill: var(--teal-bg); stroke: var(--teal); stroke-width: 1; }
+  .diag-coral { fill: var(--coral-bg); stroke: var(--coral); stroke-width: 1; }
+  .diag-warn { fill: var(--warn-bg); stroke: var(--warn); stroke-width: 1; }
+  .diag-t { fill: var(--text); font-size: 14px; font-weight: 600; font-family: inherit; }
+  .diag-ts { fill: var(--text-muted); font-size: 12px; font-family: inherit; }
+  .diag-arr { stroke: var(--text-muted); stroke-width: 1.5; fill: none; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>GitHub Copilot 版<br>自律パイプライン環境の構築</h1>
+<p class="meta">調査日: 2026年6月10日 ／ 対象リポジトリ: next-app-playground ／
+姉妹ドキュメント: <a href="./AUTONOMOUS_AGENT_ENVIRONMENT.html">Claude Code 版（設計の全体像）</a></p>
+
+<div class="tldr">
+<strong>結論（TL;DR）</strong><br>
+<a href="./AUTONOMOUS_AGENT_ENVIRONMENT.html">Claude Code 版</a>で設計したアーキテクチャ
+（イベント駆動・ラベルゲート・4層構成）は<strong>そのまま使える</strong>。
+差し替えるのは実行層のみで、claude-code-action の役割を Copilot では
+<strong>Copilot coding agent</strong>（Issue を assign すると実装〜 draft PR 作成まで行うクラウドエージェント）と
+<strong>Copilot CLI</strong>（<code>copilot -p</code> による GitHub Actions からの無人実行)の2つが分担する。
+このリポジトリは <code>.github/copilot-instructions.md</code>・<code>.github/agents/</code>・
+<code>.github/instructions/</code>・<code>.github/prompts/</code> が整備済みのため、共有定義層は大部分が構築済み。
+</div>
+
+<nav class="toc">
+<strong>目次</strong>
+<ol>
+  <li><a href="#mapping">Claude 版との対応関係</a></li>
+  <li><a href="#architecture">Copilot 版アーキテクチャ</a></li>
+  <li><a href="#coding-agent">Copilot coding agent の有効化と環境準備</a></li>
+  <li><a href="#label-gate">ラベルゲート → API で Copilot に assign</a></li>
+  <li><a href="#review">PR 自動レビュー（Copilot code review）</a></li>
+  <li><a href="#cli">Copilot CLI による定期監査・ADR 作成</a></li>
+  <li><a href="#skills">スキル（手順書）の移植</a></li>
+  <li><a href="#security">セキュリティと PAT の管理</a></li>
+  <li><a href="#setup">セットアップ手順チェックリスト</a></li>
+  <li><a href="#diff">Claude 版との違い・併用</a></li>
+  <li><a href="#sources">参考資料</a></li>
+</ol>
+</nav>
+
+<h2 id="mapping">1. Claude 版との対応関係</h2>
+<p>設計思想（決定論的なトリガーと品質ゲート、LLM はステージ内の判断のみ、共通フォーマットは「ラベル付き Issue」）は共通。実装要素の対応は次の通り。</p>
+
+<table>
+<tr><th>役割</th><th>Claude 版（構築済み）</th><th>Copilot 版</th></tr>
+<tr><td>Issue 自動解決</td><td>claude-resolve-issue.yml + resolve-issue スキル</td><td><strong>Copilot coding agent</strong>（Issue を Copilot に assign）</td></tr>
+<tr><td>メンション対応</td><td>claude.yml（@claude）</td><td>PR 上の <code>@copilot</code> コメント / Issue assign</td></tr>
+<tr><td>PR 自動レビュー</td><td>claude-review.yml</td><td><strong>Copilot code review</strong>（設定/ルールセットで自動化。ワークフロー不要）</td></tr>
+<tr><td>日次セキュリティ監査</td><td>claude-security-scan.yml</td><td>cron + <strong>Copilot CLI</strong>（<code>copilot -p</code>）</td></tr>
+<tr><td>ADR 自動作成</td><td>claude-adr.yml</td><td>merged イベント + Copilot CLI、または ADR Issue を coding agent に assign</td></tr>
+<tr><td>手順書</td><td><code>.claude/skills/*/SKILL.md</code></td><td><code>.github/prompts/*.prompt.md</code> / <code>.github/agents/*.agent.md</code></td></tr>
+<tr><td>プロジェクト知識</td><td>CLAUDE.md</td><td><code>.github/copilot-instructions.md</code> + <code>AGENTS.md</code>（整備済み）</td></tr>
+<tr><td>CI 実行環境の準備</td><td>ワークフロー内で pnpm setup</td><td><strong><code>copilot-setup-steps.yml</code></strong>（専用ファイル）</td></tr>
+</table>
+
+<h2 id="architecture">2. Copilot 版アーキテクチャ</h2>
+
+<figure>
+<svg width="680" viewBox="0 0 680 470" role="img" aria-label="Copilot 版自律パイプラインのアーキテクチャ">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g><rect class="diag-purple" x="40" y="40" width="190" height="56" rx="6"/><text class="diag-t" x="135" y="62" text-anchor="middle">人間が Issue 登録</text><text class="diag-ts" x="135" y="84" text-anchor="middle">バグ報告・機能要望</text></g>
+<g><rect class="diag-purple" x="245" y="40" width="190" height="56" rx="6"/><text class="diag-t" x="340" y="62" text-anchor="middle">提案セッション</text><text class="diag-ts" x="340" y="84" text-anchor="middle">VS Code + prompts</text></g>
+<g><rect class="diag-purple" x="450" y="40" width="190" height="56" rx="6"/><text class="diag-t" x="545" y="62" text-anchor="middle">日次セキュリティ監査</text><text class="diag-ts" x="545" y="84" text-anchor="middle">cron + Copilot CLI</text></g>
+<line class="diag-arr" x1="135" y1="98" x2="300" y2="146" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="340" y1="98" x2="340" y2="146" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="545" y1="98" x2="380" y2="146" marker-end="url(#arrow)"/>
+<g><rect class="diag-warn" x="190" y="152" width="300" height="56" rx="6"/><text class="diag-t" x="340" y="174" text-anchor="middle">copilot:auto ラベル付き Issue</text><text class="diag-ts" x="340" y="196" text-anchor="middle">共通フォーマット（人間の承認ゲート）</text></g>
+<line class="diag-arr" x1="340" y1="210" x2="340" y2="246" marker-end="url(#arrow)"/>
+<g><rect class="diag-teal" x="115" y="252" width="450" height="56" rx="6"/><text class="diag-t" x="340" y="274" text-anchor="middle">API で Copilot coding agent に assign</text><text class="diag-ts" x="340" y="296" text-anchor="middle">調査 → 実装 → CI → draft PR 作成（ネイティブ機能）</text></g>
+<line class="diag-arr" x1="340" y1="310" x2="340" y2="346" marker-end="url(#arrow)"/>
+<g><rect class="diag-coral" x="40" y="352" width="180" height="56" rx="6"/><text class="diag-t" x="130" y="374" text-anchor="middle">自動レビュー</text><text class="diag-ts" x="130" y="396" text-anchor="middle">Copilot code review</text></g>
+<g><rect class="diag-coral" x="250" y="352" width="180" height="56" rx="6"/><text class="diag-t" x="340" y="374" text-anchor="middle">CI + マージ</text><text class="diag-ts" x="340" y="396" text-anchor="middle">draft 解除 + 人間マージ</text></g>
+<g><rect class="diag-coral" x="460" y="352" width="180" height="56" rx="6"/><text class="diag-t" x="550" y="374" text-anchor="middle">ADR 自動作成</text><text class="diag-ts" x="550" y="396" text-anchor="middle">マージイベントで発火</text></g>
+<line class="diag-arr" x1="224" y1="380" x2="244" y2="380" marker-end="url(#arrow)"/>
+<line class="diag-arr" x1="434" y1="380" x2="454" y2="380" marker-end="url(#arrow)"/>
+<text class="diag-ts" x="340" y="445" text-anchor="middle">構造は Claude 版と同一。実行層が coding agent / Copilot CLI に置き換わる</text>
+</svg>
+<figcaption>図1: Copilot 版パイプライン。3つの入口を「ラベル付き Issue」に正規化する設計は Claude 版と共通。</figcaption>
+</figure>
+
+<p>Claude 版との最大の違いは、実装パイプラインの中身（ブランチ作成 → 実装 → テスト → PR 作成）を
+<strong>自前のワークフロー + スキルで書く必要がなく、coding agent のネイティブ機能に委ねる</strong>こと。
+自前で書くのは「ラベル → assign」の接続部分だけになる。</p>
+
+<h2 id="coding-agent">3. Copilot coding agent の有効化と環境準備</h2>
+<p>coding agent は GitHub 側のマネージド環境（GitHub Actions ベース、ファイアウォール付きサンドボックス）で動作し、
+ブランチ作成 → 実装 → <strong>draft PR 作成</strong>までをネイティブで行う。</p>
+<ol>
+  <li><strong>有効化</strong>: リポジトリの Settings → Copilot → Coding agent を有効にする（組織の場合はポリシー設定も確認）</li>
+  <li><strong>環境準備</strong>: 依存関係を事前インストールする専用ワークフローを作成する。<strong>ファイル名とジョブ名は固定</strong>:</li>
+</ol>
+
+<pre><code># .github/workflows/copilot-setup-steps.yml
+name: "Copilot Setup Steps"
+on: workflow_dispatch
+jobs:
+  copilot-setup-steps:   # ジョブ名はこの名前である必要がある
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 9
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+</code></pre>
+
+<ul>
+  <li><strong>MCP サーバーの追加</strong>: Settings → Copilot → Coding agent の MCP configuration（JSON）で設定</li>
+  <li><strong>ファイアウォール</strong>: 既定で外部通信が制限される。必要な許可ドメインは同設定画面で追加（無効化は非推奨）</li>
+  <li><strong>カスタム指示</strong>: <code>.github/copilot-instructions.md</code>（整備済み）と <code>AGENTS.md</code> を coding agent も読む</li>
+</ul>
+
+<h2 id="label-gate">4. ラベルゲート → API で Copilot に assign</h2>
+<p>2025年12月から <strong>GraphQL / REST API で Issue を Copilot に assign できる</strong>ようになり、
+Claude 版と同じラベルゲートが組める。assign 時に作業ブランチ・追加指示・使用するカスタムエージェントも指定できる。</p>
+
+<div class="danger-box">
+<strong>重要な制約</strong>: デフォルトの <code>GITHUB_TOKEN</code> では Copilot を assign できない。
+<strong>Copilot が有効なユーザーの PAT（user token）</strong>が必要。GitHub App / bot のトークンでは
+<code>suggestedActors</code> に <code>copilot-swe-agent</code> が返らない。
+</div>
+
+<pre><code># .github/workflows/copilot-resolve-issue.yml
+name: Copilot Resolve Issue
+
+# 人間が Issue に copilot:auto ラベルを付けると発火し、
+# Copilot coding agent に assign する（以降は coding agent がネイティブで処理）
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  assign:
+    if: github.event.label.name == 'copilot:auto'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Assign issue to Copilot
+        env:
+          # Copilot 有効ユーザーの PAT（GITHUB_TOKEN では不可）
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_PAT }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # 1. Copilot エージェントの actor ID を取得
+          AGENT_ID=$(gh api graphql \
+            -H "GraphQL-Features: issues_copilot_assignment_api_support" \
+            -f query='query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                suggestedActors(capabilities: [CAN_BE_ASSIGNED], first: 100) {
+                  nodes { login ... on Bot { id } }
+                }
+              }
+            }' \
+            -F owner="${REPO%/*}" -F name="${REPO#*/}" \
+            --jq '.data.repository.suggestedActors.nodes[] | select(.login == "copilot-swe-agent") | .id')
+
+          # 2. Issue の node ID を取得
+          ISSUE_ID=$(gh api "repos/${REPO}/issues/${ISSUE_NUMBER}" --jq '.node_id')
+
+          # 3. Copilot を assign（既存の assignee は維持）
+          gh api graphql \
+            -H "GraphQL-Features: issues_copilot_assignment_api_support" \
+            -f query='mutation($issueId: ID!, $agentId: ID!) {
+              replaceActorsForAssignable(input: {assignableId: $issueId, actorIds: [$agentId]}) {
+                assignable { ... on Issue { number } }
+              }
+            }' \
+            -F issueId="$ISSUE_ID" -F agentId="$AGENT_ID"
+</code></pre>
+
+<p>assign 後の流れ（すべて coding agent のネイティブ機能）:</p>
+<ol>
+  <li>Issue に 👀 リアクションが付き、セッション開始</li>
+  <li>サンドボックス環境で調査 → 実装 → テスト（copilot-setup-steps.yml の環境で実行）</li>
+  <li><strong>draft PR</strong> を作成し、作業ログ（セッション）を PR にリンク</li>
+  <li>PR コメントで <code>@copilot</code> に修正依頼すると追加作業する</li>
+</ol>
+
+<h2 id="review">5. PR 自動レビュー（Copilot code review）</h2>
+<p><strong>ワークフロー不要。</strong>リポジトリ設定またはルールセットで「Automatic Copilot code review」を
+有効化すれば、coding agent が作成した PR を含む全 PR に自動レビューが付く。</p>
+<ul>
+  <li>設定場所: Settings → Rules → Rulesets（または Branch protection の自動レビュー設定）</li>
+  <li>レビュー観点のカスタマイズ: <code>.github/instructions/*.instructions.md</code>（整備済みの
+      <code>code-review-generic.instructions.md</code> などが適用される）</li>
+</ul>
+
+<h2 id="cli">6. Copilot CLI による定期監査・ADR 作成</h2>
+<p>cron 起動の無人実行は Copilot CLI のプログラマティックモード（<code>copilot -p</code>）で組む。
+認証は <strong><code>COPILOT_GITHUB_TOKEN</code></strong> 環境変数に
+「Copilot Requests」権限付きの fine-grained PAT を渡す。</p>
+
+<pre><code># .github/workflows/copilot-security-scan.yml
+name: Copilot Security Scan
+
+# 毎日 JST 9:00 にセキュリティ監査を実行し、問題があれば Issue を起票する
+# このジョブはコードを変更しない（contents: read のみ）
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 9
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Run security audit
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_CLI_PAT }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          copilot -p "$(cat .github/prompts/security-audit.prompt.md)" \
+            --allow-tool='shell(pnpm audit:*)' \
+            --allow-tool='shell(pnpm outdated:*)' \
+            --allow-tool='shell(gh issue:*)' \
+            --allow-tool='shell(gh pr list:*)' \
+            --allow-tool=read \
+            --no-ask-user
+</code></pre>
+
+<div class="note">
+<strong>CI では <code>--allow-all</code> を絶対に使わない</strong>（公式ドキュメントも明記）。
+必要なツールだけを <code>--allow-tool</code> で列挙する。監査ジョブは読み取り系コマンドと
+Issue 操作のみに制限し、コード変更はラベルゲート経由のパイプラインに委ねる。
+</div>
+
+<p>ADR 自動作成も同じパターンで組める。PR の merged イベントをトリガーに、
+<code>write-adr</code> 相当のプロンプトを Copilot CLI で実行する（または「ADR を書く Issue」を起票して
+coding agent に assign する方式でもよい）。</p>
+
+<h2 id="skills">7. スキル（手順書）の移植</h2>
+<p>Claude 版の <code>.claude/skills/</code> 4点は次のように移植する。内容（手順・セキュリティ注意・完了条件）はほぼそのまま流用できる。</p>
+
+<table>
+<tr><th>Claude 版スキル</th><th>Copilot 版の置き場所</th><th>備考</th></tr>
+<tr><td>resolve-issue</td><td><strong>移植不要</strong></td><td>coding agent がネイティブで代替。判断基準（方針コメント・検証コマンド・最小変更の原則）だけ <code>copilot-instructions.md</code> に転記する</td></tr>
+<tr><td>propose</td><td><code>.github/prompts/propose.prompt.md</code></td><td>VS Code で <code>/propose</code> として使用。整備済みの speckit プロンプト群（specify → clarify → plan → tasks）と連携</td></tr>
+<tr><td>security-audit</td><td><code>.github/prompts/security-audit.prompt.md</code></td><td>CLI から <code>$(cat ...)</code> で注入（上記ワークフロー参照）</td></tr>
+<tr><td>write-adr</td><td><code>.github/prompts/write-adr.prompt.md</code></td><td>同上。ADR テンプレート（<code>docs/adr/0000-template.md</code>）と運用ルールは共通</td></tr>
+</table>
+
+<h2 id="security">8. セキュリティと PAT の管理</h2>
+<p>自律度の段階制（レベル1: ラベルゲート → レベル2: マージのみ人間 → レベル3: 条件付き自動マージ）の考え方は
+Claude 版と共通。Copilot 固有の事情は次の通り。</p>
+<ul>
+  <li><strong>人間ゲートが製品仕様として組み込み</strong>: coding agent は必ず draft PR を作る。さらに
+      「coding agent の PR はトリガーした本人の approve だけでは CI が自動実行されない」等の保護が既定で入っており、
+      自律度レベル2が事実上強制される</li>
+  <li><strong>PAT が2種類必要</strong>:
+    <table>
+      <tr><th>シークレット名</th><th>用途</th><th>要件</th></tr>
+      <tr><td><code>COPILOT_ASSIGN_PAT</code></td><td>Issue を Copilot に assign</td><td>Copilot 有効ユーザーの user token（Issues: write）</td></tr>
+      <tr><td><code>COPILOT_CLI_PAT</code></td><td>Copilot CLI の認証</td><td>fine-grained PAT + Copilot Requests 権限</td></tr>
+    </table>
+    どちらも個人アカウントに紐づくため、有効期限の管理と権限の最小化に注意する</li>
+  <li><strong>プロンプトインジェクション対策</strong>: ラベルゲート（人間がラベルを付けることが承認行為）は
+      Copilot 版でも同様に機能する。coding agent 側にもファイアウォール・サンドボックスの防御層がある</li>
+  <li><strong>課金</strong>: coding agent はタスクごとに premium requests + GitHub Actions 分を消費。
+      CLI も premium requests を消費する。<code>timeout-minutes</code> と実行頻度で上限を制御する</li>
+</ul>
+
+<h2 id="setup">9. セットアップ手順チェックリスト</h2>
+<ol>
+  <li>リポジトリの Settings → Copilot → Coding agent を有効化</li>
+  <li><code>.github/workflows/copilot-setup-steps.yml</code> を作成（pnpm 環境の事前構築）</li>
+  <li>ラベルを作成: <code>gh label create "copilot:auto" --description "Copilot による自動処理を承認" --color 1D9E75</code></li>
+  <li>PAT を2種類発行し、リポジトリシークレットに登録（<code>COPILOT_ASSIGN_PAT</code> / <code>COPILOT_CLI_PAT</code>）</li>
+  <li><code>copilot-resolve-issue.yml</code>（assign ワークフロー）を作成</li>
+  <li>ルールセットで Automatic Copilot code review を有効化</li>
+  <li><code>.github/prompts/</code> に propose / security-audit / write-adr を移植</li>
+  <li><code>copilot-security-scan.yml</code>（cron）と ADR ワークフローを作成</li>
+  <li>ブランチ保護（main 直 push 禁止 + required checks）は Claude 版と共通</li>
+  <li>試運転: まず Issue を1件手動で Copilot に assign し、draft PR の品質を確認してからラベル運用を開始</li>
+</ol>
+
+<h2 id="diff">10. Claude 版との違い・併用</h2>
+<table>
+<tr><th>観点</th><th>Claude Code 版</th><th>Copilot 版</th></tr>
+<tr><td>実装パイプラインの構築</td><td>スキル + ワークフローを自前で書く（柔軟）</td><td>coding agent のネイティブ機能（構築が少ない）</td></tr>
+<tr><td>人間ゲート</td><td>設計で担保（ラベル + ブランチ保護）</td><td>製品仕様で強制（draft PR 等）</td></tr>
+<tr><td>手順のカスタマイズ性</td><td>高い（スキルで細かく制御）</td><td>instructions / prompts 経由（coding agent の内部手順は変更不可）</td></tr>
+<tr><td>認証</td><td><code>ANTHROPIC_API_KEY</code> + GitHub App</td><td>個人 PAT 2種類（管理に注意）</td></tr>
+<tr><td>課金</td><td>API トークン従量 + Actions</td><td>premium requests + Actions</td></tr>
+</table>
+<p><strong>併用も可能。</strong>ラベルを <code>claude:auto</code> / <code>copilot:auto</code> で分ければ同居でき、
+「実装は Copilot coding agent、レビューは Claude」のようなクロスレビュー構成も組める。
+どちらか一方に寄せる場合も、共有定義層（instructions・ADR・ブランチ保護）とラベルゲートの設計は共通資産として残る。</p>
+
+<h2 id="sources">11. 参考資料</h2>
+<ul class="sources">
+  <li><a href="https://github.blog/changelog/2025-12-03-assign-issues-to-copilot-using-the-api/">GitHub Changelog: Assign issues to Copilot using the API</a></li>
+  <li><a href="https://docs.github.com/copilot/concepts/agents/coding-agent/about-coding-agent">GitHub Docs: About Copilot coding agent</a></li>
+  <li><a href="https://docs.github.com/copilot/using-github-copilot/coding-agent/using-copilot-to-work-on-an-issue">GitHub Docs: Using Copilot to work on an issue</a></li>
+  <li><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment">GitHub Docs: Configure the coding agent development environment（copilot-setup-steps.yml）</a></li>
+  <li><a href="https://docs.github.com/copilot/customizing-copilot/customizing-or-disabling-the-firewall-for-copilot-coding-agent">GitHub Docs: Customizing the coding agent firewall</a></li>
+  <li><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/automate-with-actions">GitHub Docs: Automating tasks with Copilot CLI and GitHub Actions</a></li>
+  <li><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically">GitHub Docs: Running Copilot CLI programmatically</a></li>
+  <li><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/autopilot">GitHub Docs: Allowing Copilot CLI to work autonomously（autopilot）</a></li>
+  <li><a href="https://github.blog/ai-and-ml/github-copilot/onboarding-your-ai-peer-programmer-setting-up-github-copilot-coding-agent-for-success/">GitHub Blog: Onboarding your AI peer programmer</a></li>
+  <li><a href="https://github.blog/ai-and-ml/github-copilot/power-agentic-workflows-in-your-terminal-with-github-copilot-cli/">GitHub Blog: Power agentic workflows with Copilot CLI</a></li>
+</ul>
+
+</main>
+</body>
+</html>

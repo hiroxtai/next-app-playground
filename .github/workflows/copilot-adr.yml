@@ -1,0 +1,59 @@
+name: Copilot ADR
+
+# Copilot 版の ADR（Architecture Decision Record）自動作成ワークフロー
+# Copilot coding agent が実装した PR（copilot/* ブランチ）がマージされると発火し、
+# 「ADR を作成する Issue」を起票して copilot:auto ラベルを付ける。
+# ラベルにより copilot-resolve-issue.yml が発火し、coding agent が
+# write-adr プロンプトの手順（ADR に値するかの判断を含む）で ADR の PR を作成する
+#
+# 併用ポリシー（ADR の担当振り分け）:
+# - copilot/* ブランチの PR → このワークフロー（Copilot が ADR を作成）
+# - それ以外の PR → claude-adr.yml（Claude が ADR を作成）
+#
+# 必要なシークレット:
+# - COPILOT_ASSIGN_PAT: Issue 起票とラベル付けに使用する。
+#   デフォルトの GITHUB_TOKEN で起票すると labeled イベントが
+#   後続ワークフローを発火させないため、PAT が必要
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  create-adr-issue:
+    # マージされた Copilot 実装 PR のみ対象
+    # - ADR 自身の PR（docs(adr): 接頭辞）は対象外（無限ループ防止）
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'copilot/') &&
+      !startsWith(github.event.pull_request.title, 'docs(adr)')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+
+    steps:
+      - name: Create ADR issue for Copilot
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_PAT }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue create \
+            --repo "$REPO" \
+            --title "ADR 検討: PR #${PR_NUMBER} の設計判断を記録する" \
+            --label "copilot:auto" \
+            --body "$(cat <<EOF
+          ## タスク
+
+          \`.github/prompts/write-adr.prompt.md\` の手順に従って、マージ済みの PR #${PR_NUMBER} を分析してください。
+
+          - ADR に値する設計判断が含まれる場合のみ、docs/adr/ に ADR を追加する PR を作成する
+          - 値しない場合は、その理由をこの Issue にコメントしてクローズする
+          - ADR の PR タイトルは必ず \`docs(adr): <決定の要約>\` の形式にする
+
+          ## 参照
+
+          - 対象 PR: #${PR_NUMBER}
+          - 判断基準・テンプレート: docs/adr/README.md, docs/adr/0000-template.md
+          EOF
+          )"

@@ -29,3 +29,4 @@ PR がマージされると `claude-adr.yml` ワークフローが発火し、AD
 ## 一覧
 
 - [ADR-0001: 自律型コーディングエージェント開発環境の採用](./0001-adopt-autonomous-agent-pipeline.md)
+- [ADR-0002: GitHub Copilot パイプラインの併用](./0002-add-copilot-pipeline-alongside-claude.md)

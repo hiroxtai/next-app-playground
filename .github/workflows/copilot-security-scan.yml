@@ -1,0 +1,68 @@
+name: Copilot Security Scan
+
+# Copilot CLI による日次セキュリティ監査ワークフロー（Claude 版 claude-security-scan.yml と併用）
+# 依存関係の既知脆弱性・コードのセキュリティパターンを点検し、
+# 対応が必要な問題を「調査結果と対応方針付きの Issue」として起票する
+#
+# 併用ポリシー:
+# - 日次の定期実行は Claude 版（claude-security-scan.yml）が既定で担当
+# - 重複起票を避けるため、このワークフローの cron は既定で無効にしてある
+#   Copilot に切り替える場合は下の cron を有効化し、Claude 版の cron を無効化する
+#   （曜日をずらして両方有効にするクロスチェック運用も可能。
+#   プロンプト側に既存 Issue の重複チェック手順があるため二重起票は抑制される）
+#
+# セキュリティ設計:
+# - このジョブはコードを変更しない（contents: read のみ）
+# - CI では --allow-all を使わず、必要なツールだけを --allow-tool で列挙する
+#
+# 必要なシークレット:
+# - COPILOT_CLI_PAT: 「Copilot Requests」権限付きの fine-grained PAT
+on:
+  # schedule:
+  #   # 毎日 JST 9:00（UTC 0:00）に実行（有効化する場合はコメントを外す）
+  #   - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # pnpm audit の実行に必要なセットアップ
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+
+      - name: Run security audit
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_CLI_PAT }}
+          # gh CLI（Issue 起票・一覧）用のトークン
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          copilot -p "$(cat .github/prompts/security-audit.prompt.md)" \
+            --allow-tool='shell(pnpm audit:*)' \
+            --allow-tool='shell(pnpm outdated:*)' \
+            --allow-tool='shell(gh issue:*)' \
+            --allow-tool='shell(gh pr list:*)' \
+            --allow-tool='shell(gh api:*)' \
+            --allow-tool=read \
+            --no-ask-user

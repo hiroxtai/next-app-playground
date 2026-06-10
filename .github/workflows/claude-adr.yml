@@ -13,10 +13,14 @@ jobs:
     # マージされた PR のみ対象
     # - Dependabot の PR は対象外（設計判断を含まないため）
     # - ADR 自身の PR は対象外（無限ループ防止）
+    # - Copilot coding agent の PR（copilot/* ブランチ）は対象外
+    #   （copilot-adr.yml が担当する — 併用時の二重起票防止）
     if: |
       github.event.pull_request.merged == true &&
       github.actor != 'dependabot[bot]' &&
-      !startsWith(github.event.pull_request.head.ref, 'claude/adr-')
+      !startsWith(github.event.pull_request.head.ref, 'claude/adr-') &&
+      !startsWith(github.event.pull_request.head.ref, 'copilot/') &&
+      !startsWith(github.event.pull_request.title, 'docs(adr)')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

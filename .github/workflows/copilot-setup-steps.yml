@@ -1,0 +1,41 @@
+name: "Copilot Setup Steps"
+
+# Copilot coding agent の実行環境を事前構築する専用ワークフロー
+# - ファイル名（copilot-setup-steps.yml）とジョブ名（copilot-setup-steps）は固定
+# - coding agent がタスクを開始する前に GitHub がこのジョブを自動実行する
+# - このファイル自体の変更時にも実行して、セットアップが壊れていないか検証する
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/copilot-setup-steps.yml"
+  pull_request:
+    paths:
+      - ".github/workflows/copilot-setup-steps.yml"
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # coding agent 環境の準備に書き込み権限は不要
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # ci.yml と同一の Node.js / pnpm 構成
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile

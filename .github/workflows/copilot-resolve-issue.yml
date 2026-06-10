@@ -1,0 +1,96 @@
+name: Copilot Resolve Issue
+
+# Copilot 版の自律開発パイプライン入口（Claude 版 claude-resolve-issue.yml と併用）
+# 人間が Issue に copilot:auto ラベルを付けると発火し、
+# Copilot coding agent に assign する。以降（調査 → 実装 → CI → draft PR 作成）は
+# coding agent のネイティブ機能が処理する
+#
+# セキュリティ設計（ラベルゲート）:
+# - Issue が「登録されただけ」では発火しない
+# - 書き込み権限を持つ人間がラベルを付けることが承認行為になる
+#
+# 必要なシークレット:
+# - COPILOT_ASSIGN_PAT: Copilot が有効なユーザーの PAT（Issues: write）。
+#   デフォルトの GITHUB_TOKEN では Copilot を assign できない
+on:
+  issues:
+    types: [labeled]
+  # 手動再実行用（失敗時のリトライなど）
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Copilot に割り当てる Issue 番号"
+        required: true
+        type: string
+
+jobs:
+  assign:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.label.name == 'copilot:auto'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+
+    # 同じ Issue に対する多重実行を防止
+    concurrency:
+      group: copilot-resolve-issue-${{ github.event.issue.number || inputs.issue_number }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Assign issue to Copilot
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_PAT }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # 入力の検証: Issue 番号は数値のみ許可（workflow_dispatch の自由入力対策）
+          if ! [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "::error::Issue 番号が不正です: ${ISSUE_NUMBER}"
+            exit 1
+          fi
+
+          # 1. Copilot coding agent の actor ID を取得
+          #    （PAT のユーザーで Copilot が有効でないと copilot-swe-agent が返らない）
+          # shellcheck disable=SC2016  # GraphQL の変数（$owner 等）はシェル展開させない
+          AGENT_ID=$(gh api graphql \
+            -H "GraphQL-Features: issues_copilot_assignment_api_support" \
+            -f query='query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                suggestedActors(capabilities: [CAN_BE_ASSIGNED], first: 100) {
+                  nodes {
+                    login
+                    ... on Bot { id }
+                    ... on User { id }
+                  }
+                }
+              }
+            }' \
+            -F owner="${REPO%/*}" -F name="${REPO#*/}" \
+            --jq '.data.repository.suggestedActors.nodes[] | select(.login == "copilot-swe-agent") | .id')
+
+          if [ -z "$AGENT_ID" ]; then
+            echo "::error::copilot-swe-agent が見つかりません。COPILOT_ASSIGN_PAT のユーザーで Copilot coding agent が有効か確認してください。"
+            exit 1
+          fi
+
+          # 2. Issue の node ID を取得
+          ISSUE_ID=$(gh api "repos/${REPO}/issues/${ISSUE_NUMBER}" --jq '.node_id')
+
+          # 3. Copilot を assign
+          #    注意: replaceActorsForAssignable は assignee を置き換える。
+          #    このパイプラインでは「ラベルが承認、assign は Copilot のみ」の運用を前提とする
+          # shellcheck disable=SC2016  # GraphQL の変数（$issueId 等）はシェル展開させない
+          gh api graphql \
+            -H "GraphQL-Features: issues_copilot_assignment_api_support" \
+            -f query='mutation($issueId: ID!, $agentId: ID!) {
+              replaceActorsForAssignable(input: {assignableId: $issueId, actorIds: [$agentId]}) {
+                assignable {
+                  ... on Issue { number }
+                }
+              }
+            }' \
+            -F issueId="$ISSUE_ID" -F agentId="$AGENT_ID"
+
+          echo "Issue #${ISSUE_NUMBER} を Copilot coding agent に割り当てました。"
