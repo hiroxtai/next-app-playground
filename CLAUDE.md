@@ -86,3 +86,8 @@ src/
   **マージは人間が行う**（自動マージしない）
 - **ADR**: 重要な設計判断は `docs/adr/` に記録する（基準は `docs/adr/README.md`）
 - **検証コマンド**: 実装後は `pnpm lint && pnpm type-check && pnpm test:run` が全て成功するまで完了としない
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
