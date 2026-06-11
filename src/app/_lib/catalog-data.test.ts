@@ -18,8 +18,8 @@ describe("catalog-data", () => {
   // categories のテスト
   // ============================================
   describe("categories", () => {
-    it("should have 7 categories", () => {
-      expect(categories).toHaveLength(7);
+    it("should have 8 categories", () => {
+      expect(categories).toHaveLength(8);
     });
 
     it("should have unique category IDs", () => {
@@ -33,8 +33,8 @@ describe("catalog-data", () => {
   // pages のテスト
   // ============================================
   describe("pages", () => {
-    it("should have 17 pages", () => {
-      expect(pages).toHaveLength(17);
+    it("should have 18 pages", () => {
+      expect(pages).toHaveLength(18);
     });
 
     it("should have unique page IDs", () => {

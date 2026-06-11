@@ -12,6 +12,7 @@ import {
   Database,
   Layout,
   type LucideIcon,
+  Orbit,
   Palette,
   Rocket,
   Sparkles,
@@ -77,6 +78,11 @@ export const categoryStyles: Record<CategoryId, CategoryStyle> = {
     icon: Bot,
     gradient: "bg-indigo-500",
     iconBg: "bg-indigo-600",
+  },
+  simulation: {
+    icon: Orbit,
+    gradient: "bg-fuchsia-500",
+    iconBg: "bg-fuchsia-600",
   },
 };
 

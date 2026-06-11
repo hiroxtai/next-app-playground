@@ -42,6 +42,11 @@ export const categories = [
     label: "AI",
     description: "Vercel AI SDKを使用したAIアプリケーション開発",
   },
+  {
+    id: "simulation",
+    label: "シミュレーション",
+    description: "物理シミュレーションやゲームなどインタラクティブなデモ",
+  },
 ] as const;
 
 /**
@@ -211,6 +216,15 @@ export const pages: PageInfo[] = [
     category: "ai",
     difficulty: "中級",
     tags: ["AI SDK", "useChat", "SSE", "OpenAI"],
+  },
+  {
+    id: "double-pendulum",
+    title: "二重振り子",
+    description:
+      "カオス的な動きを見せる二重振り子の物理シミュレーション。節の長さや開始角度を調整して、光跡の美しい軌道を楽しめます。",
+    category: "simulation",
+    difficulty: "上級",
+    tags: ["Canvas", "物理", "アニメーション"],
   },
 ];
 
